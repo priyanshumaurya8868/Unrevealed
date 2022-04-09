@@ -3,6 +3,16 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Priyanshu/AndroidStudioProjects/Unrevealed/app/src/main/res/drawable/ic_comments.xml" value="0.1" />
+        <entry key="..\:/Users/Priyanshu/AndroidStudioProjects/Unrevealed/app/src/main/res/drawable/ic_edit.xml" value="0.1215" />
+        <entry key="..\:/Users/Priyanshu/AndroidStudioProjects/Unrevealed/app/src/main/res/drawable/ic_eye.xml" value="0.1" />
+        <entry key="..\:/Users/Priyanshu/AndroidStudioProjects/Unrevealed/app/src/main/res/drawable/ic_incognito.xml" value="0.137" />
+        <entry key="..\:/Users/Priyanshu/AndroidStudioProjects/Unrevealed/app/src/main/res/drawable/ic_instagram.xml" value="0.137" />
+        <entry key="..\:/Users/Priyanshu/AndroidStudioProjects/Unrevealed/app/src/main/res/drawable/ic_mail.xml" value="0.137" />
+        <entry key="..\:/Users/Priyanshu/AndroidStudioProjects/Unrevealed/app/src/main/res/drawable/ic_save.xml" value="0.1" />
+        <entry key="..\:/Users/Priyanshu/AndroidStudioProjects/Unrevealed/app/src/main/res/drawable/ic_save_icon_184731.xml" value="0.1" />
+        <entry key="..\:/Users/Priyanshu/AndroidStudioProjects/Unrevealed/app/src/main/res/drawable/ic_share.xml" value="0.137" />
+        <entry key="..\:/Users/Priyanshu/AndroidStudioProjects/Unrevealed/app/src/main/res/drawable/ic_star.xml" value="0.137" />
         <entry key="..\:/Users/Priyanshu/AndroidStudioProjects/Unrevealed/app/src/main/res/drawable/ic_user.xml" value="0.14" />
       </map>
     </option>

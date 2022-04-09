@@ -41,7 +41,7 @@ fun FlatBottomBar(
                 fontSize = 14.sp
             )
             val normal = SpanStyle(
-                color = MaterialTheme.colors.onSecondary,
+                color = MaterialTheme.colors.onSurface.copy(alpha = .8f),
                 fontWeight = FontWeight.Light,
                 fontSize = 14.sp
             )

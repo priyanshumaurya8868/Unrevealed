@@ -29,7 +29,7 @@ class SignupViewModel @Inject constructor() : AuthViewModel() {
             }
             is SignupEvents.Proceed -> {
                 if (validateInputs())
-                //TODO:  Login Network Call
+                // Login Network Call will happen after avatar selection
                     _eventFlow.emit(UiEvent.Proceed)
             }
         }
@@ -37,13 +37,11 @@ class SignupViewModel @Inject constructor() : AuthViewModel() {
     }
 
     public override suspend fun validateInputs(): Boolean {
-       if( _confirmPassword.value.text.isBlank()) {
-           _confirmPassword.value = _confirmPassword.value.copy(isError = true)
-           _eventFlow.emit(UiEvent.ShowSnackbar("Field can't be Empty!"))
-       }
+
         if( _confirmPassword.value.text !=  _password.value.text){
             _confirmPassword.value = _confirmPassword.value.copy(isError = true)
             _eventFlow.emit(UiEvent.ShowSnackbar("Confirmed password is not matched!"))
+            return false
         }
         return super.validateInputs()
     }

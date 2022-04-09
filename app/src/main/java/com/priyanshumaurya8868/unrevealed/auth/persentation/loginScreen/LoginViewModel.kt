@@ -2,15 +2,19 @@ package com.priyanshumaurya8868.unrevealed.auth.persentation.loginScreen
 
 
 import androidx.lifecycle.viewModelScope
+import com.priyanshumaurya8868.unrevealed.auth.domain.usecase.AuthUseCases
 import com.priyanshumaurya8868.unrevealed.auth.persentation.core.AuthViewModel
-import com.priyanshumaurya8868.unrevealed.auth.persentation.loginScreen.components.LoginEvents
 import com.priyanshumaurya8868.unrevealed.auth.persentation.core.TextFieldState
+import com.priyanshumaurya8868.unrevealed.auth.persentation.loginScreen.components.LoginEvents
+import com.priyanshumaurya8868.unrevealed.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor() : AuthViewModel() {
+class LoginViewModel @Inject constructor(private val useCases: AuthUseCases) : AuthViewModel() {
     
     fun onEvent(event : LoginEvents) = viewModelScope.launch{
         when(event){
@@ -22,13 +26,36 @@ class LoginViewModel @Inject constructor() : AuthViewModel() {
             }
             is LoginEvents.Proceed->{
                 if(validateInputs())
-                    //TODO:  Login Network Call
-                    _eventFlow.emit(UiEvent.Proceed)
+                 useCases.login(username = _username.value.text, password = _password.value.text)
+                     .onEach { result->
+                         when(result){
+                             is Resource.Success ->{
+                                 result.data?.token?.let { token->
+                                     useCases.saveToken(token)
+                                     _eventFlow.emit(UiEvent.Proceed)
+                                 }
+                                 _eventFlow.emit(UiEvent.ShowSnackbar(
+                                     result.message ?: "Something went wrong couldn't received token"
+                                 ))
+
+                                 _isLoading.value = false
+                             }
+                             is Resource.Error -> {
+                                 _eventFlow.emit(UiEvent.ShowSnackbar(
+                                     result.message ?: "Unknown error"
+                                 ))
+
+                                 _isLoading.value = false
+                             }
+                             is Resource.Loading -> {
+                                 _isLoading.value = true
+                             }
+                         }
+                     }.launchIn(this)
             }
         }
 
     }
 
-    public override suspend fun validateInputs()= super.validateInputs()
 
 }

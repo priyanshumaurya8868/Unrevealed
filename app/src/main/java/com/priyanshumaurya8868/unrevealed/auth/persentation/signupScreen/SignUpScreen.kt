@@ -1,9 +1,11 @@
 package com.priyanshumaurya8868.unrevealed.auth.persentation.signupScreen
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -12,14 +14,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.accompanist.insets.imePadding
-import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.priyanshumaurya8868.unrevealed.auth.persentation.core.*
-import com.priyanshumaurya8868.unrevealed.auth.persentation.core.composable.AppTitle
-import com.priyanshumaurya8868.unrevealed.auth.persentation.core.composable.FlatBottomBar
-import com.priyanshumaurya8868.unrevealed.auth.persentation.core.composable.ResponsiveButton
+import com.priyanshumaurya8868.unrevealed.auth.persentation.core.composable.*
 import com.priyanshumaurya8868.unrevealed.auth.persentation.signupScreen.components.SignupEvents
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localSpacing
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localVerticalSpacing
+import com.priyanshumaurya8868.unrevealed.utils.Screen
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -41,10 +41,15 @@ fun SignupScreen(
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is AuthViewModel.UiEvent.ShowSnackbar -> {
+                    Log.d("omegaRanger",event.message)
                     scaffoldState.snackbarHostState.showSnackbar(event.message)
                 }
                 is AuthViewModel.UiEvent.Proceed -> {
-                    //TODO navigate
+                    navController.navigate(
+                        Screen.GenderSelectionScreen.route +
+                                "?${Constants.ARG_USERNAME}=${viewModel.username.value.text}" +
+                                "&${Constants.ARG_PASSWORD}=${viewModel.password.value.text}"
+                    )
                 }
             }
 
@@ -101,6 +106,7 @@ fun SignupScreen(
                 )
                 Spacer(modifier = Modifier.height(localVerticalSpacing))
                 ResponsiveButton(
+                    content = { Text(text = "Signup", modifier = Modifier.padding(8.dp)) },
                     modifier = Modifier.fillMaxWidth(),
                     onClick = { viewModel.onEvent(SignupEvents.Proceed) },
                     enabled = username.text.isNotBlank() && password.text.isNotBlank() && confirmPassword.text.isNotBlank()
