@@ -9,3 +9,4 @@ data class AvatarsDto(
     val message: String,
     val status: String
 )
+

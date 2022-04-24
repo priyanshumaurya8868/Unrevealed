@@ -21,7 +21,7 @@ import com.priyanshumaurya8868.unrevealed.auth.persentation.core.composable.*
 import com.priyanshumaurya8868.unrevealed.auth.persentation.loginScreen.components.LoginEvents
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localSpacing
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localVerticalSpacing
-import com.priyanshumaurya8868.unrevealed.utils.Screen
+import com.priyanshumaurya8868.unrevealed.core.Screen
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -39,11 +39,11 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                     scaffoldState.snackbarHostState.showSnackbar(events.message)
                 }
                 is AuthViewModel.UiEvent.Proceed -> {
-                    navController.navigate(
-                        Screen.GenderSelectionScreen.route +
-                                "?${Constants.ARG_USERNAME}= ${viewModel.username.value.text}" +
-                                "&${Constants.ARG_PASSWORD}= ${viewModel.password.value.text}"
-                    )
+                    navController.navigate(Screen.HomeScreen.route) {
+                        popUpTo(Screen.WelcomeScreen.route) {
+                            inclusive = true
+                        }
+                    }
                 }
 
             }

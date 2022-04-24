@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.components.composables.ChoiceMakingButtons
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localSpacing
-import com.priyanshumaurya8868.unrevealed.utils.Screen
+import com.priyanshumaurya8868.unrevealed.core.Screen
 
 @Composable
 fun AuthOptionsScreen(navController: NavController) {

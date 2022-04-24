@@ -2,7 +2,7 @@ package com.priyanshumaurya8868.unrevealed.auth.domain.usecase
 
 import android.util.Log
 import com.priyanshumaurya8868.unrevealed.auth.domain.repo.UnrevealedAuthRepo
-import com.priyanshumaurya8868.unrevealed.utils.Resource
+import com.priyanshumaurya8868.unrevealed.core.Resource
 import kotlinx.coroutines.flow.Flow
 
 class GetAvatars(private val repo: UnrevealedAuthRepo) {

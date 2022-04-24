@@ -19,7 +19,7 @@ import com.priyanshumaurya8868.unrevealed.auth.persentation.core.Constants
 import com.priyanshumaurya8868.unrevealed.auth.persentation.genderSelection.components.composable.GenderToggle
 import com.priyanshumaurya8868.unrevealed.auth.persentation.genderSelection.components.composable.TitleWithDescription
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.fontSize_1
-import com.priyanshumaurya8868.unrevealed.utils.Screen
+import com.priyanshumaurya8868.unrevealed.core.Screen
 
 
 val titleSize: TextUnit = 24.sp

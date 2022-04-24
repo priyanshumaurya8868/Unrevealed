@@ -22,7 +22,7 @@ import com.priyanshumaurya8868.unrevealed.auth.persentation.core.composable.Resp
 import com.priyanshumaurya8868.unrevealed.auth.persentation.genderSelection.titleSize
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localSpacing
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localVerticalSpacing
-import com.priyanshumaurya8868.unrevealed.utils.Screen
+import com.priyanshumaurya8868.unrevealed.core.Screen
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -54,8 +54,11 @@ fun AvatarSelection(
                         scaffoldState.snackbarHostState.showSnackbar(event.message)
                 }
                 is AvatarSelectionViewModel.UiEvent.Proceed -> {
-                    viewModel.onEvenChange(AvatarSelectionEvents.RegisterUser).join()
-                    navController.navigate(Screen.HomeScreen.route)
+                    navController.navigate(Screen.HomeScreen.route) {
+                        popUpTo(Screen.WelcomeScreen.route) {
+                            inclusive = true
+                        }
+                    }
                 }
 
             }

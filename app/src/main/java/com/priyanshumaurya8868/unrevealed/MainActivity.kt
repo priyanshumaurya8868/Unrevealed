@@ -1,8 +1,10 @@
 package com.priyanshumaurya8868.unrevealed
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
@@ -24,27 +26,27 @@ import com.priyanshumaurya8868.unrevealed.auth.persentation.genderSelection.Gend
 import com.priyanshumaurya8868.unrevealed.auth.persentation.loginScreen.LoginScreen
 import com.priyanshumaurya8868.unrevealed.auth.persentation.signupScreen.SignupScreen
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.WelcomeScreen
-import com.priyanshumaurya8868.unrevealed.secret_sharing.persentation.home.HomeScreen
-import com.priyanshumaurya8868.unrevealed.secret_sharing.persentation.viewPost.ViewPost
+import com.priyanshumaurya8868.unrevealed.core.Screen
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.HomeScreen
 import com.priyanshumaurya8868.unrevealed.ui.theme.UnrevealedTheme
-import com.priyanshumaurya8868.unrevealed.utils.Screen
 import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalFoundationApi
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    val viewModel: MainViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("omegaRanger", "your  token : ${viewModel.token}")
+        val  shouldAuth  = viewModel.shouldAuthenticated
 
+        Log.d("omegaRanger", "should  auth : $shouldAuth")
         setContent {
+
             ProvideWindowInsets {
                 UnrevealedTheme {
-                    //changing color of notification bar
-                    val systemUiController = rememberSystemUiController()
-                    systemUiController.setSystemBarsColor(
-                        color = MaterialTheme.colors.primary
-                    )
-
                     // A surface container using the 'background' color from the theme
                     Surface(
                         modifier = Modifier.fillMaxSize(),
@@ -53,7 +55,8 @@ class MainActivity : ComponentActivity() {
                         val navController = rememberNavController()
                         NavHost(
                             navController = navController,
-                            startDestination = Screen.WelcomeScreen.route
+                            startDestination =
+                            if (shouldAuth)Screen.WelcomeScreen.route else Screen.HomeScreen.route
                         ) {
 
                             composable(Screen.WelcomeScreen.route) {
@@ -120,17 +123,42 @@ class MainActivity : ComponentActivity() {
 
                             composable(Screen.HomeScreen.route) {
                                 HomeScreen(navController = navController)
+                                //changing color of notification bar
+                                rememberSystemUiController().setSystemBarsColor(
+                                    color = MaterialTheme.colors.background
+                                )
                             }
-                            composable(Screen.ViewPostScreen.route) {
-                                ViewPost(navController = navController)
-                            }
+//                            composable(
+//                                Screen.ViewPostScreen.route + "?${ARG_SECRET_ID}={${ARG_SECRET_ID}}",
+//                                arguments = listOf(
+//                                    navArgument(
+//                                        name = ARG_SECRET_ID
+//                                    ) {
+//                                        type = NavType.StringType
+//                                        defaultValue = ""
+//                                    },
+//
+//                                    )
+//                            ) {
+//                                ViewSecretScreen(navController = navController)
+//
+//                                rememberSystemUiController().apply {
+//                                    setStatusBarColor(
+//                                        color = MaterialTheme.colors.surface
+//                                    )
+//                                    setNavigationBarColor(
+//                                        color = MaterialTheme.colors.background
+//                                    )
+//                                }
+//                            }
+//                            composable(Screen.ComposePostScreen.route) {
+//                                ComposePostScreen(navController = navController)
+//                                rememberSystemUiController().setSystemBarsColor(MaterialTheme.colors.background)
+//                            }
                         }
                     }
                 }
             }
         }
-
     }
 }
-
-//MaterialTheme.colors.background

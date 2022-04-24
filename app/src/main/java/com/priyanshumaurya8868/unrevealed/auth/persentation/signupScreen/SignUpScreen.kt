@@ -19,7 +19,7 @@ import com.priyanshumaurya8868.unrevealed.auth.persentation.core.composable.*
 import com.priyanshumaurya8868.unrevealed.auth.persentation.signupScreen.components.SignupEvents
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localSpacing
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localVerticalSpacing
-import com.priyanshumaurya8868.unrevealed.utils.Screen
+import com.priyanshumaurya8868.unrevealed.core.Screen
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable

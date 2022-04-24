@@ -6,7 +6,8 @@ import com.priyanshumaurya8868.unrevealed.auth.domain.model.AuthResponse
 import com.priyanshumaurya8868.unrevealed.auth.domain.model.LoginData
 import com.priyanshumaurya8868.unrevealed.auth.domain.model.SignupData
 import com.priyanshumaurya8868.unrevealed.auth.domain.repo.UnrevealedAuthRepo
-import com.priyanshumaurya8868.unrevealed.utils.Resource
+import com.priyanshumaurya8868.unrevealed.core.HttpRoutes
+import com.priyanshumaurya8868.unrevealed.core.Resource
 import io.ktor.client.features.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -76,7 +77,6 @@ class UnrevealedAuthRepoImpl(
     }
 
     override fun getAvatars(gender: String): Flow<Resource<List<String>>> {
-
         Log.d("omegaRanger", "reached 3 e1")
        return flow {
 
@@ -86,7 +86,7 @@ class UnrevealedAuthRepoImpl(
             try {
                 Log.d("omegaRanger", "reached 2 r")
                 val response = service.getAvatars(gender)
-                emit(Resource.Success(data = response.avatarList))
+                emit(Resource.Success(data = response.avatarList.map { HttpRoutes.BASE_URL+it }))
             } catch (e: RedirectResponseException) {
                 // 3xx res
                 e.printStackTrace()

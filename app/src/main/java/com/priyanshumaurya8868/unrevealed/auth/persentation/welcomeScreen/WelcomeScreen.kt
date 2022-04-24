@@ -1,6 +1,5 @@
 package com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -27,7 +26,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.priyanshumaurya8868.unrevealed.R
 import com.priyanshumaurya8868.unrevealed.auth.persentation.core.composable.AppTitle
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.components.composables.BottomEndButton
-import com.priyanshumaurya8868.unrevealed.utils.Screen
+import com.priyanshumaurya8868.unrevealed.core.Screen
 
 val localSpacing = 20.dp
 val localVerticalSpacing = 10.dp

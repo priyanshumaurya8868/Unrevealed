@@ -3,7 +3,7 @@ package com.priyanshumaurya8868.unrevealed.auth.domain.repo
 import com.priyanshumaurya8868.unrevealed.auth.domain.model.AuthResponse
 import com.priyanshumaurya8868.unrevealed.auth.domain.model.LoginData
 import com.priyanshumaurya8868.unrevealed.auth.domain.model.SignupData
-import com.priyanshumaurya8868.unrevealed.utils.Resource
+import com.priyanshumaurya8868.unrevealed.core.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface UnrevealedAuthRepo {

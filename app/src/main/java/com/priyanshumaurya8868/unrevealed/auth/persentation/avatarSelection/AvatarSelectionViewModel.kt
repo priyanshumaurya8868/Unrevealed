@@ -10,7 +10,8 @@ import com.priyanshumaurya8868.unrevealed.auth.persentation.avatarSelection.comp
 import com.priyanshumaurya8868.unrevealed.auth.persentation.core.Constants
 import com.priyanshumaurya8868.unrevealed.auth.persentation.core.Constants.VAL_FEMALE
 import com.priyanshumaurya8868.unrevealed.auth.persentation.core.Constants.VAL_MALE
-import com.priyanshumaurya8868.unrevealed.utils.Resource
+import com.priyanshumaurya8868.unrevealed.core.PreferencesKeys
+import com.priyanshumaurya8868.unrevealed.core.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -93,10 +94,11 @@ class AvatarSelectionViewModel @Inject constructor(
 
                         is Resource.Success -> {
                             _state.value = _state.value.copy(isLoading = false)
-                            result.data?.token?.let { token ->
-                                useCases.saveToken(token)
+                            result.data?.let { user->
+                                useCases.savePreferences(PreferencesKeys.MY_PROFILE_ID,user.user_id)
+                                useCases.savePreferences(PreferencesKeys.JWT_TOKEN,user.token)
                                 _eventFlow.emit(UiEvent.Proceed)
-                            }
+                            }?:
                             _eventFlow.emit(
                                 UiEvent.ShowSnackbar(
                                     result.message ?: "Something went wrong couldn't received token"

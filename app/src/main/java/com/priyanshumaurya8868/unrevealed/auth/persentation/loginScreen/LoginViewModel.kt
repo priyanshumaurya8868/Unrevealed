@@ -6,7 +6,8 @@ import com.priyanshumaurya8868.unrevealed.auth.domain.usecase.AuthUseCases
 import com.priyanshumaurya8868.unrevealed.auth.persentation.core.AuthViewModel
 import com.priyanshumaurya8868.unrevealed.auth.persentation.core.TextFieldState
 import com.priyanshumaurya8868.unrevealed.auth.persentation.loginScreen.components.LoginEvents
-import com.priyanshumaurya8868.unrevealed.utils.Resource
+import com.priyanshumaurya8868.unrevealed.core.PreferencesKeys
+import com.priyanshumaurya8868.unrevealed.core.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -30,8 +31,9 @@ class LoginViewModel @Inject constructor(private val useCases: AuthUseCases) : A
                      .onEach { result->
                          when(result){
                              is Resource.Success ->{
-                                 result.data?.token?.let { token->
-                                     useCases.saveToken(token)
+                                 result.data?.let { user->
+                                     useCases.savePreferences(PreferencesKeys.MY_PROFILE_ID,user.user_id)
+                                     useCases.savePreferences(PreferencesKeys.JWT_TOKEN,user.token)
                                      _eventFlow.emit(UiEvent.Proceed)
                                  }
                                  _eventFlow.emit(UiEvent.ShowSnackbar(
