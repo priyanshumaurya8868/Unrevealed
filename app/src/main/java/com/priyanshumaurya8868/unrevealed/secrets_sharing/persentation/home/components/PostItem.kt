@@ -24,20 +24,17 @@ import com.priyanshumaurya8868.unrevealed.auth.persentation.avatarSelection.comp
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localSpacing
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localVerticalSpacing
 import com.priyanshumaurya8868.unrevealed.core.covertTimeToText
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.FeedSecret
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.UserProfile
 
 @Composable
 fun PostItem(
     modifier: Modifier,
-    author: UserProfile,
-    timeString: String,
-    content: String,
-    comments_count: Int,
-    view_count: Int,
     backgroundColor: Color = MaterialTheme.colors.surface,
     cardElevation: Dp = 1.dp,
     maxLines: Int = 3,
-    shape: Shape = RoundedCornerShape(20.dp)
+    shape: Shape = RoundedCornerShape(20.dp),
+    item: FeedSecret
 ) {
 
     Card(
@@ -58,9 +55,9 @@ fun PostItem(
             ) {
                 AuthorProfiler(
                     Modifier.fillMaxWidth(),
-                    pfpPainter = rememberImagePainter(author.avatar),
-                    username = author.username,
-                    timeString = timeString.covertTimeToText() ?: ""
+                    pfpPainter = rememberImagePainter(item.author.avatar),
+                    username = item.author.username,
+                    timeString = item.timestamp.covertTimeToText() ?: ""
                 )
 
 //                Icon(
@@ -71,7 +68,7 @@ fun PostItem(
             }
 
             Text(
-                text = content,
+                text = item.content,
                 modifier = Modifier
                     .padding(vertical = 25.dp)
                     .fillMaxWidth(),
@@ -84,9 +81,9 @@ fun PostItem(
                 Modifier.fillMaxWidth(),
                 backgroundColor = MaterialTheme.colors.background.copy(alpha = .2f),
                 onBackgroundColor = MaterialTheme.colors.onSurface,
-                tag = "Relationship",
-                view_count = view_count,
-                comments_count = comments_count
+                tag = item.tag,
+                view_count = item.views_count,
+                comments_count = item.comments_count
             )
 
         }

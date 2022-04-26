@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
@@ -19,14 +20,16 @@ import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.priyanshumaurya8868.unrevealed.auth.persentation.authOptionsScreen.AuthOptionsScreen
 import com.priyanshumaurya8868.unrevealed.auth.persentation.avatarSelection.AvatarSelection
-import com.priyanshumaurya8868.unrevealed.auth.persentation.core.Constants.ARG_GENDER
-import com.priyanshumaurya8868.unrevealed.auth.persentation.core.Constants.ARG_PASSWORD
-import com.priyanshumaurya8868.unrevealed.auth.persentation.core.Constants.ARG_USERNAME
 import com.priyanshumaurya8868.unrevealed.auth.persentation.genderSelection.GenderSelectionScreen
 import com.priyanshumaurya8868.unrevealed.auth.persentation.loginScreen.LoginScreen
 import com.priyanshumaurya8868.unrevealed.auth.persentation.signupScreen.SignupScreen
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.WelcomeScreen
+import com.priyanshumaurya8868.unrevealed.core.Constants.ARG_FEED_ITEM
+import com.priyanshumaurya8868.unrevealed.core.Constants.ARG_GENDER
+import com.priyanshumaurya8868.unrevealed.core.Constants.ARG_PASSWORD
+import com.priyanshumaurya8868.unrevealed.core.Constants.ARG_USERNAME
 import com.priyanshumaurya8868.unrevealed.core.Screen
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.composePost.TagSelectionBottomSheet
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.HomeScreen
 import com.priyanshumaurya8868.unrevealed.ui.theme.UnrevealedTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,10 +40,11 @@ class MainActivity : ComponentActivity() {
 
     val viewModel: MainViewModel by viewModels()
 
+    @OptIn(ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("omegaRanger", "your  token : ${viewModel.token}")
-        val  shouldAuth  = viewModel.shouldAuthenticated
+        val shouldAuth = viewModel.shouldAuthenticated
 
         Log.d("omegaRanger", "should  auth : $shouldAuth")
         setContent {
@@ -55,8 +59,9 @@ class MainActivity : ComponentActivity() {
                         val navController = rememberNavController()
                         NavHost(
                             navController = navController,
+                            //TODO : splash screen with animation (quote  fetch from local db )
                             startDestination =
-                            if (shouldAuth)Screen.WelcomeScreen.route else Screen.HomeScreen.route
+                            if (shouldAuth) Screen.WelcomeScreen.route else Screen.HomeScreen.route
                         ) {
 
                             composable(Screen.WelcomeScreen.route) {
@@ -120,7 +125,6 @@ class MainActivity : ComponentActivity() {
                             ) {
                                 AvatarSelection(navController = navController)
                             }
-
                             composable(Screen.HomeScreen.route) {
                                 HomeScreen(navController = navController)
                                 //changing color of notification bar
@@ -128,33 +132,10 @@ class MainActivity : ComponentActivity() {
                                     color = MaterialTheme.colors.background
                                 )
                             }
-//                            composable(
-//                                Screen.ViewPostScreen.route + "?${ARG_SECRET_ID}={${ARG_SECRET_ID}}",
-//                                arguments = listOf(
-//                                    navArgument(
-//                                        name = ARG_SECRET_ID
-//                                    ) {
-//                                        type = NavType.StringType
-//                                        defaultValue = ""
-//                                    },
+                            composable(Screen.ComposePostScreen.route) {
+                                TagSelectionBottomSheet(navController)
+                            }
 //
-//                                    )
-//                            ) {
-//                                ViewSecretScreen(navController = navController)
-//
-//                                rememberSystemUiController().apply {
-//                                    setStatusBarColor(
-//                                        color = MaterialTheme.colors.surface
-//                                    )
-//                                    setNavigationBarColor(
-//                                        color = MaterialTheme.colors.background
-//                                    )
-//                                }
-//                            }
-//                            composable(Screen.ComposePostScreen.route) {
-//                                ComposePostScreen(navController = navController)
-//                                rememberSystemUiController().setSystemBarsColor(MaterialTheme.colors.background)
-//                            }
                         }
                     }
                 }

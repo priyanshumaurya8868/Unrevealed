@@ -17,7 +17,7 @@ import coil.compose.rememberImagePainter
 import com.priyanshumaurya8868.unrevealed.auth.persentation.avatarSelection.components.AvatarGridView
 import com.priyanshumaurya8868.unrevealed.auth.persentation.avatarSelection.components.AvatarSelectionEvents
 import com.priyanshumaurya8868.unrevealed.auth.persentation.avatarSelection.components.Profiler
-import com.priyanshumaurya8868.unrevealed.auth.persentation.core.Constants.VAL_MALE
+import com.priyanshumaurya8868.unrevealed.auth.persentation.core.AuthConstants.VAL_MALE
 import com.priyanshumaurya8868.unrevealed.auth.persentation.core.composable.ResponsiveButton
 import com.priyanshumaurya8868.unrevealed.auth.persentation.genderSelection.titleSize
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localSpacing

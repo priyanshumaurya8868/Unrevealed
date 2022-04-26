@@ -1,5 +1,8 @@
 package com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class FeedSecret(
     val _id: String="",
     val author: UserProfile = UserProfile(),

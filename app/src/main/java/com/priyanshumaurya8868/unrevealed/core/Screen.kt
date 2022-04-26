@@ -7,7 +7,6 @@ sealed class Screen(val route: String) {
     object SignupScreen : Screen("signup_screen")
     object GenderSelectionScreen : Screen("gen_selection")
     object AvatarSelectionScreen : Screen("avatar_selection")
-    object HomeScreen :Screen("/")
-    object ViewPostScreen :Screen("view_post")
-    object ComposePostScreen:Screen("/compose_post_screen")
+    object HomeScreen :Screen("home_screen")
+    object ComposePostScreen:Screen("compose_post_screen")
 }

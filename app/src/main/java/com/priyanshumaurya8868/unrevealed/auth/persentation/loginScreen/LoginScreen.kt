@@ -16,7 +16,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.accompanist.insets.imePadding
 import com.priyanshumaurya8868.unrevealed.auth.persentation.core.AuthViewModel
-import com.priyanshumaurya8868.unrevealed.auth.persentation.core.Constants
 import com.priyanshumaurya8868.unrevealed.auth.persentation.core.composable.*
 import com.priyanshumaurya8868.unrevealed.auth.persentation.loginScreen.components.LoginEvents
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localSpacing

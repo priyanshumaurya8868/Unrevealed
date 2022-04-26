@@ -1,5 +1,6 @@
 package com.priyanshumaurya8868.unrevealed.secrets_sharing.utils
 
+import android.util.Log
 import com.priyanshumaurya8868.unrevealed.core.Resource
 import kotlinx.coroutines.flow.Flow
 
@@ -29,6 +30,9 @@ class DefaultPaginator<Key, Item>(
                     onSuccess(it.data ?: emptyList(), currentKey)
                 }
                 is Resource.Error -> {
+
+                    Log.d("omega/defPag", "Error data  ${it.data?:"Kuch nhi ha"}")
+
                     onError(it.data, it.message ?: "Something went wrong!")
                 }
             }

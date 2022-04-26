@@ -1,13 +1,12 @@
 package com.priyanshumaurya8868.unrevealed.auth.persentation.genderSelection
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.priyanshumaurya8868.unrevealed.auth.persentation.core.Constants.ARG_USERNAME
-import com.priyanshumaurya8868.unrevealed.auth.persentation.core.Constants.VAL_FEMALE
-import com.priyanshumaurya8868.unrevealed.auth.persentation.core.Constants.VAL_MALE
+import com.priyanshumaurya8868.unrevealed.core.Constants.ARG_USERNAME
+import com.priyanshumaurya8868.unrevealed.auth.persentation.core.AuthConstants.VAL_FEMALE
+import com.priyanshumaurya8868.unrevealed.auth.persentation.core.AuthConstants.VAL_MALE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

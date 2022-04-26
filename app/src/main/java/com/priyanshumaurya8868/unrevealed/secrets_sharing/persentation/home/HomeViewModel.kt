@@ -3,6 +3,7 @@ package com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.priyanshumaurya8868.unrevealed.core.Resource
@@ -20,7 +21,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel
-@Inject constructor(private val useCases: SecretSharingUseCases) : ViewModel() {
+@Inject constructor(
+    private val useCases: SecretSharingUseCases,
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
 
     var state by mutableStateOf(HomeScreenState())
 
@@ -42,12 +46,17 @@ class HomeViewModel
             data?.let {
                 state = state.copy(
                     items = it,
-                    isLoading = false
+                    isLoading = false,
+                    endReached = true //TODO: reverse it while refreshing
                 )
             }
             _eventFlow.emit(UiEvent.ShowSnackbar(msg))
         },
         onSuccess = { items, newKey ->
+            val shouldClearOldList = state.page ==0 && newKey == 1
+            if(shouldClearOldList)
+                state = state.copy(items = emptyList())
+
             state = state.copy(
                 items = state.items + items,
                 page = newKey,

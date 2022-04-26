@@ -20,7 +20,7 @@ import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.fontSi
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localSpacing
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localVerticalSpacing
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.UserProfile
-import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.core.Constants.menuList
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.core.SecretSharingConstants.menuList
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.toolbarHeight
 
 

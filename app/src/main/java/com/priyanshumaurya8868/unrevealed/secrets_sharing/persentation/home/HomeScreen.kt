@@ -22,7 +22,6 @@ import androidx.navigation.NavController
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localSpacing
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localVerticalSpacing
 import com.priyanshumaurya8868.unrevealed.core.Screen
-import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.core.Constants.ARG_SECRET_ID
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.Drawer
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.PostItem
 import kotlinx.coroutines.flow.collectLatest
@@ -89,7 +88,7 @@ fun HomeScreen(
                 modifier = Modifier
                     .offset { IntOffset(x = 0, y = -fabOffsetHeightPx.roundToInt()) },
                 onClick = {
-//                    navController.navigate(Screen.ComposePostScreen.route)
+                    navController.navigate(Screen.ComposePostScreen.route)
                 }
             ) {
                 Icon(Icons.Filled.Add, "Post new Secrets", tint = Color.White)
@@ -122,11 +121,7 @@ fun HomeScreen(
                             .clickable {
 //                                navController.navigate(Screen.ViewPostScreen.route + "?$ARG_SECRET_ID=${item._id}")
                                        },
-                        content = item.content,
-                        view_count = item.views_count,
-                        comments_count = item.comments_count,
-                        author = item.author,
-                        timeString = item.timestamp
+                       item = item
                     )
 
                 }

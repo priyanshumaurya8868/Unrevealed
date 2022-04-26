@@ -1,6 +1,7 @@
 package com.priyanshumaurya8868.unrevealed.secrets_sharing.data.mappers
 
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.local.entity.SecretEntity
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.remote.dto.DetailedSecretDto
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.remote.dto.FeedDto
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.remote.dto.SecretDto
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.Feed
@@ -40,4 +41,14 @@ fun FeedDto.toFeed()= Feed(
     secrets = secrets.map { it.toFeedSecret() },
     total_count = total_count,
     present_count = present_count
+)
+
+fun DetailedSecretDto.toFeedSecret()=FeedSecret(
+    _id = _id,
+    content= content,
+    author = author.toUserProfile(),
+    timestamp = timestamp,
+    comments_count = comments_count,
+    views_count = views_count,
+    tag = tag
 )

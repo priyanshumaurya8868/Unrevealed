@@ -1,6 +1,7 @@
 package com.priyanshumaurya8868.unrevealed.auth.domain.model
 
 import com.priyanshumaurya8868.unrevealed.auth.data.remote.dto.SignupDto
+import com.priyanshumaurya8868.unrevealed.core.HttpRoutes
 
 
 data class SignupData(
@@ -9,5 +10,5 @@ data class SignupData(
     val password: String,
     val username: String
 ) {
-    fun toSignupDto() = SignupDto(avatar, gender, password, username)
+    fun toSignupDto() = SignupDto(avatar.substringAfterLast(HttpRoutes.BASE_URL), gender, password, username)
 }

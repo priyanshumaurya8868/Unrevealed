@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
@@ -22,7 +22,6 @@ import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localS
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localVerticalSpacing
 
 @Composable
-@OptIn(ExperimentalFoundationApi::class)
 @ExperimentalFoundationApi
 fun AvatarGridView(
     modifier: Modifier = Modifier,
@@ -36,10 +35,10 @@ fun AvatarGridView(
 
     LazyVerticalGrid(
         modifier = modifier,
-        cells = GridCells.Fixed(3),
         verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalArrangement = Arrangement.spacedBy(20.dp),
-        contentPadding = PaddingValues(horizontal = localSpacing, vertical = localVerticalSpacing)
+        contentPadding = PaddingValues(horizontal = localSpacing, vertical = localVerticalSpacing),
+        columns =  GridCells.Fixed(3)
     ) {
         items(list.size) {
             Card(

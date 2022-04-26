@@ -64,6 +64,7 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"// icons
 
+
     // Compose dependencies
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1"
 
@@ -99,11 +100,16 @@ dependencies {
     // Kotlin Extensions and Coroutines support for Room
     implementation "androidx.room:room-ktx:2.4.2"
 
+    //ui controller
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.17.0"
     implementation "com.google.accompanist:accompanist-insets:0.22.0-rc"
-
+    //swipe up to refresh
+    implementation "com.google.accompanist:accompanist-swiperefresh:0.24.2-alpha"
     // dataStore
     implementation "androidx.datastore:datastore-preferences:1.0.0"
     // coil
     implementation "io.coil-kt:coil-compose:1.4.0"
+
+    //flowRow
+    implementation "com.google.accompanist:accompanist-flowlayout:0.24.7-alpha"
 }

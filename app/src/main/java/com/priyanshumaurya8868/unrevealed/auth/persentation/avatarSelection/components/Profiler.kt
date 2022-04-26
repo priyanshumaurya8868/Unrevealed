@@ -20,7 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.priyanshumaurya8868.unrevealed.auth.persentation.core.Constants.VAL_MALE
+import com.priyanshumaurya8868.unrevealed.auth.persentation.core.AuthConstants.VAL_MALE
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.fontSize_1
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localSpacing
 
