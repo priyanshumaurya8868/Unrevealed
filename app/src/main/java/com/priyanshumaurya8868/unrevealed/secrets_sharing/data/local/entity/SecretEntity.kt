@@ -2,8 +2,6 @@ package com.priyanshumaurya8868.unrevealed.secrets_sharing.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
-import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.local.converters.UserProfileTypeConverter
 import kotlinx.serialization.Serializable
 
 @Entity

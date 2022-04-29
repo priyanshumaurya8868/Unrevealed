@@ -1,12 +1,11 @@
 package com.priyanshumaurya8868.unrevealed.secrets_sharing.utils
 
-import android.util.Log
 import com.priyanshumaurya8868.unrevealed.core.Resource
 import kotlinx.coroutines.flow.Flow
 
 class DefaultPaginator<Key, Item>(
     private val initialKey: Key,
-    private inline val onLoadUpdated: (Boolean) -> Unit,
+    private inline val onLoadUpdated: (Boolean, List<Item>?) -> Unit,
     private inline val onRequest: suspend (nextKey: Key) -> Flow<Resource<List<Item>>>,
     private inline val getNextKey: suspend (List<Item>) -> Key,
     private inline val onError: suspend (data: List<Item>?, message: String) -> Unit,
@@ -23,21 +22,18 @@ class DefaultPaginator<Key, Item>(
         result.collect {
             when (it) {
                 is Resource.Loading -> {
-                    onLoadUpdated(true)
+                    onLoadUpdated(true, it.data)
                 }
                 is Resource.Success -> {
-                    currentKey = getNextKey(it.data ?: emptyList())
                     onSuccess(it.data ?: emptyList(), currentKey)
+                    currentKey = getNextKey(it.data ?: emptyList())
                 }
                 is Resource.Error -> {
-
-                    Log.d("omega/defPag", "Error data  ${it.data?:"Kuch nhi ha"}")
-
                     onError(it.data, it.message ?: "Something went wrong!")
                 }
             }
         }
-        onLoadUpdated(false)
+        onLoadUpdated(false, null)
         isMakingRequest = false
     }
 

@@ -23,7 +23,7 @@ fun GenderToggle(
     leftComposable: @Composable (() -> Unit),
     rightComposable: @Composable (() -> Unit),
     isMaleCallback: (Boolean) -> Unit,
-    isMale : Boolean = false
+    isMale: Boolean = false
 ) {
     var _isMale by remember {
         mutableStateOf(isMale)

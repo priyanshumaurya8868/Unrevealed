@@ -28,13 +28,13 @@ import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localS
 fun Profiler(
     modifier: Modifier = Modifier,
     image: Painter,
-    imageSize : Dp= 100.dp,
+    imageSize: Dp = 100.dp,
     username: String,
     gender: String
 ) {
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
 
-       CircleImage(image = image, size = imageSize)
+        CircleImage(image = image, size = imageSize)
         Spacer(modifier = Modifier.height(localSpacing))
         Text(text = username, fontSize = fontSize_1)
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -56,7 +56,7 @@ fun Profiler(
 
 
 @Composable
-fun CircleImage(image :Painter, size : Dp){
+fun CircleImage(image: Painter, size: Dp) {
     Card(
         backgroundColor =
 //            if (selectedIndex == it)

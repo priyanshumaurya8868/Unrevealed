@@ -1,19 +1,12 @@
 package com.priyanshumaurya8868.unrevealed.auth.persentation.signupScreen
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.viewModelScope
 import com.priyanshumaurya8868.unrevealed.auth.persentation.core.AuthViewModel
 import com.priyanshumaurya8868.unrevealed.auth.persentation.core.TextFieldState
 import com.priyanshumaurya8868.unrevealed.auth.persentation.signupScreen.components.SignupEvents
-import com.priyanshumaurya8868.unrevealed.core.PreferencesKeys
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

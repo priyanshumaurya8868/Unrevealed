@@ -7,7 +7,7 @@ object HttpRoutes {
     const val AVATARS = "$BASE_URL/avatars"
     const val USERS = "$BASE_URL/users"
     const val SECRETS = "$BASE_URL/secrets"
-    const val COMMENTS = "$SECRETS/comments"
+    const val COMMENTS = "$BASE_URL/comments"
     const val COMMENTS_BY_SECRET_ID = "$COMMENTS/secrets"
     const val REPLIES = "$COMMENTS/replies"
     const val LIKE_COMMENT = "$COMMENTS/like"

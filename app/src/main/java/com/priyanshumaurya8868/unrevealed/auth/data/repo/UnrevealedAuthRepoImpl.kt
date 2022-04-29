@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.flow
 class UnrevealedAuthRepoImpl(
     private val service: AuthService
 ) : UnrevealedAuthRepo {
-    override fun signup(data: SignupData): Flow<Resource<AuthResponse>> = flow{
+    override fun signup(data: SignupData): Flow<Resource<AuthResponse>> = flow {
 
         emit(Resource.Loading())
 
@@ -26,15 +26,23 @@ class UnrevealedAuthRepoImpl(
         } catch (e: RedirectResponseException) {
             // 3xx res
             e.printStackTrace()
-            emit(Resource.Error(extractErrorMsg(e.message) ?: "Something went wrong please try again!"))
+            emit(
+                Resource.Error(
+                    extractErrorMsg(e.message) ?: "Something went wrong please try again!"
+                )
+            )
         } catch (e: ClientRequestException) {
             //4xx res
             e.printStackTrace()
-            emit(Resource.Error(message = extractErrorMsg(e.message)?:"bad request!"))
+            emit(Resource.Error(message = extractErrorMsg(e.message) ?: "bad request!"))
         } catch (e: ServerResponseException) {
             //5xx
             e.printStackTrace()
-            emit(Resource.Error(extractErrorMsg(e.message) ?: "Server is drown please try again later"))
+            emit(
+                Resource.Error(
+                    extractErrorMsg(e.message) ?: "Server is drown please try again later"
+                )
+            )
         } catch (e: Exception) {
             e.printStackTrace()
             emit(
@@ -56,15 +64,23 @@ class UnrevealedAuthRepoImpl(
         } catch (e: RedirectResponseException) {
             // 3xx res
             e.printStackTrace()
-            emit(Resource.Error(extractErrorMsg(e.message) ?: "Something went wrong please try again!"))
+            emit(
+                Resource.Error(
+                    extractErrorMsg(e.message) ?: "Something went wrong please try again!"
+                )
+            )
         } catch (e: ClientRequestException) {
             //4xx res
             e.printStackTrace()
-            emit(Resource.Error(message = extractErrorMsg(e.message)?:"bad request!"))
+            emit(Resource.Error(message = extractErrorMsg(e.message) ?: "bad request!"))
         } catch (e: ServerResponseException) {
             //5xx
             e.printStackTrace()
-            emit(Resource.Error(extractErrorMsg(e.message) ?: "Server is drown please try again later"))
+            emit(
+                Resource.Error(
+                    extractErrorMsg(e.message) ?: "Server is drown please try again later"
+                )
+            )
         } catch (e: Exception) {
             e.printStackTrace()
             emit(
@@ -78,7 +94,7 @@ class UnrevealedAuthRepoImpl(
 
     override fun getAvatars(gender: String): Flow<Resource<List<String>>> {
         Log.d("omegaRanger", "reached 3 e1")
-       return flow {
+        return flow {
 
             Log.d("omegaRanger", "reached 3 e")
             emit(Resource.Loading())
@@ -86,19 +102,27 @@ class UnrevealedAuthRepoImpl(
             try {
                 Log.d("omegaRanger", "reached 2 r")
                 val response = service.getAvatars(gender)
-                emit(Resource.Success(data = response.avatarList.map { HttpRoutes.BASE_URL+it }))
+                emit(Resource.Success(data = response.avatarList.map { HttpRoutes.BASE_URL + it }))
             } catch (e: RedirectResponseException) {
                 // 3xx res
                 e.printStackTrace()
-                emit(Resource.Error(extractErrorMsg(e.message) ?: "Something went wrong please try again!"))
+                emit(
+                    Resource.Error(
+                        extractErrorMsg(e.message) ?: "Something went wrong please try again!"
+                    )
+                )
             } catch (e: ClientRequestException) {
                 //4xx res
                 e.printStackTrace()
-                emit(Resource.Error(message = extractErrorMsg(e.message)?:"bad request!"))
+                emit(Resource.Error(message = extractErrorMsg(e.message) ?: "bad request!"))
             } catch (e: ServerResponseException) {
                 //5xx
                 e.printStackTrace()
-                emit(Resource.Error(extractErrorMsg(e.message) ?: "Server is drown please try again later"))
+                emit(
+                    Resource.Error(
+                        extractErrorMsg(e.message) ?: "Server is drown please try again later"
+                    )
+                )
             } catch (e: Exception) {
                 e.printStackTrace()
                 emit(
@@ -111,10 +135,10 @@ class UnrevealedAuthRepoImpl(
 
         }
     }
-    
-    private fun extractErrorMsg(msg : String?) =
-        msg?.let{ msg.substringAfter("\"message\":\"").substringBefore("\"}\"") }?:null
-        
-    
+
+    private fun extractErrorMsg(msg: String?) =
+        msg?.let { msg.substringAfter("\"message\":\"").substringBefore("\"}\"") } ?: null
+
+
 }
 

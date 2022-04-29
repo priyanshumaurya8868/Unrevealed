@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.priyanshumaurya8868.unrevealed.auth.domain.usecase.AuthUseCases
 import com.priyanshumaurya8868.unrevealed.auth.persentation.avatarSelection.components.AvatarSelectionEvents
-import com.priyanshumaurya8868.unrevealed.auth.persentation.core.AuthConstants
 import com.priyanshumaurya8868.unrevealed.auth.persentation.core.AuthConstants.VAL_FEMALE
 import com.priyanshumaurya8868.unrevealed.auth.persentation.core.AuthConstants.VAL_MALE
 import com.priyanshumaurya8868.unrevealed.core.Constants
@@ -95,12 +94,14 @@ class AvatarSelectionViewModel @Inject constructor(
 
                         is Resource.Success -> {
                             _state.value = _state.value.copy(isLoading = false)
-                            result.data?.let { user->
-                                useCases.savePreferences(PreferencesKeys.MY_PROFILE_ID,user.user_id)
-                                useCases.savePreferences(PreferencesKeys.JWT_TOKEN,user.token)
+                            result.data?.let { user ->
+                                useCases.savePreferences(
+                                    PreferencesKeys.MY_PROFILE_ID,
+                                    user.user_id
+                                )
+                                useCases.savePreferences(PreferencesKeys.JWT_TOKEN, user.token)
                                 _eventFlow.emit(UiEvent.Proceed)
-                            }?:
-                            _eventFlow.emit(
+                            } ?: _eventFlow.emit(
                                 UiEvent.ShowSnackbar(
                                     result.message ?: "Something went wrong couldn't received token"
                                 )

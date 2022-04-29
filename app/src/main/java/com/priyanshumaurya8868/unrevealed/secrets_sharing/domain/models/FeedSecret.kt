@@ -4,11 +4,11 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class FeedSecret(
-    val _id: String="",
+    val _id: String = "",
     val author: UserProfile = UserProfile(),
-    val comments_count: Int =0,
+    val comments_count: Int = 0,
     val content: String = "",
-    val tag: String="",
-    val timestamp: String="",
-    val views_count: Int=0
+    val tag: String = "",
+    val timestamp: String = "",
+    val views_count: Int = 0
 )

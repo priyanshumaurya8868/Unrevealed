@@ -16,12 +16,13 @@ interface Repository {
 
     fun revealSecret(secret: PostSecretRequestBody): Flow<Resource<FeedSecret>>
 
-    fun postComment(comment: PostCommetRequestBody): Flow<Resource<Comment>>
+    fun getComments(secretId: String, page: Int, pageSize: Int): Flow<Resource<List<Comment>>>
 
-    fun replyComment(parentCommentId : String) : Flow<Resource<Reply>>
+    fun postComment(comment: PostCommentRequestBody): Flow<Resource<Comment>>
 
-    fun likeComment(id: String): Flow<Resource<Comment>>
+    fun replyComment(parentCommentId: String): Flow<Resource<Reply>>
 
-    fun dislikeComment(id: String): Flow<Resource<Comment>>
+    fun reactOnComment(id: String, shouldLike: Boolean): Flow<Resource<Comment>>
+
 
 }

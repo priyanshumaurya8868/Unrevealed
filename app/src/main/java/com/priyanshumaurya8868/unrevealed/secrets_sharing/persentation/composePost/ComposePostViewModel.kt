@@ -34,21 +34,21 @@ class ComposePostViewModel @Inject constructor(private val useCases: SecretShari
                 state = state.copy(content = event.newText)
             }
             is ComposePostScreenEvents.Reveal -> {
-               useCases.revealSecret(PostSecretRequestBody(content = state.content, state.tag))
-                   .onEach { res->
-                       state = when (res ) {
-                           is Resource.Success -> {
-                               eventFlow.emit(UiEvents.Proceed(res.data!!))
-                               state.copy(isUploading = false)
-                           }
-                           is Resource.Loading -> {
-                               state.copy(isUploading = true)
-                           }
-                           is Resource.Error -> {
-                               eventFlow.emit(UiEvents.ShowSnackBar(res.message!!))
-                               state.copy(isUploading = false)
-                           }
-                       }
+                useCases.revealSecret(PostSecretRequestBody(content = state.content, state.tag))
+                    .onEach { res ->
+                        state = when (res) {
+                            is Resource.Success -> {
+                                eventFlow.emit(UiEvents.Proceed(res.data!!))
+                                state.copy(isUploading = false)
+                            }
+                            is Resource.Loading -> {
+                                state.copy(isUploading = true)
+                            }
+                            is Resource.Error -> {
+                                eventFlow.emit(UiEvents.ShowSnackBar(res.message!!))
+                                state.copy(isUploading = false)
+                            }
+                        }
                     }.launchIn(this)
             }
             is ComposePostScreenEvents.ChooseTag -> {
@@ -59,7 +59,7 @@ class ComposePostViewModel @Inject constructor(private val useCases: SecretShari
 
     sealed class UiEvents {
         data class ShowSnackBar(val msg: String) : UiEvents()
-        data class Proceed(val feedItem : FeedSecret) : UiEvents()
+        data class Proceed(val feedItem: FeedSecret) : UiEvents()
     }
 
 

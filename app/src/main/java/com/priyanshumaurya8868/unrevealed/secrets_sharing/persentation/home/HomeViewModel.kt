@@ -32,9 +32,15 @@ class HomeViewModel
     val eventFlow = _eventFlow.asSharedFlow()
 
     private val paginator = DefaultPaginator(
-        initialKey = state.page,
-        onLoadUpdated = {
-            state = state.copy(isLoading = it)
+        initialKey = 0,
+        onLoadUpdated = { isLoading, data ->
+            if (state.isRefreshing) {
+                state = state.copy(isRefreshing = isLoading)
+                data?.let { state = state.copy(items = it) }
+            } else {
+                state = state.copy(isPaginating = isLoading)
+                data?.let { state = state.copy(items = it) }
+            }
         },
         onRequest = { nextPage ->
             useCases.getFeeds(nextPage, 20)
@@ -46,23 +52,22 @@ class HomeViewModel
             data?.let {
                 state = state.copy(
                     items = it,
-                    isLoading = false,
                     endReached = true //TODO: reverse it while refreshing
                 )
             }
             _eventFlow.emit(UiEvent.ShowSnackbar(msg))
         },
-        onSuccess = { items, newKey ->
-            val shouldClearOldList = state.page ==0 && newKey == 1
-            if(shouldClearOldList)
+        onSuccess = { items, currentUsedKey ->
+            val shouldClearOldList = currentUsedKey == 0
+            if (shouldClearOldList)
                 state = state.copy(items = emptyList())
 
             state = state.copy(
                 items = state.items + items,
-                page = newKey,
+                page = currentUsedKey,
                 endReached = items.isEmpty(),
-                isLoading = false
-            )
+
+                )
         }
     )
 
@@ -71,28 +76,32 @@ class HomeViewModel
         loadNextItems()
     }
 
-    fun loadNextItems() {
+
+    fun loadNextItems() =
         viewModelScope.launch {
             paginator.loadNextItem()
         }
-    }
+
 
     private fun getMyProfile() = viewModelScope.launch {
         useCases.getMyProfile().onEach { res ->
             when (res) {
-                is Resource.Loading -> {
-                    state = state.copy(isLoading = true)
-                }
+                is Resource.Loading -> {}
                 is Resource.Success -> {
                     state = state.copy(myProfile = res.data ?: UserProfile())
-                    state = state.copy(isLoading = false)
                 }
                 is Resource.Error -> {
                     _eventFlow.emit(UiEvent.ShowSnackbar(res.message ?: "Something Went wrong!"))
-                    state = state.copy(isLoading = false)
                 }
             }
         }.launchIn(this)
+    }
+
+    fun refreshFeeds() {
+        state = state.copy(isRefreshing = true)
+        paginator.reset()
+        loadNextItems()
+
     }
 
     sealed class UiEvent {

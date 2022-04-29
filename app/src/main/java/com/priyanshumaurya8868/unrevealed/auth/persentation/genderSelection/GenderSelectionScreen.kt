@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.priyanshumaurya8868.unrevealed.auth.persentation.core.AuthConstants
 import com.priyanshumaurya8868.unrevealed.auth.persentation.genderSelection.components.composable.GenderToggle
 import com.priyanshumaurya8868.unrevealed.auth.persentation.genderSelection.components.composable.TitleWithDescription
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.fontSize_1

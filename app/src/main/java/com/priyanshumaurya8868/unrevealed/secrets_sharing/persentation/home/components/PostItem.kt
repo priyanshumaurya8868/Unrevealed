@@ -25,7 +25,6 @@ import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localS
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localVerticalSpacing
 import com.priyanshumaurya8868.unrevealed.core.covertTimeToText
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.FeedSecret
-import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.UserProfile
 
 @Composable
 fun PostItem(
@@ -34,7 +33,8 @@ fun PostItem(
     cardElevation: Dp = 1.dp,
     maxLines: Int = 3,
     shape: Shape = RoundedCornerShape(20.dp),
-    item: FeedSecret
+    item: FeedSecret,
+    shouldShowCommentCount: Boolean = true
 ) {
 
     Card(
@@ -83,7 +83,8 @@ fun PostItem(
                 onBackgroundColor = MaterialTheme.colors.onSurface,
                 tag = item.tag,
                 view_count = item.views_count,
-                comments_count = item.comments_count
+                comments_count = item.comments_count,
+                shouldShowCommentCount = shouldShowCommentCount
             )
 
         }
@@ -138,7 +139,8 @@ fun PostMetaData(
     view_count: Int,
     comments_count: Int,
     backgroundColor: Color = MaterialTheme.colors.background,
-    onBackgroundColor: Color = MaterialTheme.colors.onSurface
+    onBackgroundColor: Color = MaterialTheme.colors.onSurface,
+    shouldShowCommentCount: Boolean
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -169,13 +171,15 @@ fun PostMetaData(
                 backgroundColor = backgroundColor,
                 onBackgroundColor = onBackgroundColor
             )
-            Spacer(modifier = Modifier.width(localSpacing))
-            IconWithText(
-                painterResource(id = R.drawable.ic_comments),
-                comments_count,
-                backgroundColor = backgroundColor,
-                onBackgroundColor = onBackgroundColor
-            )
+            if (shouldShowCommentCount) {
+                Spacer(modifier = Modifier.width(localSpacing))
+                IconWithText(
+                    painterResource(id = R.drawable.ic_comments),
+                    comments_count,
+                    backgroundColor = backgroundColor,
+                    onBackgroundColor = onBackgroundColor
+                )
+            }
         }
 
     }

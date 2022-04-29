@@ -1,6 +1,9 @@
 package com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.components.composables
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
@@ -22,8 +25,8 @@ fun BottomEndButton(
     btnColor: Color = MaterialTheme.colors.secondary,
     textColor: Color = Color.White,
     fontSize: TextUnit = 20.sp,
-    text : String,
-    endIcon : ImageVector,
+    text: String,
+    endIcon: ImageVector,
 ) {
     Card(
         modifier = modifier,

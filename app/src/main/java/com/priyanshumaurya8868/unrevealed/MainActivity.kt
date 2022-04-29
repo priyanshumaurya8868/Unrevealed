@@ -24,13 +24,14 @@ import com.priyanshumaurya8868.unrevealed.auth.persentation.genderSelection.Gend
 import com.priyanshumaurya8868.unrevealed.auth.persentation.loginScreen.LoginScreen
 import com.priyanshumaurya8868.unrevealed.auth.persentation.signupScreen.SignupScreen
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.WelcomeScreen
-import com.priyanshumaurya8868.unrevealed.core.Constants.ARG_FEED_ITEM
 import com.priyanshumaurya8868.unrevealed.core.Constants.ARG_GENDER
 import com.priyanshumaurya8868.unrevealed.core.Constants.ARG_PASSWORD
+import com.priyanshumaurya8868.unrevealed.core.Constants.ARG_SECRET_ID
 import com.priyanshumaurya8868.unrevealed.core.Constants.ARG_USERNAME
 import com.priyanshumaurya8868.unrevealed.core.Screen
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.composePost.TagSelectionBottomSheet
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.HomeScreen
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.viewSecret.ViewSecretScreen
 import com.priyanshumaurya8868.unrevealed.ui.theme.UnrevealedTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -134,6 +135,18 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(Screen.ComposePostScreen.route) {
                                 TagSelectionBottomSheet(navController)
+                            }
+
+                            composable(
+                                Screen.ViewSecretScreen.route + "?$ARG_SECRET_ID={$ARG_SECRET_ID}",
+                                arguments = listOf(
+                                    navArgument(ARG_SECRET_ID) {
+                                        type = NavType.StringType
+                                        defaultValue = ""
+                                    }
+                                )
+                            ) {
+                                ViewSecretScreen(navController = navController)
                             }
 //
                         }

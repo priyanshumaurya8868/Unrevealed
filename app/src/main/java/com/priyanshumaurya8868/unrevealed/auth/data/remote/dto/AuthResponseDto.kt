@@ -12,10 +12,10 @@ data class AuthResponseDto(
     val token: String,
     val user_id: String,
     val username: String
-){
+) {
     fun toAuthResponse() = AuthResponse(
-       avatar =  avatar,
-        gender =gender,
+        avatar = avatar,
+        gender = gender,
         token = token,
         user_id = user_id,
         username = username

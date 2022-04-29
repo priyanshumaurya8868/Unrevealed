@@ -8,6 +8,6 @@ import kotlinx.coroutines.flow.Flow
 
 class Login(private val repo: UnrevealedAuthRepo) {
 
-    operator fun invoke(username: String, password: String) : Flow<Resource<AuthResponse>>
-        = repo.login(LoginData(username = username, password = password))
+    operator fun invoke(username: String, password: String): Flow<Resource<AuthResponse>> =
+        repo.login(LoginData(username = username, password = password))
 }

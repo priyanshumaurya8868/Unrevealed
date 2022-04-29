@@ -3,6 +3,7 @@ package com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.usecases
 data class SecretSharingUseCases(
     val getFeeds: GetFeeds,
     val openCompleteSecret: OpenCompleteSecret,
+    val getComments: GetComments,
     val postComment: PostComment,
     val likeComment: LikeComment,
     val dislikeComment: DislikeComment,

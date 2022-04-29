@@ -19,8 +19,11 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localSpacing
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localVerticalSpacing
+import com.priyanshumaurya8868.unrevealed.core.Constants.ARG_SECRET_ID
 import com.priyanshumaurya8868.unrevealed.core.Screen
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.Drawer
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.PostItem
@@ -39,6 +42,7 @@ fun HomeScreen(
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
     val state = viewModel.state
+    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = state.isRefreshing)
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
@@ -76,90 +80,92 @@ fun HomeScreen(
     }
 
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        scaffoldState = scaffoldState,
-        drawerContent = { Drawer(user = state.myProfile) },
-        drawerBackgroundColor = Color.Transparent,
-        drawerElevation = 0.dp,
-        drawerScrimColor = Color.Transparent,
-        floatingActionButton = {
-            FloatingActionButton(
-                modifier = Modifier
-                    .offset { IntOffset(x = 0, y = -fabOffsetHeightPx.roundToInt()) },
-                onClick = {
-                    navController.navigate(Screen.ComposePostScreen.route)
+    SwipeRefresh(state = swipeRefreshState, onRefresh = { viewModel.refreshFeeds() }) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            scaffoldState = scaffoldState,
+            drawerContent = { Drawer(user = state.myProfile) },
+            drawerBackgroundColor = Color.Transparent,
+            drawerElevation = 0.dp,
+            drawerScrimColor = Color.Transparent,
+            floatingActionButton = {
+                FloatingActionButton(
+                    modifier = Modifier
+                        .offset { IntOffset(x = 0, y = -fabOffsetHeightPx.roundToInt()) },
+                    onClick = {
+                        navController.navigate(Screen.ComposePostScreen.route)
+                    }
+                ) {
+                    Icon(Icons.Filled.Add, "Post new Secrets", tint = Color.White)
                 }
-            ) {
-                Icon(Icons.Filled.Add, "Post new Secrets", tint = Color.White)
             }
-        }
-    ) {
-
-
-        Box(
-            Modifier
-                .fillMaxSize()
-                .nestedScroll(nestedScrollConnection)
         ) {
 
-            LazyColumn(
-                contentPadding = PaddingValues(vertical = toolbarHeight),
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                items(state.items.size) { index ->
-                    val item = state.items[index]
-                    if (index >= state.items.size - 1 && !state.endReached && !state.isLoading) {
-                        viewModel.loadNextItems()
-                    }
-                    Spacer(modifier = Modifier.height(localVerticalSpacing))
-                    PostItem(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = localSpacing)
-                            .clickable {
-//                                navController.navigate(Screen.ViewPostScreen.route + "?$ARG_SECRET_ID=${item._id}")
-                                       },
-                       item = item
-                    )
 
-                }
-                item {
-                    if (state.isLoading) {
-                        Row(
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .nestedScroll(nestedScrollConnection)
+            ) {
+
+                LazyColumn(
+                    contentPadding = PaddingValues(vertical = toolbarHeight),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    items(state.items.size) { index ->
+                        val item = state.items[index]
+                        if (index >= state.items.size - 1 && !state.endReached && !state.isPaginating) {
+                            viewModel.loadNextItems()
+                        }
+                        Spacer(modifier = Modifier.height(localVerticalSpacing))
+                        PostItem(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(8.dp),
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            CircularProgressIndicator()
+                                .padding(horizontal = localSpacing)
+                                .clickable {
+                                    navController.navigate(Screen.ViewSecretScreen.route + "?$ARG_SECRET_ID=${item._id}")
+                                },
+                            item = item
+                        )
+
+                    }
+                    item {
+                        if (state.isPaginating) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
                         }
                     }
                 }
+
+                TopAppBar(
+                    modifier = Modifier
+                        .height(toolbarHeight)
+                        .offset { IntOffset(x = 0, y = toolbarOffsetHeightPx.roundToInt()) },
+                    backgroundColor = MaterialTheme.colors.background,
+                    contentColor = MaterialTheme.colors.onSurface,
+                    title = { Text("Secrets") },
+                    navigationIcon = {
+                        Icon(
+                            Icons.Default.Menu,
+                            null,
+                            modifier = Modifier
+                                .padding(horizontal = localSpacing)
+                                .clickable {
+                                    scope.launch { scaffoldState.drawerState.open() }
+                                }
+                        )
+                    },
+                )
+
+
             }
-
-            TopAppBar(
-                modifier = Modifier
-                    .height(toolbarHeight)
-                    .offset { IntOffset(x = 0, y = toolbarOffsetHeightPx.roundToInt()) },
-                backgroundColor = MaterialTheme.colors.background,
-                contentColor = MaterialTheme.colors.onSurface,
-                title = { Text("Secrets") },
-                navigationIcon = {
-                    Icon(
-                        Icons.Default.Menu,
-                        null,
-                        modifier = Modifier
-                            .padding(horizontal = localSpacing)
-                            .clickable {
-                                scope.launch { scaffoldState.drawerState.open() }
-                            }
-                    )
-                },
-            )
-
-
         }
     }
 }

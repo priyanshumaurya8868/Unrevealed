@@ -11,7 +11,8 @@ import io.ktor.http.*
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 
-class UnrevealedApiImpl(private val httpClient: HttpClient, dataStore: DataStore<Preferences>) :  UnrevealedApi {
+class UnrevealedApiImpl(private val httpClient: HttpClient, dataStore: DataStore<Preferences>) :
+    UnrevealedApi {
     private var token: String =
         "bearer " + runBlocking { dataStore.data.first()[PreferencesKeys.JWT_TOKEN] }
 
@@ -44,8 +45,19 @@ class UnrevealedApiImpl(private val httpClient: HttpClient, dataStore: DataStore
         }
     }
 
-    override suspend fun getSecretById(id: String): DetailedSecretDto =
-        httpClient.get<DetailedSecretDto> {
+    override suspend fun getComments(secretId: String, limit: Int, skip: Int): CommentsDto {
+        return httpClient.get<CommentsDto> {
+            url(HttpRoutes.COMMENTS_BY_SECRET_ID + "/$secretId")
+            parameter("skip", skip)
+            parameter("limit", limit)
+            headers {
+                append(HttpHeaders.Authorization, token)
+            }
+        }
+    }
+
+    override suspend fun getSecretById(id: String): SecretDto =
+        httpClient.get {
             url("${HttpRoutes.SECRETS}/$id")
             headers {
                 append(HttpHeaders.Authorization, token)
@@ -62,7 +74,7 @@ class UnrevealedApiImpl(private val httpClient: HttpClient, dataStore: DataStore
             }
         }
 
-    override suspend fun updateSecret(secretBody: PostSecretRequestBodyDto): DetailedSecretDto =
+    override suspend fun updateSecret(secretBody: PostSecretRequestBodyDto): SecretDto =
         httpClient.put {
             url(HttpRoutes.SECRETS)
             contentType(ContentType.Application.Json)
@@ -93,16 +105,16 @@ class UnrevealedApiImpl(private val httpClient: HttpClient, dataStore: DataStore
         }
 
     override suspend fun likeComment(id: String): CommentDto =
-        httpClient.post {
-            url(HttpRoutes.LIKE_COMMENT)
+        httpClient.put {
+            url(HttpRoutes.LIKE_COMMENT + "/$id")
             headers {
                 append(HttpHeaders.Authorization, token)
             }
         }
 
     override suspend fun dislikeComment(id: String): CommentDto =
-        httpClient.post {
-            url(HttpRoutes.DISLIKE_COMMENT)
+        httpClient.delete {
+            url(HttpRoutes.DISLIKE_COMMENT + "/$id")
             headers {
                 append(HttpHeaders.Authorization, token)
             }

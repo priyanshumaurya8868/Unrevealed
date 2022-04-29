@@ -38,7 +38,7 @@ fun AvatarGridView(
         verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalArrangement = Arrangement.spacedBy(20.dp),
         contentPadding = PaddingValues(horizontal = localSpacing, vertical = localVerticalSpacing),
-        columns =  GridCells.Fixed(3)
+        columns = GridCells.Fixed(3)
     ) {
         items(list.size) {
             Card(

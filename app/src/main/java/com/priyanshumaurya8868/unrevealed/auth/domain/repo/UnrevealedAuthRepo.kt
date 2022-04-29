@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface UnrevealedAuthRepo {
 
-     fun signup(data: SignupData): Flow<Resource<AuthResponse>>
-     fun login(data: LoginData): Flow<Resource<AuthResponse>>
-     fun getAvatars(gender: String): Flow<Resource<List<String>>>
+    fun signup(data: SignupData): Flow<Resource<AuthResponse>>
+    fun login(data: LoginData): Flow<Resource<AuthResponse>>
+    fun getAvatars(gender: String): Flow<Resource<List<String>>>
 }

@@ -56,7 +56,7 @@ fun UsernameTextField(
     value: String,
     onValueChange: (String) -> Unit,
     isError: Boolean,
-    hint : String = "Username"
+    hint: String = "Username"
 ) {
     TextField(
         modifier = modifier,

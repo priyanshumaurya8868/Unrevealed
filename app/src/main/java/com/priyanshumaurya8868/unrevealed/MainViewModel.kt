@@ -16,13 +16,14 @@ import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val dataStore: DataStore<Preferences>) :ViewModel(){
+class MainViewModel @Inject constructor(private val dataStore: DataStore<Preferences>) :
+    ViewModel() {
 
-     var shouldAuthenticated by mutableStateOf(false)
-     var token : String? = null
+    var shouldAuthenticated by mutableStateOf(false)
+    var token: String? = null
 
     init {
-        runBlocking{ token = dataStore.data.first()[PreferencesKeys.JWT_TOKEN] }
+        runBlocking { token = dataStore.data.first()[PreferencesKeys.JWT_TOKEN] }
 
         Log.d("omegaRanger", "your  token vm: $token")
         shouldAuthenticated = token.isNullOrBlank()
@@ -33,7 +34,5 @@ class MainViewModel @Inject constructor(private val dataStore: DataStore<Prefere
     }
 
 
-
-
-    }
+}
 

@@ -7,6 +7,6 @@ import kotlinx.coroutines.flow.Flow
 
 class DislikeComment(private val repo: Repository) {
     operator fun invoke(comment_id: String): Flow<Resource<Comment>> {
-        return repo.dislikeComment(id = comment_id)
+        return repo.reactOnComment(id = comment_id, false)
     }
 }

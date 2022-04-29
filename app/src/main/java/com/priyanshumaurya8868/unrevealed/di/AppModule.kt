@@ -90,22 +90,27 @@ object AppModule {
             getAvatars = GetAvatars(repo),
             savePreferences = SavePreferences(dataStore)
         )
+
     @Provides
     @Singleton
-    fun provideUnrevealedApi(client: HttpClient, dataStore: DataStore<Preferences>) :UnrevealedApi =
-        UnrevealedApiImpl(client,dataStore)
+    fun provideUnrevealedApi(client: HttpClient, dataStore: DataStore<Preferences>): UnrevealedApi =
+        UnrevealedApiImpl(client, dataStore)
 
 
     @Provides
     @Singleton
     fun providesDb(app: Application): SecretsDatabase {
-        return Room.databaseBuilder(app,SecretsDatabase::class.java,"secrets.db")
+        return Room.databaseBuilder(app, SecretsDatabase::class.java, "secrets.db")
             .addTypeConverter(UserProfileTypeConverter()).build()
     }
 
     @Provides
     @Singleton
-    fun provideSecretSharingRepository(api : UnrevealedApi, db : SecretsDatabase, dataStore: DataStore<Preferences>) : Repository =
+    fun provideSecretSharingRepository(
+        api: UnrevealedApi,
+        db: SecretsDatabase,
+        dataStore: DataStore<Preferences>
+    ): Repository =
         RepositoryImpl(api = api, db = db, dataStore = dataStore)
 
 
@@ -120,7 +125,8 @@ object AppModule {
             dislikeComment = DislikeComment(repo),
             getMyProfile = GetMyProfile(repo),
             getUserById = GetUserById(repo),
-            revealSecret = RevealSecret(repo)
+            revealSecret = RevealSecret(repo),
+            getComments = GetComments(repo)
         )
 }
 

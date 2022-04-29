@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.Flow
 
 class GetAvatars(private val repo: UnrevealedAuthRepo) {
 
-    operator fun invoke(gender: String) : Flow<Resource<List<String>>> {
-        Log.d("omegaRanger/usGetAv","our gender list of $gender")
+    operator fun invoke(gender: String): Flow<Resource<List<String>>> {
+        Log.d("omegaRanger/usGetAv", "our gender list of $gender")
         return repo.getAvatars(gender)
     }
 }

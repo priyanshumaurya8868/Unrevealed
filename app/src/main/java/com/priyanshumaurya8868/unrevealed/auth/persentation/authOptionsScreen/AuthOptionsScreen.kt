@@ -15,7 +15,12 @@ import com.priyanshumaurya8868.unrevealed.core.Screen
 @Composable
 fun AuthOptionsScreen(navController: NavController) {
 
-    Box(modifier = Modifier.fillMaxSize().padding(localSpacing), contentAlignment = Alignment.Center) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(localSpacing),
+        contentAlignment = Alignment.Center
+    ) {
         ChoiceMakingButtons(
             modifier = Modifier.fillMaxWidth(),
             btnText1 = "Create New Account",

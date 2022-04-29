@@ -8,5 +8,5 @@ data class UserProfileDto(
     val _id: String,
     val avatar: String,
     val username: String,
-    val gender : String
+    val gender: String
 )

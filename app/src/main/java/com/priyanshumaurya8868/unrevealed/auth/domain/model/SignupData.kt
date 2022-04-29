@@ -10,5 +10,6 @@ data class SignupData(
     val password: String,
     val username: String
 ) {
-    fun toSignupDto() = SignupDto(avatar.substringAfterLast(HttpRoutes.BASE_URL), gender, password, username)
+    fun toSignupDto() =
+        SignupDto(avatar.substringAfterLast(HttpRoutes.BASE_URL), gender, password, username)
 }

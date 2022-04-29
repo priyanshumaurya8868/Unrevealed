@@ -1,6 +1,5 @@
 package com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.composePost
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -21,7 +20,7 @@ import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.composePo
 
 @Composable
 @ExperimentalMaterialApi
-fun TagSelectionBottomSheet (
+fun TagSelectionBottomSheet(
     navController: NavController,
     viewModel: ComposePostViewModel = hiltViewModel()
 ) {
@@ -34,18 +33,28 @@ fun TagSelectionBottomSheet (
         sheetState = modalBottomSheetState,
         sheetContent = {
 
-            Column(modifier= Modifier
-                .fillMaxSize()
-                .padding(localSpacing)){
-                Text(text = "Select a Topic", style = MaterialTheme.typography.h5,modifier= Modifier.padding(10.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(localSpacing)
+            ) {
+                Text(
+                    text = "Select a Topic",
+                    style = MaterialTheme.typography.h5,
+                    modifier = Modifier.padding(10.dp)
+                )
                 Spacer(modifier = Modifier.height(localVerticalSpacing))
                 FlowRow(
                     modifier = Modifier.fillMaxSize(),
                     mainAxisSpacing = 10.dp,
                     crossAxisSpacing = 10.dp
                 ) {
-                    viewModel.tagList.forEach {  item ->
-                        Row(modifier = Modifier.clickable { viewModel.onEvent(ComposePostScreenEvents.ChooseTag(item)) }) {
+                    viewModel.tagList.forEach { item ->
+                        Row(modifier = Modifier.clickable {
+                            viewModel.onEvent(
+                                ComposePostScreenEvents.ChooseTag(item)
+                            )
+                        }) {
                             if (state.tag == item) {
                                 TextCard(
                                     text = item,

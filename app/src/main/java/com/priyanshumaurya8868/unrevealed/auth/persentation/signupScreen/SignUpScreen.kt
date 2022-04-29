@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.accompanist.insets.imePadding
-import com.priyanshumaurya8868.unrevealed.auth.persentation.core.*
+import com.priyanshumaurya8868.unrevealed.auth.persentation.core.AuthViewModel
 import com.priyanshumaurya8868.unrevealed.auth.persentation.core.composable.*
 import com.priyanshumaurya8868.unrevealed.auth.persentation.signupScreen.components.SignupEvents
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localSpacing
@@ -42,7 +42,7 @@ fun SignupScreen(
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is AuthViewModel.UiEvent.ShowSnackbar -> {
-                    Log.d("omegaRanger",event.message)
+                    Log.d("omegaRanger", event.message)
                     scaffoldState.snackbarHostState.showSnackbar(event.message)
                 }
                 is AuthViewModel.UiEvent.Proceed -> {
@@ -93,7 +93,7 @@ fun SignupScreen(
                     isError = password.isError,
                     passwordVisible = passwordVisible,
                     togglePassword = { passwordVisible = !it },
-                    hint="Password"
+                    hint = "Password"
                 )
                 Spacer(modifier = Modifier.height(localVerticalSpacing))
                 PasswordTextField(
@@ -114,8 +114,8 @@ fun SignupScreen(
                 )
             }
             FlatBottomBar(thinText = "Already have an account? ", boldText = "Log in.") {
-                navController.navigate(Screen.LoginScreen.route){
-                    popUpTo(Screen.SignupScreen.route){
+                navController.navigate(Screen.LoginScreen.route) {
+                    popUpTo(Screen.SignupScreen.route) {
                         inclusive = true
                     }
                 }

@@ -98,7 +98,7 @@ fun WelcomeScreen(
                     modifier = Modifier.clickable(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }) {
-                       navController.navigate(Screen.AuthOptionsScreen.route)
+                        navController.navigate(Screen.AuthOptionsScreen.route)
                     },
                     text = "Start",
                     endIcon = Icons.Default.ArrowForward,

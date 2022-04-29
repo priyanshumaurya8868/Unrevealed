@@ -30,10 +30,10 @@ private val LightColorPalette = lightColors(
     onBackground = lightOnBg,
     onSurface = lightOnSurface,
 
-)
+    )
 
 @Composable
-fun  UnrevealedTheme(
+fun UnrevealedTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable() () -> Unit
 ) {
@@ -45,7 +45,7 @@ fun  UnrevealedTheme(
 
     MaterialTheme(
         colors = colors,
-        typography =Typography,
+        typography = Typography,
         shapes = Shapes,
         content = content
     )

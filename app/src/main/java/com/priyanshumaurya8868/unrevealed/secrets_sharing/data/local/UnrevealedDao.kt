@@ -14,8 +14,9 @@ interface UnrevealedDao {
     suspend fun insertFeedSecrets(
         secrets: List<SecretEntity>
     )
+
     @Query("SELECT * FROM SecretEntity")
-    suspend fun getFeeds():List<SecretEntity>
+    suspend fun getFeeds(): List<SecretEntity>
 
     @Query("DELETE  FROM secretentity")
     suspend fun clearFeedSecretList()
@@ -24,9 +25,7 @@ interface UnrevealedDao {
     suspend fun insertUserDetail(userProfileEntity: UserProfileEntity)
 
     @Query("SELECT * FROM UserProfileEntity WHERE _id = :userId")
-    suspend fun getUserProfileById(userId: String) : UserProfileEntity?
-
-
+    suspend fun getUserProfileById(userId: String): UserProfileEntity?
 
 
 }

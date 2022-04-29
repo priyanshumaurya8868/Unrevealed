@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localSpacing
-import com.priyanshumaurya8868.unrevealed.core.Constants.ARG_FEED_ITEM
 import com.priyanshumaurya8868.unrevealed.core.Screen
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.composePost.component.ComposePostScreenEvents
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.composePost.component.TextCard
@@ -43,9 +42,9 @@ fun ComposePostScreen(
                 is ComposePostViewModel.UiEvents.ShowSnackBar -> {
                     scaffoldState.snackbarHostState.showSnackbar(event.msg)
                 }
-                is ComposePostViewModel.UiEvents.Proceed->{
+                is ComposePostViewModel.UiEvents.Proceed -> {
                     val feedItemJsonStr = Json.encodeToString(event.feedItem)
-                    navController.navigate(Screen.HomeScreen.route){
+                    navController.navigate(Screen.HomeScreen.route) {
                         popUpTo(Screen.HomeScreen.route) {
                             inclusive = true
                         }
@@ -71,7 +70,10 @@ fun ComposePostScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(vertical = 10.dp)
+                ) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
                         contentDescription = "back button",
@@ -92,7 +94,7 @@ fun ComposePostScreen(
                             fontSize = 20.sp,
                             color = MaterialTheme.colors.primary,
                             modifier = Modifier
-                                .padding(horizontal = 15.dp, vertical = 10.dp)
+                                .padding(horizontal = 15.dp)
                                 .clickable {
                                     viewModel.onEvent(ComposePostScreenEvents.Reveal) //TODO SAVE
                                 }
@@ -109,7 +111,7 @@ fun ComposePostScreen(
                 Spacer(Modifier.width(localSpacing))
                 TextCard(
                     state.tag,
-                    modifier = Modifier.clickable { scope.launch{ modalBottomSheetState.show() } }
+                    modifier = Modifier.clickable { scope.launch { modalBottomSheetState.show() } }
                 )
             }
 
