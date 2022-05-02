@@ -126,7 +126,10 @@ object AppModule {
             getMyProfile = GetMyProfile(repo),
             getUserById = GetUserById(repo),
             revealSecret = RevealSecret(repo),
-            getComments = GetComments(repo)
+            getComments = GetComments(repo),
+            getReplies = GetReplies(repo),
+            reactOnReply = ReactOnReply(repo),
+            replyComment = ReplyComment(repo)
         )
 }
 

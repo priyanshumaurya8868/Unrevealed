@@ -1,7 +1,5 @@
 package com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.viewSecret
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -18,10 +16,7 @@ import androidx.navigation.NavController
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localSpacing
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.FeedSecret
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.PostItem
-import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.viewSecret.components.BottomLabel
-import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.viewSecret.components.CommentItem
-import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.viewSecret.components.CommentTextField
-import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.viewSecret.components.ViewSecretEvents
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.viewSecret.components.*
 
 
 val topheadingSize = 20.sp
@@ -76,9 +71,9 @@ fun ViewSecretScreen(
             Box {
                 LazyColumn(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = localSpacing.times(2)),
+                        .fillMaxSize(),
                     verticalArrangement = Arrangement.Top,
+                    contentPadding = PaddingValues(bottom = 170.dp)
 
                     ) {
                     item {
@@ -101,20 +96,18 @@ fun ViewSecretScreen(
                             highLighted = highLighted
                         )
                     }
-                    items(state.comments.size) { index ->
-                        if (index >= state.comments.size - 1 && !state.endReached && !state.isCommentsLoading) {
+                    items(state.commentsState.size) { index ->
+                        if (index >= state.commentsState.size - 1 && !state.endReached && !state.isCommentsLoading) {
                             viewmodel.onEvent(ViewSecretEvents.LoadNextCommentPage)
                         }
                         CommentItem(
                             dullColor = dullColor,
-                            highLighted = highLighted,
-                            inbtwnColor = inbtwnColor,
-                            comment = state.map.getOrDefault(
-                                state.comments[index]._id,
-                                state.comments[index]
+                            commentState = state.map.getOrDefault(
+                                state.commentsState[index].comment._id,
+                                state.commentsState[index]
                             ),
-                            reactionListener = viewmodel::onEvent,
-                            index
+                            actionListener = viewmodel::onEvent,
+                            commentPosition = index,
                         )
                     }
                     item {
@@ -142,9 +135,10 @@ fun ViewSecretScreen(
                     dullColor = dullColor,
                     highLighted = highLighted,
                     onValueChange = { viewmodel.onEvent(ViewSecretEvents.OnWritingComment(it)) },
-                    isPostingComment = state.isPostingComment,
+                    isPostingComment = state.isAlreadyPostingSomething,
+                    replyMetaData = state.replyMetaData
                 ) {
-                    viewmodel.onEvent(ViewSecretEvents.PostComment)
+                    viewmodel.onEvent(it)
                 }
             }
         }

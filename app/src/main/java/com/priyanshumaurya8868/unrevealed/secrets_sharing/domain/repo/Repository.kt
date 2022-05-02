@@ -20,9 +20,12 @@ interface Repository {
 
     fun postComment(comment: PostCommentRequestBody): Flow<Resource<Comment>>
 
-    fun replyComment(parentCommentId: String): Flow<Resource<Reply>>
+    fun replyComment(body :PostReplyRequestBody): Flow<Resource<Reply>>
 
     fun reactOnComment(id: String, shouldLike: Boolean): Flow<Resource<Comment>>
 
+    fun reactOnReply(id: String, shouldLike: Boolean): Flow<Resource<Reply>>
+
+    fun getReplies(parentCommentId: String): Flow<Resource<List<Reply>>>
 
 }

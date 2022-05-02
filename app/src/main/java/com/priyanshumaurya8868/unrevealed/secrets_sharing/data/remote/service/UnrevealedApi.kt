@@ -14,4 +14,8 @@ interface UnrevealedApi {
     suspend fun replyComment(replyBody: PostReplyRequestBodyDto): ReplyDto
     suspend fun likeComment(id: String): CommentDto
     suspend fun dislikeComment(id: String): CommentDto
+    suspend fun getReplies(parentCommentId: String): GetRepliesDto
+    suspend fun likeReply(id : String) :ReplyDto
+    suspend fun disLikeReply(id :String) : ReplyDto
+
 }

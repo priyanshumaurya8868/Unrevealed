@@ -9,9 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.priyanshumaurya8868.unrevealed.core.Constants.ARG_SECRET_ID
 import com.priyanshumaurya8868.unrevealed.core.Resource
-import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.Comment
-import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.FeedSecret
-import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.PostCommentRequestBody
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.*
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.usecases.SecretSharingUseCases
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.viewSecret.components.ViewSecretEvents
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.utils.DefaultPaginator
@@ -46,9 +44,9 @@ class ViewSecretViewModel @Inject constructor(
             state.commentsPage + 1
         },
         onError = { data, message ->
-            data?.let {
+            data?.let { list ->
                 state = state.copy(
-                    comments = it,
+                    commentsState = list.map { CommentState(comment = it) },
                     endReached = true
                 )
             }
@@ -56,10 +54,10 @@ class ViewSecretViewModel @Inject constructor(
         onSuccess = { items, newKey ->
             val shouldClearOldList = newKey == 0
             if (shouldClearOldList)
-                state = state.copy(comments = emptyList())
+                state = state.copy(commentsState = emptyList())
 
             state = state.copy(
-                comments = state.comments + items,
+                commentsState = state.commentsState + items.map { CommentState(comment = it) },
                 commentsPage = newKey,
                 endReached = items.isEmpty()
             )
@@ -82,7 +80,6 @@ class ViewSecretViewModel @Inject constructor(
                         state.copy(isSecretLoading = true)
                     }
                     is Resource.Success -> {
-                        Log.d("omega/viewSec", "Got succeess ${res.data}")
                         state.copy(isSecretLoading = false, secret = res.data)
                     }
                     is Resource.Error -> {
@@ -111,45 +108,203 @@ class ViewSecretViewModel @Inject constructor(
             is ViewSecretEvents.LikeComment -> {
                 //for giving and instant (virtual) response to a user, because network call gonna take sometime
                 state = state.copy(
-                    map = mutableMapOf<String, Comment>().also {
+                    map = mutableMapOf<String, CommentState>().also {
                         it.putAll(state.map)
-                        it[event.id] = event.comment.copy(
-                            is_liked_by_me = true,
-                            like_count = event.comment.like_count + 1
+                        it[event.id] = CommentState(
+                            comment = event.comment.copy(
+                                is_liked_by_me = true,
+                                like_count = event.comment.like_count + 1
+                            )
                         )
                     }
                 )
-                likeComment(comment_id = event.id, shouldLike = true, position = event.position)
+                reactOnComment(comment_id = event.id, shouldLike = true, position = event.position)
             }
             is ViewSecretEvents.DislikeComment -> {
                 state = state.copy(
-                    map = mutableMapOf<String, Comment>().also {
+                    map = mutableMapOf<String, CommentState>().also {
                         it.putAll(state.map)
-                        it[event.id] = event.comment.copy(
-                            is_liked_by_me = false,
-                            like_count = event.comment.like_count - 1
+                        it[event.id] = CommentState(
+                            comment = event.comment.copy(
+                                is_liked_by_me = false,
+                                like_count = event.comment.like_count - 1
+                            )
                         )
                     }
                 )
-                likeComment(comment_id = event.id, shouldLike = false, position = event.position)
+                reactOnComment(comment_id = event.id, shouldLike = false, position = event.position)
             }
             is ViewSecretEvents.OnWritingComment -> {
                 state = state.copy(textFieldState = event.newText)
             }
-            is ViewSecretEvents.PostComment -> {
-                if (state.isPostingComment) return
-                postComment()
+            is ViewSecretEvents.PostCompliment -> {
+                if (state.isAlreadyPostingSomething || state.textFieldState.isBlank()) return
+                val areWeReplyingToSomeOne = state.replyMetaData != null
+                val parentCommentPos = state.replyMetaData?.commentPosition
+                if (areWeReplyingToSomeOne && parentCommentPos != null)
+                    replyComment(commentPosition = parentCommentPos)
+                else
+                    postComment()
             }
             is ViewSecretEvents.LoadNextCommentPage -> {
                 loadNextItems()
             }
+            is ViewSecretEvents.ChangeVisibilitiesOfReplies -> {
+                val commentPosition = event.commentStateIndex
+                val parentCommentId = event.parentCommentId
+                val commentState = state.commentsState[commentPosition]
+                state = state.copy(commentsState = mutableListOf<CommentState>().also {
+                    it.addAll(state.commentsState)
+                    it[commentPosition] =
+                        it[commentPosition].copy(areRepliesVisible = !it[commentPosition].areRepliesVisible)
+                })
+                val shouldWeMakeNetworkCall =
+                    commentState.replies.isEmpty() && commentState.comment.reply_count > 0
+                if (shouldWeMakeNetworkCall) {
+                    fetchReplies(parentCommentId, commentPosition)
+                }
+            }
+            is ViewSecretEvents.ReplyComment -> {
+                state = state.copy(replyMetaData = event.replyCoordinates)
+            }
+            is ViewSecretEvents.ReactOnReply -> {
+                reactOnReply(
+                    oldReply = event.reply,
+                    commentPosition = event.commentPosition,
+                    replyPosition = event.replyPosition,
+                    shouldLike = event.shouldLike
+                )
+            }
         }
     }
+
+    private fun reactOnReply(
+        oldReply: Reply,
+        commentPosition: Int,
+        replyPosition: Int,
+        shouldLike: Boolean
+    ) = viewModelScope.launch {
+
+        state = state.copy(map2 = mutableMapOf<String, Reply>().also {
+            it[oldReply._id] =
+                if (shouldLike)
+                    oldReply.copy(
+                        like_count = oldReply.like_count + 1,
+                        is_liked_by_me = true
+                    )
+                else
+                    oldReply.copy(
+                        like_count = oldReply.like_count - 1,
+                        is_liked_by_me = false
+                    )
+        })
+
+        useCases.reactOnReply(reply_id = oldReply._id, shouldLike = shouldLike).onEach { res ->
+            when (res) {
+                is Resource.Loading -> Unit
+                is Resource.Success -> {
+                    state =
+                        state.copy(commentsState = mutableListOf<CommentState>().also { mutableCommentState ->
+                            mutableCommentState.addAll(state.commentsState)
+                            mutableCommentState[commentPosition] =
+                                mutableCommentState[commentPosition].copy(replies = mutableListOf<Reply>().also {
+                                    it.addAll(mutableCommentState[commentPosition].replies)
+                                    it[replyPosition] = res.data ?: it[replyPosition]
+                                })
+                        })
+                    state = state.copy(map2 = mutableMapOf<String, Reply>().also {
+                        it.putAll(state.map2)
+                        it.remove(oldReply._id)
+                    })
+                }
+                is Resource.Error -> {
+                    state = state.copy(map2 = mutableMapOf<String, Reply>().also {
+                        it.putAll(state.map2)
+                        it.remove(oldReply._id)
+                    })
+                }
+            }
+        }.launchIn(this)
+
+    }
+
+    private fun replyComment(commentPosition: Int) = viewModelScope.launch {
+        val parentComment = state.commentsState[commentPosition].comment
+        useCases.replyComment(
+            PostReplyRequestBody(
+                reply = if (state.replyMetaData != null) "@${state.replyMetaData!!.usernameToMention} " + state.textFieldState else state.textFieldState,
+                comment_id = parentComment._id,
+                secret_id = parentComment.secret_id,
+                mentionedUser = state.replyMetaData!!.usernameToMention
+            )
+        ).onEach { res ->
+            state = when (res) {
+                is Resource.Loading -> {
+                    state.copy(isAlreadyPostingSomething = true)
+                }
+                is Resource.Success -> {
+                    Log.d("omega/vsVM", "replyComment Success ${res.data}")
+                    state.copy(
+                        commentsState = mutableListOf<CommentState>().also { it ->
+                            it.addAll(state.commentsState)
+                            it[commentPosition] =
+                                it[commentPosition].copy(
+                                    comment = it[commentPosition].comment.copy(reply_count = it[commentPosition].comment.reply_count + 1),
+                                    replies = mutableListOf<Reply>().also { replies ->
+                                        replies.addAll(it[commentPosition].replies)
+                                        replies.add(res.data!!)
+                                    })
+                        },
+                        textFieldState = "",
+                        replyMetaData = null,
+                        isAlreadyPostingSomething = false
+                    )
+                }
+                is Resource.Error -> {
+                    Log.d("omega/vsVM", "replyComment err ${res.message}")
+                    _eventFlow.emit(UiEvent.ShowSnackbar(res.message!!))
+                    state.copy(isAlreadyPostingSomething = false)
+                }
+            }
+        }.launchIn(this)
+
+    }
+
+    private fun fetchReplies(parentCommentId: String, commentPosition: Int) =
+        viewModelScope.launch {
+            useCases.getReplies(parentCommentId).onEach { res ->
+                state = when (res) {
+                    is Resource.Loading -> {
+                        state.copy(commentsState = mutableListOf<CommentState>().also {
+                            it.addAll(state.commentsState)
+                            it[commentPosition] = it[commentPosition].copy(isFetchingReplies = true)
+                        })
+                    }
+                    is Resource.Success -> {
+                        state.copy(commentsState = mutableListOf<CommentState>().also {
+                            it.addAll(state.commentsState)
+                            it[commentPosition] = it[commentPosition].copy(
+                                isFetchingReplies = false,
+                                replies = res.data ?: emptyList()
+                            )
+                        })
+                    }
+                    is Resource.Error -> {
+                        _eventFlow.emit(UiEvent.ShowSnackbar(res.message!!))
+                        state.copy(commentsState = mutableListOf<CommentState>().also {
+                            it.addAll(state.commentsState)
+                            it[commentPosition] =
+                                it[commentPosition].copy(isFetchingReplies = false)
+                        })
+                    }
+                }
+            }.launchIn(this)
+        }
 
     private fun postComment() = viewModelScope.launch {
         useCases.postComment(
             PostCommentRequestBody(
-                comment = state.textFieldState,
+                comment = state.textFieldState.trim(),
                 state.secret_id
             )
         ).onEach { res ->
@@ -157,27 +312,34 @@ class ViewSecretViewModel @Inject constructor(
             state = when (res) {
                 is Resource.Success -> {
                     state.copy(
-                        comments = mutableListOf<Comment>().also {
-                            it.addAll(state.comments)
-                            res.data?.let { myNewComment -> it.add(0, myNewComment) }
+                        commentsState = mutableListOf<CommentState>().also { commentState ->
+                            commentState.addAll(state.commentsState)
+                            res.data?.let { myNewComment ->
+                                commentState.add(
+                                    0,
+                                    CommentState(comment = myNewComment)
+                                )
+                            }
                         },
-                        isPostingComment = false,
+                        isAlreadyPostingSomething = false,
                         textFieldState = ""
                     )
                 }
                 is Resource.Error -> {
                     _eventFlow.emit(UiEvent.ShowSnackbar(res.message!!))
-                    state.copy(isPostingComment = false)
+                    state.copy(isAlreadyPostingSomething = false)
                 }
                 is Resource.Loading -> {
-                    state.copy(isPostingComment = true)
+                    state.copy(isAlreadyPostingSomething = true)
                 }
+
+
             }
 
         }.launchIn(this)
     }
 
-    private fun likeComment(comment_id: String, shouldLike: Boolean, position: Int) =
+    private fun reactOnComment(comment_id: String, shouldLike: Boolean, position: Int) =
         viewModelScope.launch {
             val responseFlow =
                 if (shouldLike) useCases.likeComment(comment_id) else useCases.dislikeComment(
@@ -186,18 +348,18 @@ class ViewSecretViewModel @Inject constructor(
             responseFlow.onEach { res ->
                 when (res) {
                     is Resource.Error -> {
-                        state = state.copy(map = mutableMapOf<String, Comment>().also {
+                        state = state.copy(map = mutableMapOf<String, CommentState>().also {
                             it.putAll(state.map)
                             it.remove(comment_id)
                         })
                     }
                     is Resource.Success -> {
                         state = state.copy(
-                            comments = mutableListOf<Comment>().also {
-                                it.addAll(state.comments)
-                                it[position] = res.data!!
+                            commentsState = mutableListOf<CommentState>().also { commentState ->
+                                commentState.addAll(state.commentsState)
+                                commentState[position] = CommentState(comment = res.data!!)
                             },
-                            map = mutableMapOf<String, Comment>().also {
+                            map = mutableMapOf<String, CommentState>().also {
                                 it.putAll(state.map)
                                 it.remove(comment_id)
                             }
@@ -218,14 +380,30 @@ class ViewSecretViewModel @Inject constructor(
         val isSecretLoading: Boolean = false,
         val secret: FeedSecret? = null,
         val secretErrorMsg: String? = null,
-        val comments: List<Comment> = emptyList(),
+        val commentsState: List<CommentState> = emptyList(),
         val commentsPage: Int = 0,
         val commentErrorMsg: String? = null,
         val isCommentsLoading: Boolean = false,
-        val isPostingComment: Boolean = false,
+        val isAlreadyPostingSomething: Boolean = false,
         val textFieldState: String = "",
+        val replyMetaData: ReplyMetaData? = null,
         val endReached: Boolean = false,
-        val map: Map<String, Comment> = mapOf()
+        val map: Map<String, CommentState> = mapOf(),
+        val map2: Map<String, Reply> = mapOf()
+    )
+
+    data class CommentState(
+        val comment: Comment,
+        val replies: List<Reply> = emptyList(),
+        val isFetchingReplies: Boolean = false,
+        val shouldToggleButtonVisible: Boolean = replies.isNotEmpty() || comment.reply_count > 0,
+        val areRepliesVisible: Boolean = false
+    )
+
+    data class ReplyMetaData(
+        val usernameToMention: String,
+        val parentContentString: String,
+        val commentPosition: Int
     )
 
 

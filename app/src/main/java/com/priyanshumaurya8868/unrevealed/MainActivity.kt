@@ -128,7 +128,6 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(Screen.HomeScreen.route) {
                                 HomeScreen(navController = navController)
-                                //changing color of notification bar
                                 rememberSystemUiController().setSystemBarsColor(
                                     color = MaterialTheme.colors.background
                                 )
@@ -146,6 +145,9 @@ class MainActivity : ComponentActivity() {
                                     }
                                 )
                             ) {
+                                rememberSystemUiController().setSystemBarsColor(
+                                    color = MaterialTheme.colors.surface
+                                )
                                 ViewSecretScreen(navController = navController)
                             }
 //

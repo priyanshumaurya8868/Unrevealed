@@ -2,8 +2,12 @@ package com.priyanshumaurya8868.unrevealed.secrets_sharing.data.mappers
 
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.remote.dto.CommentDto
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.remote.dto.PostCommetRequestBodyDto
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.remote.dto.PostReplyRequestBodyDto
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.remote.dto.ReplyDto
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.Comment
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.PostCommentRequestBody
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.PostReplyRequestBody
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.Reply
 
 fun CommentDto.toComment() = Comment(
     _id = _id,
@@ -19,3 +23,5 @@ fun CommentDto.toComment() = Comment(
 fun PostCommentRequestBody.toPostCommentRequestBodyDto() = PostCommetRequestBodyDto(
     comment = comment, secret_id = secret_id
 )
+
+

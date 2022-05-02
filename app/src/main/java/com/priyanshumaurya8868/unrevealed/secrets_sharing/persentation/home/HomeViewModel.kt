@@ -98,7 +98,7 @@ class HomeViewModel
     }
 
     fun refreshFeeds() {
-        state = state.copy(isRefreshing = true)
+        state = state.copy(isRefreshing = true , endReached = false)
         paginator.reset()
         loadNextItems()
 

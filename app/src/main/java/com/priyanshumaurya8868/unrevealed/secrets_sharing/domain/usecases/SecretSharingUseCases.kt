@@ -9,5 +9,8 @@ data class SecretSharingUseCases(
     val dislikeComment: DislikeComment,
     val getMyProfile: GetMyProfile,
     val getUserById: GetUserById,
-    val revealSecret: RevealSecret
+    val revealSecret: RevealSecret,
+    val getReplies: GetReplies,
+    val replyComment: ReplyComment,
+    val reactOnReply: ReactOnReply
 )

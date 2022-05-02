@@ -1,5 +1,6 @@
 package com.priyanshumaurya8868.unrevealed.secrets_sharing.data.repository
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -259,8 +260,33 @@ class RepositoryImpl(
         }
     }
 
-    override fun replyComment(parentCommentId: String): Flow<Resource<Reply>> {
-        TODO("Not yet implemented")
+    override fun replyComment(body: PostReplyRequestBody) = flow<Resource<Reply>> {
+        emit(Resource.Loading())
+        val response = try {
+            api.replyComment(body.toPostReplyRequestBodyDto())
+        } catch (e: RedirectResponseException) {// 3xx res
+            e.printStackTrace()
+            emit(Resource.Error(message = ERROR_MSG_3xx))
+            null
+        } catch (e: ClientRequestException) {//4xx res
+            e.printStackTrace()
+            emit(Resource.Error(message = ERROR_MSG_4xx))
+            null
+        } catch (e: ServerResponseException) {//5xx
+            e.printStackTrace()
+            emit(Resource.Error(message = ERROR_MSG_5xx))
+            null
+        } catch (e: Exception) {
+            e.printStackTrace()
+            val msg = ERROR_MSG
+            emit(Resource.Error(message = msg))
+            null
+        }
+
+        Log.d("omega/repo" ,"reply dto : $response")
+        response?.let {
+            emit(Resource.Success(it.toReply()))
+        }
     }
 
     override fun reactOnComment(id: String, shouldLike: Boolean) = flow<Resource<Comment>> {
@@ -287,6 +313,62 @@ class RepositoryImpl(
         }
         response?.let {
             emit(Resource.Success(it.toComment()))
+        }
+    }
+
+    override fun reactOnReply(id: String, shouldLike: Boolean) = flow<Resource<Reply>> {
+        emit(Resource.Loading())
+        val response = try {
+            if (shouldLike) api.likeReply(id) else api.disLikeReply(id)
+        } catch (e: RedirectResponseException) {// 3xx res
+            e.printStackTrace()
+            emit(Resource.Error(message = ERROR_MSG_3xx))
+            null
+        } catch (e: ClientRequestException) {//4xx res
+            e.printStackTrace()
+            emit(Resource.Error(message = ERROR_MSG_4xx))
+            null
+        } catch (e: ServerResponseException) {//5xx
+            e.printStackTrace()
+            emit(Resource.Error(message = ERROR_MSG_5xx))
+            null
+        } catch (e: Exception) {
+            e.printStackTrace()
+            val msg = ERROR_MSG
+            emit(Resource.Error(message = msg))
+            null
+        }
+        Log.d("omega/repo", "res $response")
+        response?.let {
+            emit(Resource.Success(it.toReply()))
+        }
+    }
+
+    override fun getReplies(parentCommentId: String) = flow {
+        emit(Resource.Loading())
+        val response = try {
+            api.getReplies(parentCommentId)
+        } catch (e: RedirectResponseException) {// 3xx res
+            e.printStackTrace()
+            emit(Resource.Error(message = ERROR_MSG_3xx))
+            null
+        } catch (e: ClientRequestException) {//4xx res
+            e.printStackTrace()
+            emit(Resource.Error(message = ERROR_MSG_4xx))
+            null
+        } catch (e: ServerResponseException) {//5xx
+            e.printStackTrace()
+            emit(Resource.Error(message = ERROR_MSG_5xx))
+            null
+        } catch (e: Exception) {
+            e.printStackTrace()
+            val msg = ERROR_MSG
+            emit(Resource.Error(message = msg))
+            null
+        }
+
+        response?.let { dto ->
+            emit(Resource.Success(dto.replies.map { it.toReply() }))
         }
     }
 

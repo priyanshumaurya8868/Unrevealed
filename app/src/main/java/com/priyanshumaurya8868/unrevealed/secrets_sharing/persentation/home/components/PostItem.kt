@@ -23,7 +23,7 @@ import com.priyanshumaurya8868.unrevealed.R
 import com.priyanshumaurya8868.unrevealed.auth.persentation.avatarSelection.components.CircleImage
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localSpacing
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localVerticalSpacing
-import com.priyanshumaurya8868.unrevealed.core.covertTimeToText
+import com.priyanshumaurya8868.unrevealed.core.covertToPostTimeText
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.FeedSecret
 
 @Composable
@@ -57,7 +57,7 @@ fun PostItem(
                     Modifier.fillMaxWidth(),
                     pfpPainter = rememberImagePainter(item.author.avatar),
                     username = item.author.username,
-                    timeString = item.timestamp.covertTimeToText() ?: ""
+                    timeString = item.timestamp.covertToPostTimeText() ?: ""
                 )
 
 //                Icon(

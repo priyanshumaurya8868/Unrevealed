@@ -96,7 +96,7 @@ class UnrevealedApiImpl(private val httpClient: HttpClient, dataStore: DataStore
 
     override suspend fun replyComment(replyBody: PostReplyRequestBodyDto): ReplyDto =
         httpClient.post {
-            url(HttpRoutes.LIKE_COMMENT)
+            url(HttpRoutes.REPLIES)
             contentType(ContentType.Application.Json)
             body = replyBody
             headers {
@@ -119,4 +119,30 @@ class UnrevealedApiImpl(private val httpClient: HttpClient, dataStore: DataStore
                 append(HttpHeaders.Authorization, token)
             }
         }
+
+    override suspend fun getReplies(parentCommentId: String): GetRepliesDto =
+        httpClient.get {
+            url(HttpRoutes.REPLIES+"/$parentCommentId")
+            headers {
+                append(HttpHeaders.Authorization, token)
+            }
+        }
+
+    override suspend fun likeReply(id: String): ReplyDto =
+        httpClient.put{
+            url(HttpRoutes.LIKE_COMMENT+"/$id")
+            headers {
+                append(HttpHeaders.Authorization, token)
+            }
+        }
+
+    override suspend fun disLikeReply(id: String): ReplyDto =
+        httpClient.delete {
+            url(HttpRoutes.DISLIKE_COMMENT + "/$id")
+            headers {
+                append(HttpHeaders.Authorization, token)
+            }
+        }
+
+
 }
