@@ -70,7 +70,7 @@ class ViewSecretViewModel @Inject constructor(
             state = state.copy(secret_id = it)
         }
         getSecret()
-//        loadNextItems()
+        loadNextItems()
     }
 
     private fun getSecret(it: String = state.secret_id) = viewModelScope.launch {
