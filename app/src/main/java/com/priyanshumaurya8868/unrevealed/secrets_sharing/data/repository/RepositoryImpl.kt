@@ -103,49 +103,43 @@ class RepositoryImpl(
         }
     }
 
-    override suspend fun getFeeds(page: Int, pageSize: Int): Flow<Resource<List<FeedSecret>>> =
+    override suspend fun getFeeds(
+        tag: String?,
+        page: Int,
+        pageSize: Int
+    ): Flow<Resource<List<FeedSecret>>> =
         flow {
             val skip = page * pageSize
             val limit = pageSize
             val shouldPresentCachedData = skip == 0
-            val cachedItemsList = dao.getFeeds().map { it.toFeedSecret() }
-            emit(Resource.Loading(if (shouldPresentCachedData) cachedItemsList else null))
+            val cachedItemsList = dao.getFeeds(tag =tag?:"", limit = limit, skip = skip ).map { it.toFeedSecret() }
+            emit(Resource.Loading( if (shouldPresentCachedData)cachedItemsList else null ))
             val feedDto = try {
-                api.getFeeds(limit = limit, skip)
+                api.getFeeds(tag = tag,limit = limit, skip= skip)
 
             } catch (e: RedirectResponseException) {// 3xx res
                 e.printStackTrace()
-                if (shouldPresentCachedData)
-                    emit(Resource.Error(data = cachedItemsList, message = ERROR_MSG_3xx))
-                else
                     emit(Resource.Error(message = ERROR_MSG_3xx))
                 null
             } catch (e: ClientRequestException) {//4xx res
                 e.printStackTrace()
-                if (shouldPresentCachedData)
-                    emit(Resource.Error(data = cachedItemsList, message = ERROR_MSG_4xx))
-                else
                     emit(Resource.Error(message = ERROR_MSG_4xx))
                 null
             } catch (e: ServerResponseException) {//5xx
                 e.printStackTrace()
-                if (shouldPresentCachedData)
-                    emit(Resource.Error(data = cachedItemsList, message = ERROR_MSG_5xx))
-                else
                     emit(Resource.Error(message = ERROR_MSG_5xx))
                 null
             } catch (e: Exception) {
                 e.printStackTrace()
-                if (shouldPresentCachedData)
-                    emit(Resource.Error(data = cachedItemsList, message = ERROR_MSG))
-                else
                     emit(Resource.Error(message = ERROR_MSG))
                 null
             }
             if (feedDto != null) {
-                dao.clearFeedSecretList()
+                val shoulClearOldRecords = skip ==0
+                if(shoulClearOldRecords)
+                dao.clearFeedSecretList(tag ?:"")
                 dao.insertFeedSecrets(feedDto.secrets.map { it.toSecretEntity() })
-                emit(Resource.Success(dao.getFeeds().map { it.toFeedSecret() }))
+                emit(Resource.Success(dao.getFeeds(tag = tag?:"", skip = skip , limit = limit).map { it.toFeedSecret() }))
             }
         }
 
@@ -283,7 +277,7 @@ class RepositoryImpl(
             null
         }
 
-        Log.d("omega/repo" ,"reply dto : $response")
+        Log.d("omega/repo", "reply dto : $response")
         response?.let {
             emit(Resource.Success(it.toReply()))
         }

@@ -1,13 +1,19 @@
 package com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -17,6 +23,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -25,6 +32,9 @@ import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localS
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localVerticalSpacing
 import com.priyanshumaurya8868.unrevealed.core.Constants.ARG_SECRET_ID
 import com.priyanshumaurya8868.unrevealed.core.Screen
+import com.priyanshumaurya8868.unrevealed.core.noRippleClickable
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.composePost.component.TextCard
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.core.SecretSharingConstants
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.Drawer
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.PostItem
 import kotlinx.coroutines.flow.collectLatest
@@ -113,6 +123,64 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
+
+                    //tog filters
+                    item {
+                        LazyRow(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentPadding = PaddingValues(
+                                horizontal = localSpacing,
+                                vertical = localVerticalSpacing,
+                            ),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            item {
+                                val color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
+                                Card(
+                                    shape = CircleShape.copy(CornerSize(50.dp)),
+                                    border = BorderStroke(width = 1.dp, color = color),
+                                    backgroundColor = Color.Transparent,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(10.dp)
+
+                                ) {
+                                    Box(Modifier
+                                        .clickable(
+                                            onClick = { viewModel.changeTag(null)}
+                                        )
+                                    ) {
+                                        Text(
+                                            "All",
+                                            color = color,
+                                            fontSize = 16.sp,
+                                            modifier = Modifier.padding(15.dp)
+                                        )
+                                    }
+                                }
+                            }
+
+                            items(SecretSharingConstants.defaultTags.size) { index ->
+                                val item = SecretSharingConstants.defaultTags[index]
+                                Row(modifier = Modifier.noRippleClickable {
+                                 viewModel.changeTag(SecretSharingConstants.defaultTags[index])
+                                }) {
+                                    if (state.selectedTag == item) {
+                                        TextCard(
+                                            text = item,
+                                            backgroundColor = MaterialTheme.colors.primary,
+                                            textColor = Color.White.copy(alpha = 0.8f)
+                                        )
+                                    } else {
+                                        TextCard(text = item)
+                                    }
+                                }
+                                Spacer(modifier = Modifier.width(10.dp))
+                            }
+                        }
+                    }
+
+                    //feed items
                     items(state.items.size) { index ->
                         val item = state.items[index]
                         if (index >= state.items.size - 1 && !state.endReached && !state.isPaginating) {
@@ -130,6 +198,7 @@ fun HomeScreen(
                         )
 
                     }
+
                     item {
                         if (state.isPaginating) {
                             Row(

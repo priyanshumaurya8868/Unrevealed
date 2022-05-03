@@ -43,7 +43,7 @@ class HomeViewModel
             }
         },
         onRequest = { nextPage ->
-            useCases.getFeeds(nextPage, 20)
+            useCases.getFeeds(state.selectedTag,nextPage, 20)
         },
         getNextKey = {
             state.page + 1
@@ -52,19 +52,19 @@ class HomeViewModel
             data?.let {
                 state = state.copy(
                     items = it,
-                    endReached = true //TODO: reverse it while refreshing
+                    endReached = true
                 )
             }
             _eventFlow.emit(UiEvent.ShowSnackbar(msg))
         },
-        onSuccess = { items, currentUsedKey ->
-            val shouldClearOldList = currentUsedKey == 0
+        onSuccess = { items, newKey ->
+            val shouldClearOldList = newKey == 0
             if (shouldClearOldList)
                 state = state.copy(items = emptyList())
 
             state = state.copy(
                 items = state.items + items,
-                page = currentUsedKey,
+                page = newKey,
                 endReached = items.isEmpty(),
 
                 )
@@ -102,6 +102,12 @@ class HomeViewModel
         paginator.reset()
         loadNextItems()
 
+    }
+
+    fun changeTag(newTag : String?){
+        if(state.selectedTag == newTag) return  //avoid unnecessary calls
+        state = state.copy(selectedTag =  newTag)
+        refreshFeeds()
     }
 
     sealed class UiEvent {

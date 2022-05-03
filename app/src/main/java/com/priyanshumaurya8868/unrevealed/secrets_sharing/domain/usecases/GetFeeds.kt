@@ -7,7 +7,7 @@ import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.repo.Repository
 import kotlinx.coroutines.flow.Flow
 
 class GetFeeds(private val repo: Repository) {
-    suspend operator fun invoke(page: Int, pageSize: Int): Flow<Resource<List<FeedSecret>>> {
-        return repo.getFeeds(page, pageSize)
+    suspend operator fun invoke(tag : String?,page: Int, pageSize: Int): Flow<Resource<List<FeedSecret>>> {
+        return repo.getFeeds(tag = tag, page = page, pageSize = pageSize)
     }
 }

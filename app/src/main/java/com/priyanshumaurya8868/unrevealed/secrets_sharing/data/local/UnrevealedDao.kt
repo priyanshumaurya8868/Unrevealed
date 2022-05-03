@@ -15,11 +15,16 @@ interface UnrevealedDao {
         secrets: List<SecretEntity>
     )
 
-    @Query("SELECT * FROM SecretEntity")
-    suspend fun getFeeds(): List<SecretEntity>
+    @Query( """SELECT *
+            FROM secretentity
+            WHERE LOWER(tag) LIKE '%'||LOWER(:tag) || '%'
+            LIMIT :limit 
+            OFFSET :skip
+            """)
+    suspend fun getFeeds(tag : String, limit : Int , skip : Int): List<SecretEntity>
 
-    @Query("DELETE  FROM secretentity")
-    suspend fun clearFeedSecretList()
+    @Query("DELETE  FROM secretentity  WHERE LOWER(tag) LIKE '%'||LOWER(:tag) || '%'")
+    suspend fun clearFeedSecretList(tag : String)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUserDetail(userProfileEntity: UserProfileEntity)
