@@ -36,7 +36,7 @@ object SecretSharingConstants {
         "Creativity",
         "Universe",
         "Philosophy",
-        "RelationShips",
+        "Relationships",
         "Pets",
         "Fashion",
         "Feminism",

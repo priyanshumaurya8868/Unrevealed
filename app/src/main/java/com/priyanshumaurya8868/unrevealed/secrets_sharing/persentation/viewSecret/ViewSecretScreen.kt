@@ -7,8 +7,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -16,7 +19,11 @@ import androidx.navigation.NavController
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localSpacing
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.FeedSecret
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.PostItem
-import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.viewSecret.components.*
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.viewSecret.components.BottomLabel
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.viewSecret.components.CommentItem
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.viewSecret.components.CommentTextField
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.viewSecret.components.ViewSecretEvents
+import kotlinx.coroutines.flow.collectLatest
 
 
 val topheadingSize = 20.sp
@@ -26,18 +33,24 @@ val topheadingSize = 20.sp
 @Composable
 fun ViewSecretScreen(
     navController: NavController,
-    viewmodel: ViewSecretViewModel = hiltViewModel()
+    viewModel: ViewSecretViewModel = hiltViewModel()
 ) {
 
+    val scaffoldState = rememberScaffoldState()
     val dullColor = MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
     val highLighted = MaterialTheme.colors.onSurface
-    val inbtwnColor = MaterialTheme.colors.onSurface.copy(alpha = .75f)
-
-    val state = viewmodel.state
+    val state = viewModel.state
     val secret = state.secret
 
-
-    val scaffoldState = rememberScaffoldState()
+    LaunchedEffect(key1 = true) {
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is ViewSecretViewModel.UiEvent.ShowSnackbar -> {
+                    scaffoldState.snackbarHostState.showSnackbar(event.message)
+                }
+            }
+        }
+    }
     Scaffold(
         scaffoldState = scaffoldState,
         modifier = Modifier
@@ -48,7 +61,7 @@ fun ViewSecretScreen(
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
-        } else if (state.secretErrorMsg != null && state.secret != null) {
+        } else if (state.secretErrorMsg != null && state.secret == null) {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
@@ -56,14 +69,15 @@ fun ViewSecretScreen(
             ) {
                 Text(
                     state.secretErrorMsg,
-                    style = MaterialTheme.typography.body2,
+                    style = MaterialTheme.typography.caption.copy(fontSize = 16.sp),
                     color = MaterialTheme.colors.onSurface,
                     modifier = Modifier.padding(
                         localSpacing
-                    )
+                    ),
+                    textAlign = TextAlign.Center,
                 )
-                Button(onClick = { viewmodel.onEvent(ViewSecretEvents.ReloadSecret) }) {
-                    Text("Retry")
+                Button(onClick = { viewModel.onEvent(ViewSecretEvents.ReloadSecret) }) {
+                    Text("Retry", style = TextStyle(fontSize = 18.sp))
                 }
 
             }
@@ -75,7 +89,7 @@ fun ViewSecretScreen(
                     verticalArrangement = Arrangement.Top,
                     contentPadding = PaddingValues(bottom = 170.dp)
 
-                    ) {
+                ) {
                     item {
                         PostItem(
                             modifier = Modifier
@@ -98,7 +112,7 @@ fun ViewSecretScreen(
                     }
                     items(state.commentsState.size) { index ->
                         if (index >= state.commentsState.size - 1 && !state.endReached && !state.isCommentsLoading) {
-                            viewmodel.onEvent(ViewSecretEvents.LoadNextCommentPage)
+                            viewModel.onEvent(ViewSecretEvents.LoadNextCommentPage)
                         }
                         CommentItem(
                             dullColor = dullColor,
@@ -106,19 +120,44 @@ fun ViewSecretScreen(
                                 state.commentsState[index].comment._id,
                                 state.commentsState[index]
                             ),
-                            actionListener = viewmodel::onEvent,
+                            actionListener = viewModel::onEvent,
                             commentPosition = index,
+                            state = state
                         )
                     }
+
+
+
                     item {
-                        if (state.isCommentsLoading) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp),
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                CircularProgressIndicator()
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            state.commentErrorMsg?.let { erroMsg ->
+                                Text(
+                                    erroMsg,
+                                    style = MaterialTheme.typography.caption.copy(fontSize = 16.sp),
+                                    color = MaterialTheme.colors.onSurface,
+                                    modifier = Modifier.padding(
+                                        localSpacing
+                                    ),
+                                    textAlign = TextAlign.Center,
+
+                                    )
+                                Button(onClick = { viewModel.loadNextItems() }) {
+                                    Text("Retry", style = TextStyle(fontSize = 18.sp))
+                                }
+                            }
+                            if (state.isCommentsLoading) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp),
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    CircularProgressIndicator()
+                                }
                             }
                         }
                     }
@@ -134,11 +173,11 @@ fun ViewSecretScreen(
                     comntStr = state.textFieldState,
                     dullColor = dullColor,
                     highLighted = highLighted,
-                    onValueChange = { viewmodel.onEvent(ViewSecretEvents.OnWritingComment(it)) },
+                    onValueChange = { viewModel.onEvent(ViewSecretEvents.OnWritingComment(it)) },
                     isPostingComment = state.isAlreadyPostingSomething,
                     replyMetaData = state.replyMetaData
                 ) {
-                    viewmodel.onEvent(it)
+                    viewModel.onEvent(it)
                 }
             }
         }

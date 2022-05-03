@@ -9,6 +9,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -17,10 +18,11 @@ fun TextCard(
     text: String,
     modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colors.surface,
-    textColor: Color = MaterialTheme.colors.primary
+    textColor: Color = MaterialTheme.colors.primary,
+    elevation : Dp = 0.dp
 ) {
     Card(
-        elevation = 0.dp,
+        elevation = elevation,
         backgroundColor = backgroundColor,
         shape = RoundedCornerShape(30.dp),
         modifier = modifier

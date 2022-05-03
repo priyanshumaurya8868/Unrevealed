@@ -34,11 +34,13 @@ class UnrevealedApiImpl(private val httpClient: HttpClient, dataStore: DataStore
         }
     }
 
-    override suspend fun getFeeds(limit: Int, skip: Int): FeedDto {
+    override suspend fun getFeeds(tag: String?,limit: Int, skip: Int): FeedDto {
         return httpClient.get<FeedDto> {
             url(HttpRoutes.SECRETS)
             parameter("skip", skip)
             parameter("limit", limit)
+            if(tag != null)
+                parameter("tag",tag)
             headers {
                 append(HttpHeaders.Authorization, token)
             }

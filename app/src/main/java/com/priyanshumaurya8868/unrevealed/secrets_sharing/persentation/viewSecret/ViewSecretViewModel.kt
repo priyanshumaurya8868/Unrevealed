@@ -35,7 +35,7 @@ class ViewSecretViewModel @Inject constructor(
     private val paginator = DefaultPaginator(
         initialKey = 0,
         onLoadUpdated = { isLoading, _ ->
-            state = state.copy(isCommentsLoading = isLoading)
+            state = state.copy(isCommentsLoading = isLoading, commentErrorMsg = null)
         },
         onRequest = { nextKey ->
             useCases.getComments(state.secret_id, nextKey, 20)
@@ -50,6 +50,7 @@ class ViewSecretViewModel @Inject constructor(
                     endReached = true
                 )
             }
+            state = state.copy(commentErrorMsg = message)
         },
         onSuccess = { items, newKey ->
             val shouldClearOldList = newKey == 0
@@ -59,7 +60,7 @@ class ViewSecretViewModel @Inject constructor(
             state = state.copy(
                 commentsState = state.commentsState + items.map { CommentState(comment = it) },
                 commentsPage = newKey,
-                endReached = items.isEmpty()
+                endReached = items.isEmpty(),
             )
         }
     )
@@ -94,7 +95,7 @@ class ViewSecretViewModel @Inject constructor(
             }.launchIn(this)
     }
 
-    private fun loadNextItems() {
+     fun loadNextItems() {
         viewModelScope.launch {
             paginator.loadNextItem()
         }
@@ -184,7 +185,6 @@ class ViewSecretViewModel @Inject constructor(
         replyPosition: Int,
         shouldLike: Boolean
     ) = viewModelScope.launch {
-
         state = state.copy(map2 = mutableMapOf<String, Reply>().also {
             it[oldReply._id] =
                 if (shouldLike)

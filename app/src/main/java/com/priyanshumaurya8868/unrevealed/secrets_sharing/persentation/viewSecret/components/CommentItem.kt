@@ -34,6 +34,7 @@ fun CommentItem(
     actionListener: (ViewSecretEvents) -> Unit,
     commentPosition: Int,
     commentState: ViewSecretViewModel.CommentState,
+    state: ViewSecretViewModel.ScreenState,
 ) {
 
     val comment = commentState.comment
@@ -147,7 +148,7 @@ fun CommentItem(
                                     actionListener = { actionListener(it) },
                                     commentPosition = commentPosition,
                                     replyPosition = index,
-                                    reply = reply
+                                    reply = state.map2.getOrDefault(reply._id,reply)
                                 )
                                 Spacer(modifier = Modifier.height(localSpacing))
                             }

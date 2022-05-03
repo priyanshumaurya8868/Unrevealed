@@ -10,7 +10,7 @@ interface Repository {
 
     fun getUserById(id: String): Flow<Resource<UserProfile>>
 
-    suspend fun getFeeds(page: Int, pageSize: Int): Flow<Resource<List<FeedSecret>>>
+    suspend fun getFeeds(tag: String?, page: Int, pageSize: Int): Flow<Resource<List<FeedSecret>>>
 
     fun getSecretById(id: String): Flow<Resource<FeedSecret>>
 
@@ -20,7 +20,7 @@ interface Repository {
 
     fun postComment(comment: PostCommentRequestBody): Flow<Resource<Comment>>
 
-    fun replyComment(body :PostReplyRequestBody): Flow<Resource<Reply>>
+    fun replyComment(body: PostReplyRequestBody): Flow<Resource<Reply>>
 
     fun reactOnComment(id: String, shouldLike: Boolean): Flow<Resource<Comment>>
 

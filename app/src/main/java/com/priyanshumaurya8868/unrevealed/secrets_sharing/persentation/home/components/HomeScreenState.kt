@@ -7,6 +7,7 @@ data class HomeScreenState(
     val isPaginating: Boolean = false,
     val items: List<FeedSecret> = emptyList(),
     val error: String? = null,
+    val selectedTag : String?= null,
     val myProfile: UserProfile = UserProfile(),
     val endReached: Boolean = false,
     val page: Int = 0,
