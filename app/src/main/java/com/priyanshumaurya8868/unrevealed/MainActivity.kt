@@ -145,8 +145,8 @@ class MainActivity : ComponentActivity() {
                                     }
                                 )
                             ) {
-                                rememberSystemUiController().setSystemBarsColor(
-                                    color = MaterialTheme.colors.surface
+                                rememberSystemUiController().setStatusBarColor(
+                                    color = MaterialTheme.colors.surface.copy(alpha = 0.95f)
                                 )
                                 ViewSecretScreen(navController = navController)
                             }
