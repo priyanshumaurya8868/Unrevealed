@@ -8,15 +8,17 @@ import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.remote.dto.*
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 
-class UnrevealedApiImpl(private val httpClient: HttpClient, dataStore: DataStore<Preferences>) :
+
+@OptIn(ExperimentalCoroutinesApi::class)
+class UnrevealedApiImpl(private val httpClient: HttpClient, val dataStore: DataStore<Preferences>) :
     UnrevealedApi {
-    private var token: String =
-        "bearer " + runBlocking { dataStore.data.first()[PreferencesKeys.JWT_TOKEN] }
 
     override suspend fun getMyProfile(): UserProfileDto {
+        val token: String =
+            "bearer " + dataStore.data.first()[PreferencesKeys.JWT_TOKEN]
         return httpClient.get<UserProfileDto> {
             url(HttpRoutes.USERS)
             headers {
@@ -26,6 +28,8 @@ class UnrevealedApiImpl(private val httpClient: HttpClient, dataStore: DataStore
     }
 
     override suspend fun getUserById(id: String): UserProfileDto {
+        val token: String =
+            "bearer " + dataStore.data.first()[PreferencesKeys.JWT_TOKEN]
         return httpClient.get<UserProfileDto> {
             url("${HttpRoutes.USERS}/$id")
             headers {
@@ -34,13 +38,15 @@ class UnrevealedApiImpl(private val httpClient: HttpClient, dataStore: DataStore
         }
     }
 
-    override suspend fun getFeeds(tag: String?,limit: Int, skip: Int): FeedDto {
+    override suspend fun getFeeds(tag: String?, limit: Int, skip: Int): FeedDto {
+        val token: String =
+            "bearer " + dataStore.data.first()[PreferencesKeys.JWT_TOKEN]
         return httpClient.get<FeedDto> {
             url(HttpRoutes.SECRETS)
             parameter("skip", skip)
             parameter("limit", limit)
-            if(tag != null)
-                parameter("tag",tag)
+            if (tag != null)
+                parameter("tag", tag)
             headers {
                 append(HttpHeaders.Authorization, token)
             }
@@ -48,6 +54,8 @@ class UnrevealedApiImpl(private val httpClient: HttpClient, dataStore: DataStore
     }
 
     override suspend fun getComments(secretId: String, limit: Int, skip: Int): CommentsDto {
+        val token: String =
+            "bearer " + dataStore.data.first()[PreferencesKeys.JWT_TOKEN]
         return httpClient.get<CommentsDto> {
             url(HttpRoutes.COMMENTS_BY_SECRET_ID + "/$secretId")
             parameter("skip", skip)
@@ -58,16 +66,21 @@ class UnrevealedApiImpl(private val httpClient: HttpClient, dataStore: DataStore
         }
     }
 
-    override suspend fun getSecretById(id: String): SecretDto =
-        httpClient.get {
+    override suspend fun getSecretById(id: String): SecretDto {
+        val token: String =
+            "bearer " + dataStore.data.first()[PreferencesKeys.JWT_TOKEN]
+        return httpClient.get {
             url("${HttpRoutes.SECRETS}/$id")
             headers {
                 append(HttpHeaders.Authorization, token)
             }
         }
+    }
 
-    override suspend fun revealSecret(secretBody: PostSecretRequestBodyDto): SecretDto =
-        httpClient.post {
+    override suspend fun revealSecret(secretBody: PostSecretRequestBodyDto): SecretDto {
+        val token: String =
+            "bearer " + dataStore.data.first()[PreferencesKeys.JWT_TOKEN]
+        return httpClient.post {
             url(HttpRoutes.SECRETS)
             contentType(ContentType.Application.Json)
             body = secretBody
@@ -75,9 +88,12 @@ class UnrevealedApiImpl(private val httpClient: HttpClient, dataStore: DataStore
                 append(HttpHeaders.Authorization, token)
             }
         }
+    }
 
-    override suspend fun updateSecret(secretBody: PostSecretRequestBodyDto): SecretDto =
-        httpClient.put {
+    override suspend fun updateSecret(secretBody: PostSecretRequestBodyDto): SecretDto {
+        val token: String =
+            "bearer " + dataStore.data.first()[PreferencesKeys.JWT_TOKEN]
+        return httpClient.put {
             url(HttpRoutes.SECRETS)
             contentType(ContentType.Application.Json)
             body = secretBody
@@ -85,9 +101,12 @@ class UnrevealedApiImpl(private val httpClient: HttpClient, dataStore: DataStore
                 append(HttpHeaders.Authorization, token)
             }
         }
+    }
 
-    override suspend fun postComment(commentBody: PostCommetRequestBodyDto): CommentDto =
-        httpClient.post {
+    override suspend fun postComment(commentBody: PostCommetRequestBodyDto): CommentDto {
+        val token: String =
+            "bearer " + dataStore.data.first()[PreferencesKeys.JWT_TOKEN]
+        return httpClient.post {
             url(HttpRoutes.COMMENTS)
             contentType(ContentType.Application.Json)
             body = commentBody
@@ -95,9 +114,12 @@ class UnrevealedApiImpl(private val httpClient: HttpClient, dataStore: DataStore
                 append(HttpHeaders.Authorization, token)
             }
         }
+    }
 
-    override suspend fun replyComment(replyBody: PostReplyRequestBodyDto): ReplyDto =
-        httpClient.post {
+    override suspend fun replyComment(replyBody: PostReplyRequestBodyDto): ReplyDto {
+        val token: String =
+            "bearer " + dataStore.data.first()[PreferencesKeys.JWT_TOKEN]
+        return httpClient.post {
             url(HttpRoutes.REPLIES)
             contentType(ContentType.Application.Json)
             body = replyBody
@@ -105,46 +127,63 @@ class UnrevealedApiImpl(private val httpClient: HttpClient, dataStore: DataStore
                 append(HttpHeaders.Authorization, token)
             }
         }
+    }
 
-    override suspend fun likeComment(id: String): CommentDto =
-        httpClient.put {
+    override suspend fun likeComment(id: String): CommentDto {
+        val token: String =
+            "bearer " + dataStore.data.first()[PreferencesKeys.JWT_TOKEN]
+        return httpClient.put {
             url(HttpRoutes.LIKE_COMMENT + "/$id")
             headers {
                 append(HttpHeaders.Authorization, token)
             }
         }
+    }
 
-    override suspend fun dislikeComment(id: String): CommentDto =
-        httpClient.delete {
+    override suspend fun dislikeComment(id: String): CommentDto {
+        val token: String =
+            "bearer " + dataStore.data.first()[PreferencesKeys.JWT_TOKEN]
+
+        return httpClient.delete {
             url(HttpRoutes.DISLIKE_COMMENT + "/$id")
             headers {
                 append(HttpHeaders.Authorization, token)
             }
         }
+    }
 
-    override suspend fun getReplies(parentCommentId: String): GetRepliesDto =
-        httpClient.get {
-            url(HttpRoutes.REPLIES+"/$parentCommentId")
+    override suspend fun getReplies(parentCommentId: String): GetRepliesDto {
+        val token: String =
+            "bearer " + dataStore.data.first()[PreferencesKeys.JWT_TOKEN]
+        return httpClient.get {
+            url(HttpRoutes.REPLIES + "/$parentCommentId")
             headers {
                 append(HttpHeaders.Authorization, token)
             }
         }
+    }
 
-    override suspend fun likeReply(id: String): ReplyDto =
-        httpClient.put{
-            url(HttpRoutes.LIKE_COMMENT+"/$id")
+    override suspend fun likeReply(id: String): ReplyDto {
+        val token: String =
+            "bearer " + dataStore.data.first()[PreferencesKeys.JWT_TOKEN]
+        return httpClient.put {
+            url(HttpRoutes.LIKE_COMMENT + "/$id")
             headers {
                 append(HttpHeaders.Authorization, token)
             }
         }
+    }
 
-    override suspend fun disLikeReply(id: String): ReplyDto =
-        httpClient.delete {
+    override suspend fun disLikeReply(id: String): ReplyDto {
+        val token: String =
+            "bearer " + dataStore.data.first()[PreferencesKeys.JWT_TOKEN]
+        return httpClient.delete {
             url(HttpRoutes.DISLIKE_COMMENT + "/$id")
             headers {
                 append(HttpHeaders.Authorization, token)
             }
         }
+    }
 
 
 }

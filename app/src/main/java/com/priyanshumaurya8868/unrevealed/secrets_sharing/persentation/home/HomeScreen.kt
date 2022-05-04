@@ -7,7 +7,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -59,6 +58,13 @@ fun HomeScreen(
                 is HomeViewModel.UiEvent.ShowSnackbar -> {
                     scaffoldState.snackbarHostState.showSnackbar(event.message)
                 }
+                is HomeViewModel.UiEvent.BackToWelcomeScreen->{
+                    navController.navigate(Screen.WelcomeScreen.route){
+                        popUpTo(Screen.HomeScreen.route){
+                            inclusive = true
+                        }
+                    }
+                }
             }
         }
     }
@@ -94,7 +100,7 @@ fun HomeScreen(
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             scaffoldState = scaffoldState,
-            drawerContent = { Drawer(user = state.myProfile) },
+            drawerContent = { Drawer(user = state.myProfile, eventListener = viewModel::onEvents) },
             drawerBackgroundColor = Color.Transparent,
             drawerElevation = 0.dp,
             drawerScrimColor = Color.Transparent,
@@ -137,17 +143,16 @@ fun HomeScreen(
                             item {
                                 val color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
                                 Card(
-                                    shape = CircleShape.copy(CornerSize(50.dp)),
+                                    shape = CircleShape.copy(CornerSize(100.dp)),
                                     border = BorderStroke(width = 1.dp, color = color),
                                     backgroundColor = Color.Transparent,
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(10.dp)
-
+                                        .padding(end = 10.dp)
                                 ) {
                                     Box(Modifier
                                         .clickable(
-                                            onClick = { viewModel.changeTag(null)}
+                                            onClick = { viewModel.changeTag(null) }
                                         )
                                     ) {
                                         Text(
@@ -163,7 +168,7 @@ fun HomeScreen(
                             items(SecretSharingConstants.defaultTags.size) { index ->
                                 val item = SecretSharingConstants.defaultTags[index]
                                 Row(modifier = Modifier.noRippleClickable {
-                                 viewModel.changeTag(SecretSharingConstants.defaultTags[index])
+                                    viewModel.changeTag(SecretSharingConstants.defaultTags[index])
                                 }) {
                                     if (state.selectedTag == item) {
                                         TextCard(

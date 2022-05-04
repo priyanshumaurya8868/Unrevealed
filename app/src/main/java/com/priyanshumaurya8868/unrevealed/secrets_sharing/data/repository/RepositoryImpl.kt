@@ -26,12 +26,12 @@ class RepositoryImpl(
     private val db: SecretsDatabase,
     private val dataStore: DataStore<Preferences>
 ) : Repository {
-    private var myProfileID: String =
-        runBlocking { dataStore.data.first()[PreferencesKeys.MY_PROFILE_ID] } ?: ""
+
     private val dao = db.dao
 
     override fun getMyProfile() = flow {
         emit(Resource.Loading())
+        val myProfileID: String = dataStore.data.first()[PreferencesKeys.MY_PROFILE_ID]  ?: ""
         val myProfile = dao.getUserProfileById(myProfileID)
         if (myProfile != null) {
             emit(Resource.Success(data = myProfile.toUserProfileModel()))
