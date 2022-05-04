@@ -137,8 +137,8 @@ fun CommentItem(
                     color = dullColor
                 )
             }
-
-            if (commentState.shouldToggleButtonVisible)
+            val shouldToggleButtonVisible: Boolean = commentState.replies.isNotEmpty() || comment.reply_count > 0
+            if (shouldToggleButtonVisible)
                 Column {
                     if (commentState.areRepliesVisible) {
                         Column(modifier = Modifier.padding(top = localSpacing)) {

@@ -116,7 +116,10 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideSecretsSharingUseCases(repo: Repository) =
+    fun provideSecretsSharingUseCases(
+        repo: Repository,
+        dataStore: DataStore<Preferences>
+    ) =
         SecretSharingUseCases(
             getFeeds = GetFeeds(repo),
             openCompleteSecret = OpenCompleteSecret(repo),
@@ -129,7 +132,8 @@ object AppModule {
             getComments = GetComments(repo),
             getReplies = GetReplies(repo),
             reactOnReply = ReactOnReply(repo),
-            replyComment = ReplyComment(repo)
+            replyComment = ReplyComment(repo),
+            logOut = LogOut(dataStore)
         )
 }
 

@@ -95,7 +95,7 @@ class ViewSecretViewModel @Inject constructor(
             }.launchIn(this)
     }
 
-     fun loadNextItems() {
+    fun loadNextItems() {
         viewModelScope.launch {
             paginator.loadNextItem()
         }
@@ -285,7 +285,11 @@ class ViewSecretViewModel @Inject constructor(
                             it.addAll(state.commentsState)
                             it[commentPosition] = it[commentPosition].copy(
                                 isFetchingReplies = false,
-                                replies = res.data ?: emptyList()
+                                replies = res.data ?: emptyList(),
+                                comment = it[commentPosition].comment.copy(
+                                    reply_count = res.data?.size
+                                        ?: it[commentPosition].comment.reply_count
+                                )
                             )
                         })
                     }
@@ -308,7 +312,6 @@ class ViewSecretViewModel @Inject constructor(
                 state.secret_id
             )
         ).onEach { res ->
-
             state = when (res) {
                 is Resource.Success -> {
                     state.copy(
@@ -396,7 +399,6 @@ class ViewSecretViewModel @Inject constructor(
         val comment: Comment,
         val replies: List<Reply> = emptyList(),
         val isFetchingReplies: Boolean = false,
-        val shouldToggleButtonVisible: Boolean = replies.isNotEmpty() || comment.reply_count > 0,
         val areRepliesVisible: Boolean = false
     )
 

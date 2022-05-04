@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.priyanshumaurya8868.unrevealed.core.Resource
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.UserProfile
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.usecases.SecretSharingUseCases
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.HomeScreenEvents
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.HomeScreenState
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.utils.DefaultPaginator
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -52,10 +53,10 @@ class HomeViewModel
         onError = { data, msg ->
             data?.let {
                 state = state.copy(
-                    items = it,
-                    endReached = true
+                    items = it
                 )
             }
+            state = state.copy(endReached = true)
             _eventFlow.emit(UiEvent.ShowSnackbar(msg))
         },
         onSuccess = { items, newKey ->
@@ -67,7 +68,6 @@ class HomeViewModel
                 items = state.items + items,
                 page = newKey,
                 endReached = items.isEmpty(),
-
                 )
         }
     )
@@ -75,6 +75,25 @@ class HomeViewModel
     init {
         getMyProfile()
         loadNextItems()
+    }
+
+
+    fun onEvents(event: HomeScreenEvents)= viewModelScope.launch{
+        when(event){
+            is HomeScreenEvents.ChangeTag->{
+                changeTag(event.newTag)
+            }
+            is HomeScreenEvents.LogOutUser->{
+                try {
+                  val job =  logOut()
+                     job.join()
+                    _eventFlow.emit(UiEvent.BackToWelcomeScreen)
+                }catch (e:Exception){
+                    e.printStackTrace()
+                    e.localizedMessage?.let {_eventFlow.emit( UiEvent.ShowSnackbar(it) )}
+                }
+            }
+        }
     }
 
 
@@ -111,10 +130,16 @@ class HomeViewModel
         refreshFeeds()
     }
 
+    fun logOut()= viewModelScope.launch{
+       useCases.logOut()
+    }
+
+
     sealed class UiEvent {
         data class ShowSnackbar(val message: String) : UiEvent()
-        object Proceed : UiEvent()
+        object BackToWelcomeScreen : UiEvent()
     }
+
 
 
 }

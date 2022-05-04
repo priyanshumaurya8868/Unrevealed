@@ -12,5 +12,6 @@ data class SecretSharingUseCases(
     val revealSecret: RevealSecret,
     val getReplies: GetReplies,
     val replyComment: ReplyComment,
-    val reactOnReply: ReactOnReply
+    val reactOnReply: ReactOnReply,
+    val logOut : LogOut
 )
