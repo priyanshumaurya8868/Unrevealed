@@ -1,7 +1,6 @@
 package com.priyanshumaurya8868.unrevealed.auth.persentation.loginScreen
 
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.priyanshumaurya8868.unrevealed.auth.domain.usecase.AuthUseCases
 import com.priyanshumaurya8868.unrevealed.auth.persentation.core.AuthViewModel
@@ -27,55 +26,48 @@ class LoginViewModel @Inject constructor(private val useCases: AuthUseCases) : A
                 _password.value = TextFieldState(text = event.password)
             }
             is LoginEvents.Proceed -> {
-               loginUser()
+                if (validateInputs())
+                    useCases.login(username = _username.value.text, password = _password.value.text)
+                        .onEach { result ->
+                            when (result) {
+                                is Resource.Success -> {
+                                    result.data?.let { user ->
+                                        useCases.savePreferences(
+                                            PreferencesKeys.MY_PROFILE_ID,
+                                            user.user_id
+                                        )
+                                        useCases.savePreferences(
+                                            PreferencesKeys.JWT_TOKEN,
+                                            user.token
+                                        )
+                                        _eventFlow.emit(UiEvent.Proceed)
+                                    }
+                                    _eventFlow.emit(
+                                        UiEvent.ShowSnackbar(
+                                            result.message
+                                                ?: "Something went wrong couldn't received token"
+                                        )
+                                    )
+
+                                    _isLoading.value = false
+                                }
+                                is Resource.Error -> {
+                                    _eventFlow.emit(
+                                        UiEvent.ShowSnackbar(
+                                            result.message ?: "Unknown error"
+                                        )
+                                    )
+
+                                    _isLoading.value = false
+                                }
+                                is Resource.Loading -> {
+                                    _isLoading.value = true
+                                }
+                            }
+                        }.launchIn(this)
             }
         }
 
-    }
-
-    private fun loginUser() = viewModelScope.launch {
-        if (validateInputs())
-            useCases.login(username = _username.value.text, password = _password.value.text)
-                .onEach { result ->
-                    when (result) {
-                        is Resource.Success -> {
-                            result.data?.let { user ->
-
-                                Log.d("auth/login","new user $user")
-
-                                useCases.savePreferences(
-                                    PreferencesKeys.MY_PROFILE_ID,
-                                    user.user_id
-                                )
-                                useCases.savePreferences(
-                                    PreferencesKeys.JWT_TOKEN,
-                                    user.token
-                                )
-                                _eventFlow.emit(UiEvent.Proceed)
-                            }
-                            _eventFlow.emit(
-                                UiEvent.ShowSnackbar(
-                                    result.message
-                                        ?: "Something went wrong couldn't received token"
-                                )
-                            )
-
-                            _isLoading.value = false
-                        }
-                        is Resource.Error -> {
-                            _eventFlow.emit(
-                                UiEvent.ShowSnackbar(
-                                    result.message ?: "Unknown error"
-                                )
-                            )
-
-                            _isLoading.value = false
-                        }
-                        is Resource.Loading -> {
-                            _isLoading.value = true
-                        }
-                    }
-                }.launchIn(this)
     }
 
 

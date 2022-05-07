@@ -25,6 +25,7 @@ class DefaultPaginator<Key, Item>(
                     onLoadUpdated(true, it.data)
                 }
                 is Resource.Success -> {
+
                     onSuccess(it.data ?: emptyList(), currentKey)
                     currentKey = getNextKey(it.data ?: emptyList())
                 }

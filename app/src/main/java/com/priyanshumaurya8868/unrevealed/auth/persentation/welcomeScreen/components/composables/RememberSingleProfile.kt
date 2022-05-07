@@ -24,7 +24,7 @@ fun RememberSingleProfile(loginCallback: () -> Unit, removeCallback: () -> Unit)
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = R.drawable.cover_dark),
+                painter = painterResource(id = R.drawable.my_pic),
                 contentDescription = "Profile pic",
                 modifier = Modifier
                     .size(100.dp)
