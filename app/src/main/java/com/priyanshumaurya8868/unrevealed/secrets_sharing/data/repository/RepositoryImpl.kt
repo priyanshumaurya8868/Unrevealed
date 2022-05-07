@@ -19,7 +19,6 @@ import io.ktor.client.features.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
 
 class RepositoryImpl(
     private val api: UnrevealedApi,
@@ -31,10 +30,10 @@ class RepositoryImpl(
 
     override fun getMyProfile() = flow {
         emit(Resource.Loading())
-        val myProfileID: String = dataStore.data.first()[PreferencesKeys.MY_PROFILE_ID]  ?: ""
+        val myProfileID: String = dataStore.data.first()[PreferencesKeys.MY_PROFILE_ID] ?: ""
         val myProfile = dao.getUserProfileById(myProfileID)
         if (myProfile != null) {
-            emit(Resource.Success(data = myProfile.toUserProfileModel()))
+            emit(Resource.Loading(data = myProfile.toUserProfileModel()))
         }
         val res = try {
             api.getMyProfile()
@@ -42,7 +41,7 @@ class RepositoryImpl(
             //4xx res
             e.printStackTrace()
             val msg = "Authentication error!!"
-            emit(Resource.Error(message = msg))
+            emit(Resource.Error(message = extractErrorMsg(e.message) ?: msg))
             //removing expired token
             dataStore.edit { pref ->
                 pref.clear()
@@ -50,11 +49,11 @@ class RepositoryImpl(
             null
         } catch (e: RedirectResponseException) {// 3xx res
             e.printStackTrace()
-            emit(Resource.Error(message = ERROR_MSG_3xx))
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_3xx))
             null
         } catch (e: ServerResponseException) {//5xx
             e.printStackTrace()
-            emit(Resource.Error(message = ERROR_MSG_5xx))
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_5xx))
             null
         } catch (e: Exception) {
             e.printStackTrace()
@@ -73,21 +72,21 @@ class RepositoryImpl(
     override fun getUserById(id: String) = flow<Resource<UserProfile>> {
         emit(Resource.Loading())
         val localUserProfile = dao.getUserProfileById(id)?.toUserProfileModel()
-        localUserProfile?.let { emit(Resource.Success(it)) }
+        localUserProfile?.let { emit(Resource.Loading(it)) }
 
         val userProfile = try {
             api.getUserById(id).toUserProfileEntity()
         } catch (e: RedirectResponseException) {// 3xx res
             e.printStackTrace()
-            emit(Resource.Error(message = ERROR_MSG_3xx))
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_3xx))
             null
         } catch (e: ClientRequestException) {//4xx res
             e.printStackTrace()
-            emit(Resource.Error(message = ERROR_MSG_4xx))
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_4xx))
             null
         } catch (e: ServerResponseException) {//5xx
             e.printStackTrace()
-            emit(Resource.Error(message = ERROR_MSG_5xx))
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_5xx))
             null
         } catch (e: Exception) {
             e.printStackTrace()
@@ -95,11 +94,9 @@ class RepositoryImpl(
             emit(Resource.Error(message = msg))
             null
         }
-
         userProfile?.let {
             dao.insertUserDetail(it)
             emit(Resource.Success(dao.getUserProfileById(id)!!.toUserProfileModel()))
-
         }
     }
 
@@ -107,41 +104,45 @@ class RepositoryImpl(
         tag: String?,
         page: Int,
         pageSize: Int
-    ): Flow<Resource<List<FeedSecret>>> =
-        flow {
-            val skip = page * pageSize
-            val limit = pageSize
-            val shouldPresentCachedData = skip == 0
-            val cachedItemsList = dao.getFeeds(tag =tag?:"", limit = limit, skip = skip ).map { it.toFeedSecret() }
-            emit(Resource.Loading( if (shouldPresentCachedData)cachedItemsList else null ))
-            val feedDto = try {
-                api.getFeeds(tag = tag,limit = limit, skip= skip)
+    ): Flow<Resource<List<FeedSecret>>> = flow {
+        val skip = page * pageSize
+        val limit = pageSize
+        val shouldPresentCachedData = skip == 0
+        val cachedItemsList =
+            dao.getFeeds(tag = tag ?: "", limit = limit, skip = skip).map { it.toFeedSecret() }
+        emit(Resource.Loading(if (shouldPresentCachedData) cachedItemsList else null))
+        val feedDto = try {
+            api.getFeeds(tag = tag, limit = limit, skip = skip)
 
-            } catch (e: RedirectResponseException) {// 3xx res
-                e.printStackTrace()
-                    emit(Resource.Error(message = ERROR_MSG_3xx))
-                null
-            } catch (e: ClientRequestException) {//4xx res
-                e.printStackTrace()
-                    emit(Resource.Error(message = ERROR_MSG_4xx))
-                null
-            } catch (e: ServerResponseException) {//5xx
-                e.printStackTrace()
-                    emit(Resource.Error(message = ERROR_MSG_5xx))
-                null
-            } catch (e: Exception) {
-                e.printStackTrace()
-                    emit(Resource.Error(message = ERROR_MSG))
-                null
-            }
-            if (feedDto != null) {
-                val shoulClearOldRecords = skip ==0
-                if(shoulClearOldRecords)
-                dao.clearFeedSecretList(tag ?:"")
-                dao.insertFeedSecrets(feedDto.secrets.map { it.toSecretEntity() })
-                emit(Resource.Success(dao.getFeeds(tag = tag?:"", skip = skip , limit = limit).map { it.toFeedSecret() }))
-            }
+        } catch (e: RedirectResponseException) {// 3xx res
+            e.printStackTrace()
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_3xx))
+            null
+        } catch (e: ClientRequestException) {//4xx res
+            e.printStackTrace()
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_4xx))
+            null
+        } catch (e: ServerResponseException) {//5xx
+            e.printStackTrace()
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_5xx))
+            null
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emit(Resource.Error(message = ERROR_MSG))
+            null
         }
+        if (feedDto != null) {
+            val shoulClearOldRecords = skip == 0
+            if (shoulClearOldRecords)
+                dao.clearFeedSecretList(tag ?: "")
+            dao.insertFeedSecrets(feedDto.secrets.map { it.toSecretEntity() })
+            emit(
+                Resource.Success(
+                    dao.getFeeds(tag = tag ?: "", skip = skip, limit = limit)
+                        .map { it.toFeedSecret() })
+            )
+        }
+    }
 
     override fun getSecretById(id: String): Flow<Resource<FeedSecret>> = flow {
         emit(Resource.Loading())
@@ -149,15 +150,15 @@ class RepositoryImpl(
             api.getSecretById(id)
         } catch (e: RedirectResponseException) {// 3xx res
             e.printStackTrace()
-            emit(Resource.Error(message = ERROR_MSG_3xx))
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_3xx))
             null
         } catch (e: ClientRequestException) {//4xx res
             e.printStackTrace()
-            emit(Resource.Error(message = ERROR_MSG_4xx))
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_4xx))
             null
         } catch (e: ServerResponseException) {//5xx
             e.printStackTrace()
-            emit(Resource.Error(message = ERROR_MSG_5xx))
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_5xx))
             null
         } catch (e: Exception) {
             e.printStackTrace()
@@ -176,15 +177,15 @@ class RepositoryImpl(
             api.revealSecret(secret.toDto())
         } catch (e: RedirectResponseException) {// 3xx res
             e.printStackTrace()
-            emit(Resource.Error(message = ERROR_MSG_3xx))
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_3xx))
             null
         } catch (e: ClientRequestException) {//4xx res
             e.printStackTrace()
-            emit(Resource.Error(message = ERROR_MSG_4xx))
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_4xx))
             null
         } catch (e: ServerResponseException) {//5xx
             e.printStackTrace()
-            emit(Resource.Error(message = ERROR_MSG_5xx))
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_5xx))
             null
         } catch (e: Exception) {
             e.printStackTrace()
@@ -206,15 +207,15 @@ class RepositoryImpl(
                 api.getComments(secretId, limit, skip)
             } catch (e: RedirectResponseException) {// 3xx res
                 e.printStackTrace()
-                emit(Resource.Error(message = ERROR_MSG_3xx))
+                emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_3xx))
                 null
             } catch (e: ClientRequestException) {//4xx res
                 e.printStackTrace()
-                emit(Resource.Error(message = ERROR_MSG_4xx))
+                emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_4xx))
                 null
             } catch (e: ServerResponseException) {//5xx
                 e.printStackTrace()
-                emit(Resource.Error(message = ERROR_MSG_5xx))
+                emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_5xx))
                 null
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -233,15 +234,15 @@ class RepositoryImpl(
             api.postComment(comment.toPostCommentRequestBodyDto())
         } catch (e: RedirectResponseException) {// 3xx res
             e.printStackTrace()
-            emit(Resource.Error(message = ERROR_MSG_3xx))
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_3xx))
             null
         } catch (e: ClientRequestException) {//4xx res
             e.printStackTrace()
-            emit(Resource.Error(message = ERROR_MSG_4xx))
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_4xx))
             null
         } catch (e: ServerResponseException) {//5xx
             e.printStackTrace()
-            emit(Resource.Error(message = ERROR_MSG_5xx))
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_5xx))
             null
         } catch (e: Exception) {
             e.printStackTrace()
@@ -260,15 +261,15 @@ class RepositoryImpl(
             api.replyComment(body.toPostReplyRequestBodyDto())
         } catch (e: RedirectResponseException) {// 3xx res
             e.printStackTrace()
-            emit(Resource.Error(message = ERROR_MSG_3xx))
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_3xx))
             null
         } catch (e: ClientRequestException) {//4xx res
             e.printStackTrace()
-            emit(Resource.Error(message = ERROR_MSG_4xx))
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_4xx))
             null
         } catch (e: ServerResponseException) {//5xx
             e.printStackTrace()
-            emit(Resource.Error(message = ERROR_MSG_5xx))
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_5xx))
             null
         } catch (e: Exception) {
             e.printStackTrace()
@@ -276,7 +277,6 @@ class RepositoryImpl(
             emit(Resource.Error(message = msg))
             null
         }
-
         Log.d("omega/repo", "reply dto : $response")
         response?.let {
             emit(Resource.Success(it.toReply()))
@@ -289,15 +289,15 @@ class RepositoryImpl(
             if (shouldLike) api.likeComment(id) else api.dislikeComment(id)
         } catch (e: RedirectResponseException) {// 3xx res
             e.printStackTrace()
-            emit(Resource.Error(message = ERROR_MSG_3xx))
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_3xx))
             null
         } catch (e: ClientRequestException) {//4xx res
             e.printStackTrace()
-            emit(Resource.Error(message = ERROR_MSG_4xx))
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_4xx))
             null
         } catch (e: ServerResponseException) {//5xx
             e.printStackTrace()
-            emit(Resource.Error(message = ERROR_MSG_5xx))
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_5xx))
             null
         } catch (e: Exception) {
             e.printStackTrace()
@@ -316,15 +316,15 @@ class RepositoryImpl(
             if (shouldLike) api.likeReply(id) else api.disLikeReply(id)
         } catch (e: RedirectResponseException) {// 3xx res
             e.printStackTrace()
-            emit(Resource.Error(message = ERROR_MSG_3xx))
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_3xx))
             null
         } catch (e: ClientRequestException) {//4xx res
             e.printStackTrace()
-            emit(Resource.Error(message = ERROR_MSG_4xx))
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_4xx))
             null
         } catch (e: ServerResponseException) {//5xx
             e.printStackTrace()
-            emit(Resource.Error(message = ERROR_MSG_5xx))
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_5xx))
             null
         } catch (e: Exception) {
             e.printStackTrace()
@@ -344,15 +344,15 @@ class RepositoryImpl(
             api.getReplies(parentCommentId)
         } catch (e: RedirectResponseException) {// 3xx res
             e.printStackTrace()
-            emit(Resource.Error(message = ERROR_MSG_3xx))
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_3xx))
             null
         } catch (e: ClientRequestException) {//4xx res
             e.printStackTrace()
-            emit(Resource.Error(message = ERROR_MSG_4xx))
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_4xx))
             null
         } catch (e: ServerResponseException) {//5xx
             e.printStackTrace()
-            emit(Resource.Error(message = ERROR_MSG_5xx))
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_5xx))
             null
         } catch (e: Exception) {
             e.printStackTrace()
@@ -368,6 +368,11 @@ class RepositoryImpl(
 
 
     private fun extractErrorMsg(msg: String?) =
-        msg?.let { msg.substringAfter("\"message\":\"").substringBefore("\"}\"") }
+        try {
+            msg?.let { msg.substringAfter("\"message\":\"").substringBefore("\"}\"") }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
 
 }

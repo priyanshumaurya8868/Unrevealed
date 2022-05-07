@@ -102,11 +102,10 @@ class HomeViewModel
             paginator.loadNextItem()
         }
 
-
     private fun getMyProfile() = viewModelScope.launch {
         useCases.getMyProfile().onEach { res ->
             when (res) {
-                is Resource.Loading -> {}
+                is Resource.Loading -> { res.data?.let{ state = state.copy(myProfile = res.data)} }
                 is Resource.Success -> {
                     state = state.copy(myProfile = res.data ?: UserProfile())
                 }
@@ -121,7 +120,6 @@ class HomeViewModel
         state = state.copy(isRefreshing = true , endReached = false)
         paginator.reset()
         loadNextItems()
-
     }
 
     fun changeTag(newTag : String?){
