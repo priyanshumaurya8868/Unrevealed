@@ -6,7 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.priyanshumaurya8868.unrevealed.auth.persentation.core.AuthConstants.VAL_FEMALE
 import com.priyanshumaurya8868.unrevealed.auth.persentation.core.AuthConstants.VAL_MALE
-import com.priyanshumaurya8868.unrevealed.core.Constants.ARG_USERNAME
+import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_USERNAME
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

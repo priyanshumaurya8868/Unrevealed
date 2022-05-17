@@ -1,6 +1,6 @@
 package com.priyanshumaurya8868.unrevealed.secrets_sharing.data.mappers
 
-import com.priyanshumaurya8868.unrevealed.core.HttpRoutes
+import com.priyanshumaurya8868.unrevealed.core.utils.HttpRoutes
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.local.entity.UserProfileEntity
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.remote.dto.UserProfileDto
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.UserProfile

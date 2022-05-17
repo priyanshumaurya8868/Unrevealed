@@ -20,7 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
-import com.priyanshumaurya8868.unrevealed.auth.persentation.avatarSelection.components.CircleImage
+import com.priyanshumaurya8868.unrevealed.core.composable.CircleImage
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localVerticalSpacing
 import com.priyanshumaurya8868.unrevealed.core.covertToCommentTimeText
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.Reply

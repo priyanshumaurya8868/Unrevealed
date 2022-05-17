@@ -1,4 +1,4 @@
-package com.priyanshumaurya8868.unrevealed.core
+package com.priyanshumaurya8868.unrevealed.core.utils
 
 object HttpRoutes {
     const val BASE_URL = "http://192.168.43.151:2022"

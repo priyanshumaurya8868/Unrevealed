@@ -1,23 +1,22 @@
 package com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.SavedStateHandle
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.priyanshumaurya8868.unrevealed.core.Resource
-import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.UserProfile
+import com.priyanshumaurya8868.unrevealed.core.utils.PreferencesKeys
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.MyProfile
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.usecases.SecretSharingUseCases
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.HomeScreenEvents
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.HomeScreenState
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.utils.DefaultPaginator
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,7 +24,7 @@ import javax.inject.Inject
 class HomeViewModel
 @Inject constructor(
     private val useCases: SecretSharingUseCases,
-    private val savedStateHandle: SavedStateHandle
+    private val dataStore: DataStore<Preferences>
 ) : ViewModel() {
 
     var state by mutableStateOf(HomeScreenState())
@@ -45,7 +44,7 @@ class HomeViewModel
             }
         },
         onRequest = { nextPage ->
-            useCases.getFeeds(state.selectedTag,nextPage, 20)
+            useCases.getFeeds(state.selectedTag, nextPage, 20)
         },
         getNextKey = {
             state.page + 1
@@ -68,32 +67,67 @@ class HomeViewModel
                 items = state.items + items,
                 page = newKey,
                 endReached = items.isEmpty(),
-                )
+            )
         }
     )
 
     init {
-        getMyProfile()
         loadNextItems()
+        getPresentUserProfile()
     }
 
-
-    fun onEvents(event: HomeScreenEvents)= viewModelScope.launch{
-        when(event){
-            is HomeScreenEvents.ChangeTag->{
-                changeTag(event.newTag)
-            }
-            is HomeScreenEvents.LogOutUser->{
-                try {
-                  val job =  logOut()
-                     job.join()
-                    _eventFlow.emit(UiEvent.BackToWelcomeScreen)
-                }catch (e:Exception){
-                    e.printStackTrace()
-                    e.localizedMessage?.let {_eventFlow.emit( UiEvent.ShowSnackbar(it) )}
+    private fun getPresentUserProfile() =
+        viewModelScope.launch {
+            dataStore.data.collect { pref ->
+                val currentUserId = pref[PreferencesKeys.MY_PROFILE_ID]
+                Log.d("omega/h", "cureent uid : $currentUserId")
+                currentUserId?.let {
+                    state = state.copy(myCurrentProfile = useCases.getMyProfile(it))
                 }
             }
         }
+
+    fun onEvents(event: HomeScreenEvents) = viewModelScope.launch {
+        when (event) {
+            is HomeScreenEvents.ChangeTag -> {
+                changeTag(event.newTag)
+            }
+            is HomeScreenEvents.LogOutUser -> {
+                try {
+                    val job = logOut()
+                    job.join()
+                    _eventFlow.emit(UiEvent.BackToWelcomeScreen)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    e.localizedMessage?.let { _eventFlow.emit(UiEvent.ShowSnackbar(it)) }
+                }
+            }
+            is HomeScreenEvents.SwitchAccount -> {
+                switchAccount(event.selectedProfile)
+            }
+            is HomeScreenEvents.ToggleTheme -> {
+
+            }
+            is HomeScreenEvents.ToggleListOfLoggedUSer -> {
+                Log.d("omega/home", "tl")
+                state = state.copy(isLoggedUsersListExpanded = !state.isLoggedUsersListExpanded)
+                getLoggedUsersList()
+            }
+        }
+    }
+
+    private fun switchAccount(newSelectedProfile: MyProfile) = viewModelScope.launch {
+        state = state.copy(myCurrentProfile = newSelectedProfile)
+        useCases.switchAccount(
+            selectedUserId = newSelectedProfile.user_id,
+            token = newSelectedProfile.token
+        )
+    }
+
+    private fun getLoggedUsersList() = viewModelScope.launch {
+        val list = useCases.getLoggedUser()
+        Log.d("omega/hvm", " users List $list")
+        state = state.copy(loggerUsers = list)
     }
 
 
@@ -102,42 +136,27 @@ class HomeViewModel
             paginator.loadNextItem()
         }
 
-    private fun getMyProfile() = viewModelScope.launch {
-        useCases.getMyProfile().onEach { res ->
-            when (res) {
-                is Resource.Loading -> { res.data?.let{ state = state.copy(myProfile = res.data)} }
-                is Resource.Success -> {
-                    state = state.copy(myProfile = res.data ?: UserProfile())
-                }
-                is Resource.Error -> {
-                    _eventFlow.emit(UiEvent.ShowSnackbar(res.message ?: "Something Went wrong!"))
-                }
-            }
-        }.launchIn(this)
-    }
 
     fun refreshFeeds() {
-        state = state.copy(isRefreshing = true , endReached = false)
+        state = state.copy(isRefreshing = true, endReached = false)
         paginator.reset()
         loadNextItems()
     }
 
-    fun changeTag(newTag : String?){
-        if(state.selectedTag == newTag) return  //avoid unnecessary calls
-        state = state.copy(selectedTag =  newTag)
+    private fun changeTag(newTag: String?) {
+        if (state.selectedTag == newTag) return  //avoid unnecessary calls
+        state = state.copy(selectedTag = newTag)
         refreshFeeds()
     }
 
-    fun logOut()= viewModelScope.launch{
-       useCases.logOut()
+    private fun logOut() = viewModelScope.launch {
+        useCases.logOut()
     }
-
 
     sealed class UiEvent {
         data class ShowSnackbar(val message: String) : UiEvent()
         object BackToWelcomeScreen : UiEvent()
     }
-
 
 
 }

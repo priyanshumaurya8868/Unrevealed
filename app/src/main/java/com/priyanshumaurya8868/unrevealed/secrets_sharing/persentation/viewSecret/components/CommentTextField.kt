@@ -24,6 +24,7 @@ fun CommentTextField(
     comntStr: String,
     dullColor: Color,
     highLighted: Color,
+    textColor: Color,
     isPostingComment: Boolean = true,
     onValueChange: (String) -> Unit,
     replyMetaData: ViewSecretViewModel.ReplyMetaData?,
@@ -77,12 +78,12 @@ fun CommentTextField(
                 value = comntStr,
                 onValueChange = onValueChange,
                 colors = TextFieldDefaults.textFieldColors(
-                    textColor = highLighted,
+                    textColor = textColor,
                     backgroundColor = Color.Transparent,
-                    cursorColor = highLighted,
+                    cursorColor = MaterialTheme.colors.primary,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
-                    focusedLabelColor = Color.Red
+                    focusedLabelColor = MaterialTheme.colors.primary
                 ),
                 modifier = Modifier
                     .fillMaxWidth()

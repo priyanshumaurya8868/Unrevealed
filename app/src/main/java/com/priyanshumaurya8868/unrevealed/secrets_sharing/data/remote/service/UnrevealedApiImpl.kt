@@ -2,8 +2,8 @@ package com.priyanshumaurya8868.unrevealed.secrets_sharing.data.remote.service
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import com.priyanshumaurya8868.unrevealed.core.HttpRoutes
-import com.priyanshumaurya8868.unrevealed.core.PreferencesKeys
+import com.priyanshumaurya8868.unrevealed.core.utils.HttpRoutes
+import com.priyanshumaurya8868.unrevealed.core.utils.PreferencesKeys
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.remote.dto.*
 import io.ktor.client.*
 import io.ktor.client.request.*

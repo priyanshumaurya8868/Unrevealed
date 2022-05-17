@@ -175,7 +175,8 @@ fun ViewSecretScreen(
                     highLighted = highLighted,
                     onValueChange = { viewModel.onEvent(ViewSecretEvents.OnWritingComment(it)) },
                     isPostingComment = state.isAlreadyPostingSomething,
-                    replyMetaData = state.replyMetaData
+                    replyMetaData = state.replyMetaData,
+                    textColor = MaterialTheme.colors.onBackground
                 ) {
                     viewModel.onEvent(it)
                 }

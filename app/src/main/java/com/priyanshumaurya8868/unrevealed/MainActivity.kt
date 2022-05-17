@@ -1,7 +1,6 @@
 package com.priyanshumaurya8868.unrevealed
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -10,7 +9,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -24,32 +26,33 @@ import com.priyanshumaurya8868.unrevealed.auth.persentation.genderSelection.Gend
 import com.priyanshumaurya8868.unrevealed.auth.persentation.loginScreen.LoginScreen
 import com.priyanshumaurya8868.unrevealed.auth.persentation.signupScreen.SignupScreen
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.WelcomeScreen
-import com.priyanshumaurya8868.unrevealed.core.Constants.ARG_GENDER
-import com.priyanshumaurya8868.unrevealed.core.Constants.ARG_PASSWORD
-import com.priyanshumaurya8868.unrevealed.core.Constants.ARG_SECRET_ID
-import com.priyanshumaurya8868.unrevealed.core.Constants.ARG_USERNAME
 import com.priyanshumaurya8868.unrevealed.core.Screen
+import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_GENDER
+import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_PASSWORD
+import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_SECRET_ID
+import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_USERNAME
+import com.priyanshumaurya8868.unrevealed.core.utils.PreferencesKeys
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.composePost.TagSelectionBottomSheet
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.HomeScreen
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.viewSecret.ViewSecretScreen
 import com.priyanshumaurya8868.unrevealed.ui.theme.UnrevealedTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
 @ExperimentalFoundationApi
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    val viewModel: MainViewModel by viewModels()
+    @Inject
+    lateinit var dataStore: DataStore<Preferences>
+//    val viewModel: MainViewModel by viewModels()
 
     @OptIn(ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("omegaRanger", "your  token : ${viewModel.token}")
-        val shouldAuth = viewModel.shouldAuthenticated
-
-        Log.d("omegaRanger", "should  auth : $shouldAuth")
         setContent {
-
             ProvideWindowInsets {
                 UnrevealedTheme {
                     // A surface container using the 'background' color from the theme
@@ -57,6 +60,9 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colors.background,
                     ) {
+                        val shouldAuth: Boolean = remember {
+                            runBlocking { dataStore.data.first()[PreferencesKeys.JWT_TOKEN] }.isNullOrEmpty()
+                        }
                         val navController = rememberNavController()
                         NavHost(
                             navController = navController,

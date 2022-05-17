@@ -1,7 +1,7 @@
 package com.priyanshumaurya8868.unrevealed.auth.domain.model
 
 
-data class AuthResponse(
+data class Profile(
     val avatar: String,
     val gender: String,
     val token: String,

@@ -13,6 +13,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.priyanshumaurya8868.unrevealed.R
+import com.priyanshumaurya8868.unrevealed.auth.persentation.authOptionsScreen.componenets.ChoiceMakingButtons
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.fontSize_1
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localSpacing
 

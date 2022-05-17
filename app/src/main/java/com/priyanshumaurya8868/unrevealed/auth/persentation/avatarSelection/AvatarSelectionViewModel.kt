@@ -9,9 +9,9 @@ import com.priyanshumaurya8868.unrevealed.auth.domain.usecase.AuthUseCases
 import com.priyanshumaurya8868.unrevealed.auth.persentation.avatarSelection.components.AvatarSelectionEvents
 import com.priyanshumaurya8868.unrevealed.auth.persentation.core.AuthConstants.VAL_FEMALE
 import com.priyanshumaurya8868.unrevealed.auth.persentation.core.AuthConstants.VAL_MALE
-import com.priyanshumaurya8868.unrevealed.core.Constants
-import com.priyanshumaurya8868.unrevealed.core.PreferencesKeys
 import com.priyanshumaurya8868.unrevealed.core.Resource
+import com.priyanshumaurya8868.unrevealed.core.utils.Constants
+import com.priyanshumaurya8868.unrevealed.core.utils.PreferencesKeys
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow

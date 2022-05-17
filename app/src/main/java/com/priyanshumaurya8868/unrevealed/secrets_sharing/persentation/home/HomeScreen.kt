@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -29,12 +30,13 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localSpacing
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localVerticalSpacing
-import com.priyanshumaurya8868.unrevealed.core.Constants.ARG_SECRET_ID
 import com.priyanshumaurya8868.unrevealed.core.Screen
 import com.priyanshumaurya8868.unrevealed.core.noRippleClickable
+import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_SECRET_ID
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.composePost.component.TextCard
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.core.SecretSharingConstants
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.Drawer
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.HomeScreenEvents
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.PostItem
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -58,9 +60,9 @@ fun HomeScreen(
                 is HomeViewModel.UiEvent.ShowSnackbar -> {
                     scaffoldState.snackbarHostState.showSnackbar(event.message)
                 }
-                is HomeViewModel.UiEvent.BackToWelcomeScreen->{
-                    navController.navigate(Screen.WelcomeScreen.route){
-                        popUpTo(Screen.HomeScreen.route){
+                is HomeViewModel.UiEvent.BackToWelcomeScreen -> {
+                    navController.navigate(Screen.WelcomeScreen.route) {
+                        popUpTo(Screen.HomeScreen.route) {
                             inclusive = true
                         }
                     }
@@ -100,7 +102,13 @@ fun HomeScreen(
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             scaffoldState = scaffoldState,
-            drawerContent = { Drawer(user = state.myProfile, eventListener = viewModel::onEvents) },
+            drawerContent = {
+                Drawer(
+                    state = state,
+                    eventListener = viewModel::onEvents,
+                    navController = navController
+                )
+            },
             drawerBackgroundColor = Color.Transparent,
             drawerElevation = 0.dp,
             drawerScrimColor = Color.Transparent,
@@ -145,30 +153,34 @@ fun HomeScreen(
                                 Card(
                                     shape = CircleShape.copy(CornerSize(100.dp)),
                                     border = BorderStroke(width = 1.dp, color = color),
-                                    backgroundColor = Color.Transparent,
+                                    backgroundColor = MaterialTheme.colors.background,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(end = 10.dp)
+                                        .clip(CircleShape)
+                                        .clickable{
+                                                viewModel.onEvents(
+                                                    HomeScreenEvents.ChangeTag(
+                                                        null
+                                                    )
+                                                )
+                                            }
                                 ) {
-                                    Box(Modifier
-                                        .clickable(
-                                            onClick = { viewModel.changeTag(null) }
-                                        )
-                                    ) {
-                                        Text(
-                                            "All",
-                                            color = color,
-                                            fontSize = 16.sp,
-                                            modifier = Modifier.padding(15.dp)
-                                        )
-                                    }
+                                    Text(
+                                        "All",
+                                        color = color,
+                                        fontSize = 16.sp,
+                                        modifier = Modifier
+                                            .padding(15.dp)
+                                            .align(Alignment.Center)
+                                    )
                                 }
                             }
 
                             items(SecretSharingConstants.defaultTags.size) { index ->
                                 val item = SecretSharingConstants.defaultTags[index]
                                 Row(modifier = Modifier.noRippleClickable {
-                                    viewModel.changeTag(SecretSharingConstants.defaultTags[index])
+                                    viewModel.onEvents(HomeScreenEvents.ChangeTag(item))
                                 }) {
                                     if (state.selectedTag == item) {
                                         TextCard(

@@ -1,4 +1,4 @@
-package com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.components.composables
+package com.priyanshumaurya8868.unrevealed.auth.persentation.authOptionsScreen.componenets
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource

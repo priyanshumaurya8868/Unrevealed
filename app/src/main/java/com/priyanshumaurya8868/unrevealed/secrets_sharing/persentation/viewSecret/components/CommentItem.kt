@@ -22,7 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
-import com.priyanshumaurya8868.unrevealed.auth.persentation.avatarSelection.components.CircleImage
+import com.priyanshumaurya8868.unrevealed.core.composable.CircleImage
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localSpacing
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localVerticalSpacing
 import com.priyanshumaurya8868.unrevealed.core.covertToCommentTimeText
@@ -62,7 +62,7 @@ fun CommentItem(
                             append(comment.commenter.username)
                         }
                         append(" ")
-                        withStyle(style = SpanStyle(color = MaterialTheme.colors.onSurface)) {
+                        withStyle(style = SpanStyle(color = MaterialTheme.colors.onBackground.copy(alpha = 0.85f))) {
                             append(comment.content)
                         }
                     },

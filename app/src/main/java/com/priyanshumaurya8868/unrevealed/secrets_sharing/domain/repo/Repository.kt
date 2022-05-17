@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface Repository {
 
-    fun getMyProfile(): Flow<Resource<UserProfile>>
+    suspend fun getMyProfile(id:String): MyProfile
 
     fun getUserById(id: String): Flow<Resource<UserProfile>>
 
@@ -27,5 +27,7 @@ interface Repository {
     fun reactOnReply(id: String, shouldLike: Boolean): Flow<Resource<Reply>>
 
     fun getReplies(parentCommentId: String): Flow<Resource<List<Reply>>>
+
+    suspend fun getListOfLoggedUsers() :List<MyProfile>
 
 }

@@ -5,4 +5,6 @@ data class AuthUseCases(
     val signup: Signup,
     val getAvatars: GetAvatars,
     val savePreferences: SavePreferences,
+    val getLoggedUser: GetLoggedUser,
+    val removeAccount: RemoveAccount
 )

@@ -23,13 +23,12 @@ private val LightColorPalette = lightColors(
     primary = owl_pink_200,
     primaryVariant = lightSurface,
     secondary = owl_pink_500,
-    background = lightSurface,
-    surface = lightBg,
-    onPrimary = lightOnBg,
-    onSecondary = lightOnSurface,
+    background = lightBg,
+    surface = lightSurface,
+    onPrimary = lightOnSurface,
+    onSecondary = lightOnBg,
     onBackground = lightOnBg,
     onSurface = lightOnSurface,
-
     )
 
 @Composable

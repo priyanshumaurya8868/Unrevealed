@@ -1,4 +1,4 @@
-package com.priyanshumaurya8868.unrevealed.core
+package com.priyanshumaurya8868.unrevealed.core.utils
 
 object Constants {
     const val USER_PREFERENCES = "user_preferences"

@@ -10,12 +10,15 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.room.Room
+import com.priyanshumaurya8868.unrevealed.Unrevealed
+import com.priyanshumaurya8868.unrevealed.auth.data.local.AuthDataBase
 import com.priyanshumaurya8868.unrevealed.auth.data.remote.services.AuthService
 import com.priyanshumaurya8868.unrevealed.auth.data.remote.services.AuthServiceImpl
 import com.priyanshumaurya8868.unrevealed.auth.data.repo.UnrevealedAuthRepoImpl
 import com.priyanshumaurya8868.unrevealed.auth.domain.repo.UnrevealedAuthRepo
 import com.priyanshumaurya8868.unrevealed.auth.domain.usecase.*
-import com.priyanshumaurya8868.unrevealed.core.Constants.USER_PREFERENCES
+import com.priyanshumaurya8868.unrevealed.auth.domain.usecase.GetLoggedUser
+import com.priyanshumaurya8868.unrevealed.core.utils.Constants.USER_PREFERENCES
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.local.SecretsDatabase
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.local.converters.UserProfileTypeConverter
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.remote.service.UnrevealedApi
@@ -64,8 +67,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideUnrevealedAuthRepo(service: AuthService): UnrevealedAuthRepo {
-        return UnrevealedAuthRepoImpl(service)
+    fun provideUnrevealedAuthRepo(service: AuthService, db : AuthDataBase): UnrevealedAuthRepo {
+        return UnrevealedAuthRepoImpl(service,db)
     }
 
     @Singleton
@@ -88,7 +91,9 @@ object AppModule {
             login = Login(repo),
             signup = Signup(repo),
             getAvatars = GetAvatars(repo),
-            savePreferences = SavePreferences(dataStore)
+            savePreferences = SavePreferences(dataStore),
+            getLoggedUser = GetLoggedUser(repo),
+            removeAccount = RemoveAccount(repo)
         )
 
     @Provides
@@ -99,26 +104,35 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesDb(app: Application): SecretsDatabase {
+    fun providesSecretsDb(app: Application): SecretsDatabase {
         return Room.databaseBuilder(app, SecretsDatabase::class.java, "secrets.db")
             .addTypeConverter(UserProfileTypeConverter()).build()
     }
 
     @Provides
     @Singleton
+    fun provideAuthDB(app: Application):AuthDataBase{
+        return Room.databaseBuilder(app, AuthDataBase::class.java, "unrevealed_auth.db")
+            .build()
+    }
+
+    @Provides
+    @Singleton
     fun provideSecretSharingRepository(
         api: UnrevealedApi,
-        db: SecretsDatabase,
+        secretsDatabase: SecretsDatabase,
+        authDataBase: AuthDataBase,
         dataStore: DataStore<Preferences>
     ): Repository =
-        RepositoryImpl(api = api, db = db, dataStore = dataStore)
+        RepositoryImpl(api = api, dataStore = dataStore, secretsDatabase =secretsDatabase , authDataBase = authDataBase )
 
 
     @Provides
     @Singleton
     fun provideSecretsSharingUseCases(
         repo: Repository,
-        dataStore: DataStore<Preferences>
+        dataStore: DataStore<Preferences>,
+        authDataBase: AuthDataBase
     ) =
         SecretSharingUseCases(
             getFeeds = GetFeeds(repo),
@@ -133,7 +147,10 @@ object AppModule {
             getReplies = GetReplies(repo),
             reactOnReply = ReactOnReply(repo),
             replyComment = ReplyComment(repo),
-            logOut = LogOut(dataStore)
+            logOut = LogOut(dataStore, authDataBase),
+            getLoggedUser = com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.usecases.GetLoggedUser(repo),
+            switchAccount = SwitchAccount(dataStore)
         )
+
 }
 

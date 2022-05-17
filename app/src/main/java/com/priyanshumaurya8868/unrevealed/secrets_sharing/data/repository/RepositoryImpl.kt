@@ -3,8 +3,7 @@ package com.priyanshumaurya8868.unrevealed.secrets_sharing.data.repository
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import com.priyanshumaurya8868.unrevealed.core.PreferencesKeys
+import com.priyanshumaurya8868.unrevealed.auth.data.local.AuthDataBase
 import com.priyanshumaurya8868.unrevealed.core.Resource
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.local.SecretsDatabase
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.mappers.*
@@ -17,61 +16,23 @@ import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.core.Secr
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.core.SecretSharingConstants.ERROR_MSG_5xx
 import io.ktor.client.features.*
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 
 class RepositoryImpl(
     private val api: UnrevealedApi,
-    private val db: SecretsDatabase,
+    private val secretsDatabase: SecretsDatabase,
+    private val authDataBase: AuthDataBase,
     private val dataStore: DataStore<Preferences>
 ) : Repository {
 
-    private val dao = db.dao
+    private val secretsDao = secretsDatabase.dao
+    private val authDao = authDataBase.dao
 
-    override fun getMyProfile() = flow {
-        emit(Resource.Loading())
-        val myProfileID: String = dataStore.data.first()[PreferencesKeys.MY_PROFILE_ID] ?: ""
-        val myProfile = dao.getUserProfileById(myProfileID)
-        if (myProfile != null) {
-            emit(Resource.Loading(data = myProfile.toUserProfileModel()))
-        }
-        val res = try {
-            api.getMyProfile()
-        } catch (e: ClientRequestException) {
-            //4xx res
-            e.printStackTrace()
-            val msg = "Authentication error!!"
-            emit(Resource.Error(message = extractErrorMsg(e.message) ?: msg))
-            //removing expired token
-            dataStore.edit { pref ->
-                pref.clear()
-            }
-            null
-        } catch (e: RedirectResponseException) {// 3xx res
-            e.printStackTrace()
-            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_3xx))
-            null
-        } catch (e: ServerResponseException) {//5xx
-            e.printStackTrace()
-            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_5xx))
-            null
-        } catch (e: Exception) {
-            e.printStackTrace()
-            val msg = ERROR_MSG
-            emit(Resource.Error(message = msg))
-            null
-        }
-
-        res?.let {
-            dao.insertUserDetail(it.toUserProfileEntity())
-            val data = dao.getUserProfileById(myProfileID)
-            emit(Resource.Success(data?.toUserProfileModel() ?: UserProfile()))
-        }
-    }
+    override suspend fun getMyProfile(id: String) = authDao.getProfileById(id).toMyProfile()
 
     override fun getUserById(id: String) = flow<Resource<UserProfile>> {
         emit(Resource.Loading())
-        val localUserProfile = dao.getUserProfileById(id)?.toUserProfileModel()
+        val localUserProfile = secretsDao.getUserProfileById(id)?.toUserProfileModel()
         localUserProfile?.let { emit(Resource.Loading(it)) }
 
         val userProfile = try {
@@ -95,8 +56,8 @@ class RepositoryImpl(
             null
         }
         userProfile?.let {
-            dao.insertUserDetail(it)
-            emit(Resource.Success(dao.getUserProfileById(id)!!.toUserProfileModel()))
+            secretsDao.insertUserDetail(it)
+            emit(Resource.Success(secretsDao.getUserProfileById(id)!!.toUserProfileModel()))
         }
     }
 
@@ -109,7 +70,8 @@ class RepositoryImpl(
         val limit = pageSize
         val shouldPresentCachedData = skip == 0
         val cachedItemsList =
-            dao.getFeeds(tag = tag ?: "", limit = limit, skip = skip).map { it.toFeedSecret() }
+            secretsDao.getFeeds(tag = tag ?: "", limit = limit, skip = skip)
+                .map { it.toFeedSecret() }
         emit(Resource.Loading(if (shouldPresentCachedData) cachedItemsList else null))
         val feedDto = try {
             api.getFeeds(tag = tag, limit = limit, skip = skip)
@@ -134,11 +96,11 @@ class RepositoryImpl(
         if (feedDto != null) {
             val shoulClearOldRecords = skip == 0
             if (shoulClearOldRecords)
-                dao.clearFeedSecretList(tag ?: "")
-            dao.insertFeedSecrets(feedDto.secrets.map { it.toSecretEntity() })
+                secretsDao.clearFeedSecretList(tag ?: "")
+            secretsDao.insertFeedSecrets(feedDto.secrets.map { it.toSecretEntity() })
             emit(
                 Resource.Success(
-                    dao.getFeeds(tag = tag ?: "", skip = skip, limit = limit)
+                    secretsDao.getFeeds(tag = tag ?: "", skip = skip, limit = limit)
                         .map { it.toFeedSecret() })
             )
         }
@@ -364,6 +326,10 @@ class RepositoryImpl(
         response?.let { dto ->
             emit(Resource.Success(dto.replies.map { it.toReply() }))
         }
+    }
+
+    override suspend fun getListOfLoggedUsers(): List<MyProfile> {
+        return authDao.getMyProfiles().map { it.toMyProfile() }
     }
 
 

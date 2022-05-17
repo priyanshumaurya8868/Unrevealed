@@ -7,7 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.priyanshumaurya8868.unrevealed.core.Constants.ARG_SECRET_ID
+import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_SECRET_ID
 import com.priyanshumaurya8868.unrevealed.core.Resource
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.*
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.usecases.SecretSharingUseCases
