@@ -15,6 +15,9 @@ interface UnrevealedDao {
         secrets: List<SecretEntity>
     )
 
+    @Query("SELECT * FROM SecretEntity WHERE _id LIKE :id")
+    suspend fun getSecretById(id :String):SecretEntity
+
     @Query( """SELECT *
             FROM secretentity
             WHERE LOWER(tag) LIKE '%'||LOWER(:tag) || '%'
@@ -31,6 +34,9 @@ interface UnrevealedDao {
 
     @Query("SELECT * FROM UserProfileEntity WHERE _id = :userId")
     suspend fun getUserProfileById(userId: String): UserProfileEntity?
+
+    @Query("DELETE FROM SecretEntity WHERE _id LIKE :id")
+    suspend fun deleteById(id :String)
 
 
 }

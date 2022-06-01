@@ -8,5 +8,6 @@ object Constants {
     const val ARG_GENDER = "gender"
     const val ARG_FEED_ITEM = "feeditem"
     const val ARG_SECRET_ID = "secret_id"
+    const val ARG_SECRET_ITEM = "secret_item"
     const val ARG_COMMENT_ID = "comment_id"
 }

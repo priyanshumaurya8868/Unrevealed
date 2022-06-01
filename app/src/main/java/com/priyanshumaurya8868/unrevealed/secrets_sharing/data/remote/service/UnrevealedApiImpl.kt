@@ -8,11 +8,9 @@ import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.remote.dto.*
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class UnrevealedApiImpl(private val httpClient: HttpClient, val dataStore: DataStore<Preferences>) :
     UnrevealedApi {
 
@@ -90,13 +88,24 @@ class UnrevealedApiImpl(private val httpClient: HttpClient, val dataStore: DataS
         }
     }
 
-    override suspend fun updateSecret(secretBody: PostSecretRequestBodyDto): SecretDto {
+    override suspend fun updateSecret(secretBody: UpdateSecretRequestBodyDto): SecretDto {
         val token: String =
             "bearer " + dataStore.data.first()[PreferencesKeys.JWT_TOKEN]
         return httpClient.put {
             url(HttpRoutes.SECRETS)
             contentType(ContentType.Application.Json)
             body = secretBody
+            headers {
+                append(HttpHeaders.Authorization, token)
+            }
+        }
+    }
+
+    override suspend fun deleteSecret(id: String) {
+        val token: String =
+            "bearer " + dataStore.data.first()[PreferencesKeys.JWT_TOKEN]
+        return httpClient.delete {
+            url(HttpRoutes.SECRETS + "/$id")
             headers {
                 append(HttpHeaders.Authorization, token)
             }
@@ -179,6 +188,43 @@ class UnrevealedApiImpl(private val httpClient: HttpClient, val dataStore: DataS
             "bearer " + dataStore.data.first()[PreferencesKeys.JWT_TOKEN]
         return httpClient.delete {
             url(HttpRoutes.DISLIKE_COMMENT + "/$id")
+            headers {
+                append(HttpHeaders.Authorization, token)
+            }
+        }
+    }
+
+    override suspend fun deleteCommentOrReply(id: String) {
+        val token: String =
+            "bearer " + dataStore.data.first()[PreferencesKeys.JWT_TOKEN]
+        return httpClient.delete {
+            url(HttpRoutes.COMMENTS + "/$id")
+            headers {
+                append(HttpHeaders.Authorization, token)
+            }
+        }
+    }
+
+    override suspend fun updateComment(bodyDto: UpdateComplimentRequestBodyDto): CommentDto {
+        val token: String =
+            "bearer " + dataStore.data.first()[PreferencesKeys.JWT_TOKEN]
+        return httpClient.put {
+            url(HttpRoutes.COMMENTS)
+            contentType(ContentType.Application.Json)
+            body = bodyDto
+            headers {
+                append(HttpHeaders.Authorization, token)
+            }
+        }
+    }
+
+    override suspend fun updateReply(bodyDto: UpdateComplimentRequestBodyDto): ReplyDto {
+        val token: String =
+            "bearer " + dataStore.data.first()[PreferencesKeys.JWT_TOKEN]
+        return httpClient.put {
+            url(HttpRoutes.COMMENTS)
+            contentType(ContentType.Application.Json)
+            body = bodyDto
             headers {
                 append(HttpHeaders.Authorization, token)
             }

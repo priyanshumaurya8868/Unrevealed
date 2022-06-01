@@ -1,6 +1,6 @@
 package com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components
 
-import android.webkit.WebSettings
+import android.app.Dialog
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,13 +11,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -41,8 +39,10 @@ fun Drawer(
     modifier: Modifier = Modifier,
     eventListener: (HomeScreenEvents) -> Unit,
     state: HomeScreenState,
-    navController: NavController
+    navController: NavController,
+    openDialog: MutableState<Boolean>
 ) {
+
     val user = state.myCurrentProfile
     Column(
         modifier = modifier
@@ -138,7 +138,7 @@ fun Drawer(
             }
 
             item {
-               Spacer(modifier = Modifier.height(localSpacing))
+                Spacer(modifier = Modifier.height(localSpacing))
             }
 
             items(menuList.size) {
@@ -161,19 +161,20 @@ fun Drawer(
                         text = menuList[it].title,
                         fontWeight = FontWeight.W400,
                         fontSize = fontSize_1,
-                        )
+                    )
                 }
                 Spacer(modifier = Modifier.height(if (it == 1) localSpacing else localVerticalSpacing))
             }
         }
 
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .height(60.dp)
-            .clickable {
-                eventListener(HomeScreenEvents.LogOutUser)
-            },
-        horizontalAlignment = Alignment.CenterHorizontally
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp)
+                .clickable {
+                    openDialog.value = true
+                },
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Divider(
                 modifier = Modifier
@@ -181,13 +182,15 @@ fun Drawer(
                     .alpha(0.5f)
             )
             IconWithTextDrawerMenu(
-                modifier = Modifier.padding( top = localSpacing),
+                modifier = Modifier.padding(top = localSpacing),
                 icon = Icons.Default.Logout,
                 text = "Logout"
             )
         }
 
     }
+
+
 }
 
 @Composable
@@ -202,7 +205,7 @@ fun IconWithTextDrawerMenu(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(icon, text,  )
+        Icon(icon, text)
         Spacer(modifier = Modifier.width(spacerWidth))
         Text(text, fontWeight = FontWeight.W400, fontSize = textSize)
     }

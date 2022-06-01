@@ -9,7 +9,8 @@ interface UnrevealedApi {
     suspend fun getComments(secretId: String, limit: Int, skip: Int): CommentsDto
     suspend fun getSecretById(id: String): SecretDto
     suspend fun revealSecret(secretBody: PostSecretRequestBodyDto): SecretDto
-    suspend fun updateSecret(secretBody: PostSecretRequestBodyDto): SecretDto
+    suspend fun updateSecret(secretBody: UpdateSecretRequestBodyDto): SecretDto
+    suspend fun deleteSecret(id :String)
     suspend fun postComment(commentBody: PostCommetRequestBodyDto): CommentDto
     suspend fun replyComment(replyBody: PostReplyRequestBodyDto): ReplyDto
     suspend fun likeComment(id: String): CommentDto
@@ -17,5 +18,7 @@ interface UnrevealedApi {
     suspend fun getReplies(parentCommentId: String): GetRepliesDto
     suspend fun likeReply(id : String) :ReplyDto
     suspend fun disLikeReply(id :String) : ReplyDto
-
+    suspend fun deleteCommentOrReply(id: String)
+    suspend fun updateComment(bodyDto : UpdateComplimentRequestBodyDto) :CommentDto
+    suspend fun updateReply(bodyDto: UpdateComplimentRequestBodyDto):ReplyDto
 }

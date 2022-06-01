@@ -28,6 +28,16 @@ interface Repository {
 
     fun getReplies(parentCommentId: String): Flow<Resource<List<Reply>>>
 
+    fun deleteCommentOrReply(id : String) : Flow<Resource<String>>
+
     suspend fun getListOfLoggedUsers() :List<MyProfile>
+
+    fun updateReply(body : UpdateComplimentRequestBody) : Flow<Resource<Reply>>
+
+    fun updateComment(body: UpdateComplimentRequestBody) : Flow<Resource<Comment>>
+
+    fun deleteSecret(id : String) : Flow<Resource<String>>
+
+    fun updateSecret(body : UpdateSecretRequestBody) : Flow<Resource<FeedSecret>>
 
 }

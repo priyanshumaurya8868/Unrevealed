@@ -2,10 +2,15 @@ package com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.composeP
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -15,6 +20,7 @@ import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localS
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localVerticalSpacing
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.composePost.component.ComposePostScreenEvents
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.composePost.component.TextCard
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 
@@ -38,11 +44,19 @@ fun TagSelectionBottomSheet(
                     .fillMaxSize()
                     .padding(localSpacing)
             ) {
-                Text(
-                    text = "Select a Topic",
-                    style = MaterialTheme.typography.h5,
-                    modifier = Modifier.padding(10.dp)
-                )
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically){
+                    Text(
+                        text = "Select a Topic",
+                        style = MaterialTheme.typography.h5,
+                        modifier = Modifier.padding(10.dp)
+                    )
+
+                    Icon(Icons.Default.Close,"hide sheet",
+                        tint = MaterialTheme.colors.onSurface.copy(alpha = .7f),
+                        modifier = Modifier
+                        .clip(CircleShape)
+                        .clickable { scope.launch{ modalBottomSheetState.hide() } })
+                }
                 Spacer(modifier = Modifier.height(localVerticalSpacing))
                 FlowRow(
                     modifier = Modifier.fillMaxSize(),

@@ -30,6 +30,11 @@ open class AuthViewModel @Inject constructor() : ViewModel() {
             _eventFlow.emit(UiEvent.ShowSnackbar("Username can't be empty!"))
             return false
         }
+        if(!isSatisfiedRegex(_username.value.text)){
+            _username.value = username.value.copy(isError = true)
+            _eventFlow.emit(UiEvent.ShowSnackbar("Invalid username! try something else"))
+            return false
+        }
         if (_password.value.text.isBlank()) {
             _password.value = password.value.copy(isError = true)
             _eventFlow.emit(UiEvent.ShowSnackbar("Password can't be empty!"))
@@ -37,6 +42,11 @@ open class AuthViewModel @Inject constructor() : ViewModel() {
         }
         //TODO: 6 char min pswd
         return true
+    }
+
+    private fun isSatisfiedRegex(string: String): Boolean {
+        val regex = "^(?!.*\\.\\.)(?!.*\\.\$)[^\\W][\\w.]{0,29}\$".toRegex()
+        return regex.containsMatchIn(input = string)
     }
 
     sealed class UiEvent {

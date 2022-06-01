@@ -37,6 +37,8 @@ import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.composePo
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.core.SecretSharingConstants
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.Drawer
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.HomeScreenEvents
+import com.priyanshumaurya8868.unrevealed.core.composable.CustomDialog
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.LogOutDialog
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.PostItem
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -50,6 +52,7 @@ fun HomeScreen(
     navController: NavController,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
+    val openDialog = remember{ mutableStateOf(false)}
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
     val state = viewModel.state
@@ -106,7 +109,8 @@ fun HomeScreen(
                 Drawer(
                     state = state,
                     eventListener = viewModel::onEvents,
-                    navController = navController
+                    navController = navController,
+                    openDialog = openDialog
                 )
             },
             drawerBackgroundColor = Color.Transparent,
@@ -129,13 +133,21 @@ fun HomeScreen(
             Box(
                 Modifier
                     .fillMaxSize()
-                    .nestedScroll(nestedScrollConnection)
+                    .nestedScroll(nestedScrollConnection),
+                contentAlignment = Alignment.Center
             ) {
+
+                if (openDialog.value){
+                    LogOutDialog(openDialog = openDialog) {
+                        viewModel.onEvents(HomeScreenEvents.LogOutUser)
+                    }
+                }
 
                 LazyColumn(
                     contentPadding = PaddingValues(vertical = toolbarHeight),
                     modifier = Modifier
                         .fillMaxWidth()
+                        .align(Alignment.TopStart)
                 ) {
 
                     //tog filters
@@ -158,13 +170,13 @@ fun HomeScreen(
                                         .fillMaxWidth()
                                         .padding(end = 10.dp)
                                         .clip(CircleShape)
-                                        .clickable{
-                                                viewModel.onEvents(
-                                                    HomeScreenEvents.ChangeTag(
-                                                        null
-                                                    )
+                                        .clickable {
+                                            viewModel.onEvents(
+                                                HomeScreenEvents.ChangeTag(
+                                                    null
                                                 )
-                                            }
+                                            )
+                                        }
                                 ) {
                                     Text(
                                         "All",
@@ -232,6 +244,7 @@ fun HomeScreen(
 
                 TopAppBar(
                     modifier = Modifier
+                        .align(Alignment.TopStart)
                         .height(toolbarHeight)
                         .offset { IntOffset(x = 0, y = toolbarOffsetHeightPx.roundToInt()) },
                     backgroundColor = MaterialTheme.colors.background,

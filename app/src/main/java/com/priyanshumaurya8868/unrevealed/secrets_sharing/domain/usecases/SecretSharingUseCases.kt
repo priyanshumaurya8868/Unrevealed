@@ -16,4 +16,9 @@ data class SecretSharingUseCases(
     val logOut: LogOut,
     val getLoggedUser: GetLoggedUser,
     val switchAccount: SwitchAccount,
+    val deleteCommentOrReply: DeleteCommentOrReply,
+    val deleteSecret: DeleteSecret,
+    val updateComment: UpdateComment,
+    val updateReply: UpdateReply,
+    val updateSecret: UpdateSecret
     )

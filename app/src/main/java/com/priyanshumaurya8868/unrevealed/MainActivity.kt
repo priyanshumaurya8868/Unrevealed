@@ -3,7 +3,6 @@ package com.priyanshumaurya8868.unrevealed
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
@@ -30,6 +29,7 @@ import com.priyanshumaurya8868.unrevealed.core.Screen
 import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_GENDER
 import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_PASSWORD
 import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_SECRET_ID
+import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_SECRET_ITEM
 import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_USERNAME
 import com.priyanshumaurya8868.unrevealed.core.utils.PreferencesKeys
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.composePost.TagSelectionBottomSheet
@@ -138,7 +138,14 @@ class MainActivity : ComponentActivity() {
                                     color = MaterialTheme.colors.background
                                 )
                             }
-                            composable(Screen.ComposePostScreen.route) {
+                            composable(Screen.ComposePostScreen.route+"?$ARG_SECRET_ITEM={$ARG_SECRET_ITEM}",
+                                arguments = listOf(
+                                    navArgument(ARG_SECRET_ITEM) {
+                                        nullable = true
+                                        type = NavType.StringType
+                                        defaultValue = null
+                                    }
+                                )) {
                                 TagSelectionBottomSheet(navController)
                             }
 

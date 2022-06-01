@@ -4,8 +4,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PostReplyRequestBodyDto(
-    val comment_id: String,
+    val parent_comment_id: String,
+    val parent_reply_id: String?=null,
     val reply: String,
     val secret_id: String,
-    val mentionedUser : String
+    val mention : String,
 )

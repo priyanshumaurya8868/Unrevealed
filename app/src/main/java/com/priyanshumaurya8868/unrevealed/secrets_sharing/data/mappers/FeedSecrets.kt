@@ -3,8 +3,11 @@ package com.priyanshumaurya8868.unrevealed.secrets_sharing.data.mappers
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.local.entity.SecretEntity
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.remote.dto.FeedDto
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.remote.dto.SecretDto
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.remote.dto.UpdateComplimentRequestBodyDto
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.remote.dto.UpdateSecretRequestBodyDto
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.Feed
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.FeedSecret
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.UpdateSecretRequestBody
 
 fun SecretEntity.toFeedSecret() = FeedSecret(
     _id = _id,
@@ -31,8 +34,6 @@ fun SecretDto.toSecretEntity() = SecretEntity(
     content = content,
     tag, timestamp, views_count
 )
-
-
 fun FeedDto.toFeed() = Feed(
     skip = skip,
     limit = limit,
@@ -41,3 +42,9 @@ fun FeedDto.toFeed() = Feed(
     present_count = present_count
 )
 
+fun UpdateSecretRequestBody.toDto()=
+    UpdateSecretRequestBodyDto(
+        secret_id = secret_id,
+        content = content,
+        tag = tag
+    )

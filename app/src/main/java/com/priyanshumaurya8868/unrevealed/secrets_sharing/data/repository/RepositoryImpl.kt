@@ -328,10 +328,148 @@ class RepositoryImpl(
         }
     }
 
+    override fun deleteCommentOrReply(id: String) = flow {
+        emit(Resource.Loading())
+        val res = try {
+            api.deleteCommentOrReply(id)
+            Unit
+        } catch (e: RedirectResponseException) {// 3xx res
+            e.printStackTrace()
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_3xx))
+            null
+        } catch (e: ClientRequestException) {//4xx res
+            e.printStackTrace()
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_4xx))
+            null
+        } catch (e: ServerResponseException) {//5xx
+            e.printStackTrace()
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_5xx))
+            null
+        } catch (e: Exception) {
+            e.printStackTrace()
+            val msg = ERROR_MSG
+            emit(Resource.Error(message = msg))
+            null
+        }
+        res?.let {
+            emit(Resource.Success("Deleted...!"))
+        }
+    }
+
     override suspend fun getListOfLoggedUsers(): List<MyProfile> {
         return authDao.getMyProfiles().map { it.toMyProfile() }
     }
 
+    override fun updateReply(body: UpdateComplimentRequestBody) = flow<Resource<Reply>> {
+      emit(Resource.Loading())
+        val res = try {
+            api.updateReply(body.toDto())
+        } catch (e: RedirectResponseException) {// 3xx res
+            e.printStackTrace()
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_3xx))
+            null
+        } catch (e: ClientRequestException) {//4xx res
+            e.printStackTrace()
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_4xx))
+            null
+        } catch (e: ServerResponseException) {//5xx
+            e.printStackTrace()
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_5xx))
+            null
+        } catch (e: Exception) {
+            e.printStackTrace()
+            val msg = ERROR_MSG
+            emit(Resource.Error(message = msg))
+            null
+        }
+        res?.let {
+            emit(Resource.Success(it.toReply()))
+        }
+    }
+
+    override fun updateComment(body: UpdateComplimentRequestBody)= flow {
+        emit(Resource.Loading())
+        val res = try {
+            api.updateComment(body.toDto())
+        } catch (e: RedirectResponseException) {// 3xx res
+            e.printStackTrace()
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_3xx))
+            null
+        } catch (e: ClientRequestException) {//4xx res
+            e.printStackTrace()
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_4xx))
+            null
+        } catch (e: ServerResponseException) {//5xx
+            e.printStackTrace()
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_5xx))
+            null
+        } catch (e: Exception) {
+            e.printStackTrace()
+            val msg = ERROR_MSG
+            emit(Resource.Error(message = msg))
+            null
+        }
+        res?.let {
+            emit(Resource.Success(it.toComment()))
+        }
+    }
+
+    override fun deleteSecret(id: String)= flow {
+        emit(Resource.Loading())
+        val res = try {
+            api.deleteSecret(id)
+            Unit
+        } catch (e: RedirectResponseException) {// 3xx res
+            e.printStackTrace()
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_3xx))
+            null
+        } catch (e: ClientRequestException) {//4xx res
+            e.printStackTrace()
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_4xx))
+            null
+        } catch (e: ServerResponseException) {//5xx
+            e.printStackTrace()
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_5xx))
+            null
+        } catch (e: Exception) {
+            e.printStackTrace()
+            val msg = ERROR_MSG
+            emit(Resource.Error(message = msg))
+            null
+        }
+        res?.let {
+            secretsDao.deleteById(id)
+            emit(Resource.Success("Deleted...!"))
+        }
+    }
+
+    override fun updateSecret(body: UpdateSecretRequestBody)= flow {
+        emit(Resource.Loading())
+        val res = try {
+            api.updateSecret(body.toDto())
+        } catch (e: RedirectResponseException) {// 3xx res
+            e.printStackTrace()
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_3xx))
+            null
+        } catch (e: ClientRequestException) {//4xx res
+            e.printStackTrace()
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_4xx))
+            null
+        } catch (e: ServerResponseException) {//5xx
+            e.printStackTrace()
+            emit(Resource.Error(message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_5xx))
+            null
+        } catch (e: Exception) {
+            e.printStackTrace()
+            val msg = ERROR_MSG
+            emit(Resource.Error(message = msg))
+            null
+        }
+        res?.let {
+            secretsDao.insertFeedSecrets(listOf(it.toSecretEntity()))
+            emit(Resource.Success(secretsDao.getSecretById(it._id).toFeedSecret()))
+        }
+    }
 
     private fun extractErrorMsg(msg: String?) =
         try {
