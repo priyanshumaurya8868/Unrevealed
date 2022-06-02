@@ -8,6 +8,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.priyanshumaurya8868.unrevealed.core.ThemeSwitcher
 import com.priyanshumaurya8868.unrevealed.core.utils.PreferencesKeys
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.MyProfile
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.usecases.SecretSharingUseCases
@@ -24,10 +25,12 @@ import javax.inject.Inject
 class HomeViewModel
 @Inject constructor(
     private val useCases: SecretSharingUseCases,
-    private val dataStore: DataStore<Preferences>
+    private val dataStore: DataStore<Preferences>,
+    private val themeSwitcher: ThemeSwitcher
 ) : ViewModel() {
 
     var state by mutableStateOf(HomeScreenState())
+
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -106,7 +109,7 @@ class HomeViewModel
                 switchAccount(event.selectedProfile)
             }
             is HomeScreenEvents.ToggleTheme -> {
-
+                state = state.copy(isDarkTheme =  themeSwitcher.toggleTheme())
             }
             is HomeScreenEvents.ToggleListOfLoggedUSer -> {
                 Log.d("omega/home", "tl")

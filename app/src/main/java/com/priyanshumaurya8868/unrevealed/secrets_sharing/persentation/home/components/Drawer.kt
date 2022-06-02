@@ -1,6 +1,5 @@
 package com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components
 
-import android.app.Dialog
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -61,10 +60,10 @@ fun Drawer(
                     horizontalArrangement = Arrangement.End
                 ) {
                     val themeIcon =
-                        if (isSystemInDarkTheme()) Icons.Default.DarkMode else Icons.Default.LightMode
+                        if (state.isDarkTheme) Icons.Default.DarkMode else Icons.Default.LightMode
                     Icon(
                         themeIcon,
-                        contentDescription = "switch to ${if (isSystemInDarkTheme()) "Light Theme" else "Dark theme"}",
+                        contentDescription = "switch to ${if (state.isDarkTheme) "Light Theme" else "Dark theme"}",
                         modifier = Modifier.noRippleClickable { eventListener(HomeScreenEvents.ToggleTheme) }
                     )
                 }

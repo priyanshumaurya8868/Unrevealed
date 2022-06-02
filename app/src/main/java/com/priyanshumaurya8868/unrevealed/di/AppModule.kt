@@ -17,6 +17,7 @@ import com.priyanshumaurya8868.unrevealed.auth.data.repo.UnrevealedAuthRepoImpl
 import com.priyanshumaurya8868.unrevealed.auth.domain.repo.UnrevealedAuthRepo
 import com.priyanshumaurya8868.unrevealed.auth.domain.usecase.*
 import com.priyanshumaurya8868.unrevealed.auth.domain.usecase.GetLoggedUser
+import com.priyanshumaurya8868.unrevealed.core.ThemeSwitcher
 import com.priyanshumaurya8868.unrevealed.core.utils.Constants.USER_PREFERENCES
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.local.SecretsDatabase
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.local.converters.UserProfileTypeConverter
@@ -155,5 +156,11 @@ object AppModule {
             updateReply = UpdateReply(repo),
             updateSecret = UpdateSecret(repo)
         )
+
+
+    @Provides
+    @Singleton
+    fun provideThemeSwitcher(dataStore: DataStore<Preferences>) = ThemeSwitcher(dataStore)
+
 }
 

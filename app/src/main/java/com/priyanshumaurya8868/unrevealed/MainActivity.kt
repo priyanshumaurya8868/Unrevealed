@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.darkColors
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.datastore.core.DataStore
@@ -26,11 +27,14 @@ import com.priyanshumaurya8868.unrevealed.auth.persentation.loginScreen.LoginScr
 import com.priyanshumaurya8868.unrevealed.auth.persentation.signupScreen.SignupScreen
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.WelcomeScreen
 import com.priyanshumaurya8868.unrevealed.core.Screen
+import com.priyanshumaurya8868.unrevealed.core.ThemeSwitcher
 import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_GENDER
 import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_PASSWORD
 import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_SECRET_ID
 import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_SECRET_ITEM
 import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_USERNAME
+import com.priyanshumaurya8868.unrevealed.core.utils.Constants.DarkColorPalette
+import com.priyanshumaurya8868.unrevealed.core.utils.Constants.LightColorPalette
 import com.priyanshumaurya8868.unrevealed.core.utils.PreferencesKeys
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.composePost.TagSelectionBottomSheet
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.HomeScreen
@@ -47,14 +51,16 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var dataStore: DataStore<Preferences>
-//    val viewModel: MainViewModel by viewModels()
+
+    @Inject
+    lateinit var themeSwitcher: ThemeSwitcher
 
     @OptIn(ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             ProvideWindowInsets {
-                UnrevealedTheme {
+                MaterialTheme(colors = if(themeSwitcher.IS_DARK_THEME) DarkColorPalette else LightColorPalette) {
                     // A surface container using the 'background' color from the theme
                     Surface(
                         modifier = Modifier.fillMaxSize(),
