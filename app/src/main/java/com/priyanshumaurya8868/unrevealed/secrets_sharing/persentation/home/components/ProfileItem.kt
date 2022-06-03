@@ -37,7 +37,7 @@ fun ProfileItem(
     ) {
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            CircleImage(image = rememberImagePainter(profile.avatar), size = 40.dp)
+            CircleImage(image = profile.avatar, size = 40.dp)
             Text(
                 text = profile.username,
                 fontSize = fontSize_1,

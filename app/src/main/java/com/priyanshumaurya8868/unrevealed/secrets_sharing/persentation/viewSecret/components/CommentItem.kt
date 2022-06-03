@@ -48,7 +48,7 @@ fun CommentItem(
             .fillMaxWidth()
             .padding(bottom = localSpacing, start = localSpacing, end = localSpacing)
     ) {
-        CircleImage(image = rememberImagePainter(comment.commenter.avatar), size = 40.dp)
+        CircleImage(image = comment.commenter.avatar, size = 40.dp)
         Spacer(modifier = Modifier.width(10.dp))
         Column(
             modifier = Modifier

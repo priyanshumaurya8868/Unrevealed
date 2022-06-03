@@ -82,7 +82,7 @@ fun AvatarSelection(
 
             Profiler(
                 modifier = Modifier.fillMaxWidth(),
-                image = rememberImagePainter(viewModel.state.value.selectedAvatar),
+                image = viewModel.state.value.selectedAvatar?:"",
                 username = viewModel.state.value.username,
                 gender = viewModel.state.value.gender
             )

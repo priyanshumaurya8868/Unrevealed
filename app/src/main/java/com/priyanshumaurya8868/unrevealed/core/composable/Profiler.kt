@@ -1,6 +1,5 @@
 package com.priyanshumaurya8868.unrevealed.core.composable
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
@@ -13,13 +12,16 @@ import androidx.compose.material.icons.filled.Male
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.priyanshumaurya8868.unrevealed.auth.persentation.core.AuthConstants.VAL_MALE
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.fontSize_1
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localSpacing
@@ -27,7 +29,7 @@ import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localS
 @Composable
 fun Profiler(
     modifier: Modifier = Modifier,
-    image: Painter,
+    image: String,
     imageSize: Dp = 100.dp,
     username: String,
     gender: String
@@ -73,20 +75,21 @@ fun UserBriefDetail(modifier: Modifier = Modifier, username: String, gender: Str
 }
 
 @Composable
-fun CircleImage(modifier: Modifier = Modifier,image: Painter, size: Dp, contentDescription: String = "Profile picture") {
+fun CircleImage(modifier: Modifier = Modifier,image: String, size: Dp, contentDescription: String = "Profile picture") {
     Card(
         backgroundColor =
-//            if (selectedIndex == it)
-        MaterialTheme.colors.secondary
-//            else MaterialTheme.colors.surface
-        ,
+        MaterialTheme.colors.secondary,
         shape = CircleShape,
         modifier = modifier
             .size(size)
             .aspectRatio(1f)
     ) {
-        Image(
-            painter = image,
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(image)
+                .crossfade(true)
+                .diskCachePolicy(CachePolicy.ENABLED)
+                .build(),
             contentDescription = contentDescription,
             contentScale = ContentScale.Inside,
             modifier = Modifier
@@ -94,3 +97,4 @@ fun CircleImage(modifier: Modifier = Modifier,image: Painter, size: Dp, contentD
         )
     }
 }
+

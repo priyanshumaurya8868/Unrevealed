@@ -30,7 +30,7 @@ fun AccountsItem(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            CircleImage(image = rememberImagePainter(account.avatar), size = 40.dp)
+            CircleImage(image = account.avatar, size = 40.dp)
             Spacer(modifier = Modifier.width(10.dp))
             Text(
                 account.username,

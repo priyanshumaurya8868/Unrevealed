@@ -41,7 +41,7 @@ fun ReplyItem(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        CircleImage(image = rememberImagePainter(reply.commenter.avatar), size = 30.dp)
+        CircleImage(image = reply.commenter.avatar, size = 30.dp)
         Spacer(modifier = Modifier.width(10.dp))
         Column(
             modifier = Modifier

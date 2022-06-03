@@ -18,7 +18,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberImagePainter
 import com.priyanshumaurya8868.unrevealed.R
 import com.priyanshumaurya8868.unrevealed.core.composable.CircleImage
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localSpacing
@@ -55,7 +54,7 @@ fun PostItem(
             ) {
                 AuthorProfiler(
                     Modifier.fillMaxWidth(),
-                    pfpPainter = rememberImagePainter(item.author.avatar),
+                    pfp = item.author.avatar,
                     username = item.author.username,
                     timeString = item.timestamp.covertToPostTimeText() ?: ""
                 )
@@ -95,7 +94,7 @@ fun PostItem(
 @Composable
 fun AuthorProfiler(
     modifier: Modifier = Modifier,
-    pfpPainter: Painter,
+    pfp: String,
     username: String,
     timeString: String
 ) {
@@ -106,7 +105,7 @@ fun AuthorProfiler(
 
         Row(verticalAlignment = Alignment.CenterVertically) {
 
-            CircleImage(image = pfpPainter, size = 50.dp)
+            CircleImage(image = pfp, size = 50.dp)
 
             Spacer(modifier = Modifier.width(localVerticalSpacing))
             NameWithTime(username, timeString)

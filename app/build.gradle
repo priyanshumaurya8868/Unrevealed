@@ -109,8 +109,9 @@ dependencies {
     // dataStore
     implementation "androidx.datastore:datastore-preferences:1.0.0"
     // coil
-    implementation "io.coil-kt:coil-compose:1.4.0"
-
+    implementation "io.coil-kt:coil-compose:2.1.0"
     //flowRow
     implementation "com.google.accompanist:accompanist-flowlayout:0.24.7-alpha"
+
+
 }
