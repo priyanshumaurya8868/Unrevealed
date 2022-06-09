@@ -62,6 +62,7 @@ class RepositoryImpl(
     }
 
     override suspend fun getFeeds(
+        author_id : String?,
         tag: String?,
         page: Int,
         pageSize: Int
@@ -70,11 +71,11 @@ class RepositoryImpl(
         val limit = pageSize
         val shouldPresentCachedData = skip == 0
         val cachedItemsList =
-            secretsDao.getFeeds(tag = tag ?: "", limit = limit, skip = skip)
+            secretsDao.getFeeds(tag = tag ?: "", limit = limit, skip = skip,author_id=author_id?:"")
                 .map { it.toFeedSecret() }
         emit(Resource.Loading(if (shouldPresentCachedData) cachedItemsList else null))
         val feedDto = try {
-            api.getFeeds(tag = tag, limit = limit, skip = skip)
+            api.getFeeds(author_id= author_id,tag = tag, limit = limit, skip = skip)
 
         } catch (e: RedirectResponseException) {// 3xx res
             e.printStackTrace()
@@ -100,7 +101,7 @@ class RepositoryImpl(
             secretsDao.insertFeedSecrets(feedDto.secrets.map { it.toSecretEntity() })
             emit(
                 Resource.Success(
-                    secretsDao.getFeeds(tag = tag ?: "", skip = skip, limit = limit)
+                    secretsDao.getFeeds(tag = tag ?: "", skip = skip, limit = limit, author_id = author_id?:"")
                         .map { it.toFeedSecret() })
             )
         }

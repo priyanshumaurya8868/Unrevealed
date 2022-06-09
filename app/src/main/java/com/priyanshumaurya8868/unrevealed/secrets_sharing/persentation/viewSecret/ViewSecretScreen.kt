@@ -126,7 +126,8 @@ fun ViewSecretScreen(
                                maxLines = Int.MAX_VALUE,
                                shape = RoundedCornerShape(bottomStart = 30.dp),
                                item = secret ?: FeedSecret(),
-                               shouldShowCommentCount = false
+                               shouldShowCommentCount = false,
+                               navController = navController
                            )
                        }
 

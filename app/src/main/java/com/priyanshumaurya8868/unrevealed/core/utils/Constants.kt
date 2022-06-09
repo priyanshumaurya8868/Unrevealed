@@ -14,7 +14,8 @@ object Constants {
     const val ARG_SECRET_ID = "secret_id"
     const val ARG_SECRET_ITEM = "secret_item"
     const val ARG_COMMENT_ID = "comment_id"
-
+    const val ARG_USER_ID = "user_id"
+    const val ARG_USER = "user"
 
     val DarkColorPalette = darkColors(
         primary = owl_pink_200,

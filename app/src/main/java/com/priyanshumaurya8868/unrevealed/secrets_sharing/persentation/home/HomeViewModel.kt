@@ -47,7 +47,8 @@ class HomeViewModel
             }
         },
         onRequest = { nextPage ->
-            useCases.getFeeds(state.selectedTag, nextPage, 20)
+            Log.d("omegaRanger","next    ${state.selectedTag}, $nextPage, 20")
+            useCases.getFeeds(author_id = null,state.selectedTag, nextPage, 20)
         },
         getNextKey = {
             state.page + 1
@@ -75,6 +76,7 @@ class HomeViewModel
     )
 
     init {
+        state = state.copy(isDarkTheme =  themeSwitcher.IS_DARK_THEME)
         loadNextItems()
         getPresentUserProfile()
     }

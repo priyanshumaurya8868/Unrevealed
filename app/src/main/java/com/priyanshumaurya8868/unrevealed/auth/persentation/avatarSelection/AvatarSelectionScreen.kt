@@ -84,7 +84,8 @@ fun AvatarSelection(
                 modifier = Modifier.fillMaxWidth(),
                 image = viewModel.state.value.selectedAvatar?:"",
                 username = viewModel.state.value.username,
-                gender = viewModel.state.value.gender
+                gender = viewModel.state.value.gender,
+                textAlign = TextAlign.Center
             )
             Text(
                 "Choose an avatar.",

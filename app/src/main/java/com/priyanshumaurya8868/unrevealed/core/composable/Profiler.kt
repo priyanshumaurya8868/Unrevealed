@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -32,31 +33,42 @@ fun Profiler(
     image: String,
     imageSize: Dp = 100.dp,
     username: String,
-    gender: String
+    gender: String,
+    textAlign: TextAlign = TextAlign.Start
 ) {
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         CircleImage(image = image, size = imageSize)
         Spacer(modifier = Modifier.height(localSpacing))
-        UserBriefDetail(username = username, gender = gender)
+        UserBriefDetail(username = username, gender = gender, textAlign = textAlign)
     }
 }
 
 @Composable
-fun UserBriefDetail(modifier: Modifier = Modifier, username: String, gender: String) {
-    Column(modifier = modifier) {
+fun UserBriefDetail(
+    modifier: Modifier = Modifier,
+    username: String,
+    gender: String,
+    textAlign: TextAlign = TextAlign.Start
+) {
+    Column(modifier = modifier, horizontalAlignment = if(textAlign == TextAlign.Center) Alignment.CenterHorizontally else Alignment.Start) {
         Text(
             text = username,
             fontSize = fontSize_1,
             color = MaterialTheme.colors.onBackground,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
+            textAlign = textAlign
         )
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = if (textAlign == TextAlign.Center) Arrangement.Center else Arrangement.Start
+        ) {
             Text(
                 text = gender,
                 fontWeight = FontWeight.Light,
                 fontSize = 14.sp,
-                color = MaterialTheme.colors.onSurface
+                color = MaterialTheme.colors.onSurface,
+                textAlign = textAlign
             )
             Spacer(modifier = Modifier.width(5.dp))
             Icon(
@@ -75,7 +87,12 @@ fun UserBriefDetail(modifier: Modifier = Modifier, username: String, gender: Str
 }
 
 @Composable
-fun CircleImage(modifier: Modifier = Modifier,image: String, size: Dp, contentDescription: String = "Profile picture") {
+fun CircleImage(
+    modifier: Modifier = Modifier,
+    image: String,
+    size: Dp,
+    contentDescription: String = "Profile picture"
+) {
     Card(
         backgroundColor =
         MaterialTheme.colors.secondary,
@@ -89,11 +106,11 @@ fun CircleImage(modifier: Modifier = Modifier,image: String, size: Dp, contentDe
                 .data(image)
                 .crossfade(true)
                 .diskCachePolicy(CachePolicy.ENABLED)
+                .networkCachePolicy(CachePolicy.ENABLED)
                 .build(),
             contentDescription = contentDescription,
             contentScale = ContentScale.Inside,
-            modifier = Modifier
-                .padding(top = 10.dp, start = 5.dp, end = 5.dp)
+            modifier = Modifier.padding(top = 10.dp, start = 5.dp, end = 5.dp)
         )
     }
 }

@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Entity
 @Serializable
-data class UserProfileEntity(
+data class  UserProfileEntity(
     @PrimaryKey
     val _id: String,
     val avatar: String,

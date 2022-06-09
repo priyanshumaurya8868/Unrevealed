@@ -21,10 +21,11 @@ interface UnrevealedDao {
     @Query( """SELECT *
             FROM secretentity
             WHERE LOWER(tag) LIKE '%'||LOWER(:tag) || '%'
+            AND LOWER(author) LIKE '%'||LOWER(:author_id) || '%'
             LIMIT :limit 
             OFFSET :skip
             """)
-    suspend fun getFeeds(tag : String, limit : Int , skip : Int): List<SecretEntity>
+    suspend fun getFeeds(tag : String, limit : Int , skip : Int, author_id:String): List<SecretEntity>
 
     @Query("DELETE  FROM secretentity  WHERE LOWER(tag) LIKE '%'||LOWER(:tag) || '%'")
     suspend fun clearFeedSecretList(tag : String)

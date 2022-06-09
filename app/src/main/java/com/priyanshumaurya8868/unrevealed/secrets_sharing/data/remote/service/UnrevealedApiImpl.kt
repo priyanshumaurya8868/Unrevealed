@@ -36,7 +36,7 @@ class UnrevealedApiImpl(private val httpClient: HttpClient, val dataStore: DataS
         }
     }
 
-    override suspend fun getFeeds(tag: String?, limit: Int, skip: Int): FeedDto {
+    override suspend fun getFeeds(author_id : String?,tag: String?, limit: Int, skip: Int): FeedDto {
         val token: String =
             "bearer " + dataStore.data.first()[PreferencesKeys.JWT_TOKEN]
         return httpClient.get<FeedDto> {
@@ -45,6 +45,8 @@ class UnrevealedApiImpl(private val httpClient: HttpClient, val dataStore: DataS
             parameter("limit", limit)
             if (tag != null)
                 parameter("tag", tag)
+            if (author_id != null)
+                parameter("author_id", author_id)
             headers {
                 append(HttpHeaders.Authorization, token)
             }

@@ -1,5 +1,6 @@
 package com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
@@ -18,12 +20,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.priyanshumaurya8868.unrevealed.R
 import com.priyanshumaurya8868.unrevealed.core.composable.CircleImage
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localSpacing
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localVerticalSpacing
+import com.priyanshumaurya8868.unrevealed.core.Screen
 import com.priyanshumaurya8868.unrevealed.core.covertToPostTimeText
+import com.priyanshumaurya8868.unrevealed.core.noRippleClickable
+import com.priyanshumaurya8868.unrevealed.core.utils.Constants
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.FeedSecret
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 @Composable
 fun PostItem(
@@ -33,11 +41,13 @@ fun PostItem(
     maxLines: Int = 3,
     shape: Shape = RoundedCornerShape(20.dp),
     item: FeedSecret,
-    shouldShowCommentCount: Boolean = true
+    shouldShowCommentCount: Boolean = true,
+    navController: NavController
 ) {
 
     Card(
-        modifier = modifier,
+        modifier = modifier
+            .clip(shape),
         shape = shape,
         backgroundColor = backgroundColor,
         elevation = cardElevation
@@ -53,17 +63,13 @@ fun PostItem(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 AuthorProfiler(
-                    Modifier.fillMaxWidth(),
+                    Modifier.fillMaxWidth().clickable {
+                        navController.navigate(Screen.ProfileScreen.route + "?${Constants.ARG_USER}=${Json.encodeToString(item.author)}")
+                    },
                     pfp = item.author.avatar,
                     username = item.author.username,
                     timeString = item.timestamp.covertToPostTimeText() ?: ""
                 )
-
-//                Icon(
-//                    Icons.Default.Share,
-//                    contentDescription = "Share",
-//                    modifier = Modifier.size(14.dp)
-//                )
             }
 
             Text(
@@ -75,7 +81,6 @@ fun PostItem(
                 overflow = TextOverflow.Ellipsis,
                 color = MaterialTheme.colors.onBackground,
             )
-
             PostMetaData(
                 Modifier.fillMaxWidth(),
                 backgroundColor = MaterialTheme.colors.background.copy(alpha = .2f),
@@ -110,8 +115,6 @@ fun AuthorProfiler(
             Spacer(modifier = Modifier.width(localVerticalSpacing))
             NameWithTime(username, timeString)
         }
-
-
     }
 }
 

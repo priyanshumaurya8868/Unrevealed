@@ -32,12 +32,14 @@ import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_GENDER
 import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_PASSWORD
 import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_SECRET_ID
 import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_SECRET_ITEM
+import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_USER
 import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_USERNAME
 import com.priyanshumaurya8868.unrevealed.core.utils.Constants.DarkColorPalette
 import com.priyanshumaurya8868.unrevealed.core.utils.Constants.LightColorPalette
 import com.priyanshumaurya8868.unrevealed.core.utils.PreferencesKeys
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.composePost.TagSelectionBottomSheet
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.HomeScreen
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.profileScreen.ProfileScreen
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.viewSecret.ViewSecretScreen
 import com.priyanshumaurya8868.unrevealed.ui.theme.UnrevealedTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -154,6 +156,16 @@ class MainActivity : ComponentActivity() {
                                 )) {
                                 TagSelectionBottomSheet(navController)
                             }
+                            composable(Screen.ProfileScreen.route+"?$ARG_USER={$ARG_USER}",
+                            arguments = listOf(
+                                navArgument(ARG_USER) {
+                                    nullable = true
+                                    type = NavType.StringType
+                                    defaultValue = null
+                                }
+                            )) {
+                            ProfileScreen(navController)
+                        }
 
                             composable(
                                 Screen.ViewSecretScreen.route + "?$ARG_SECRET_ID={$ARG_SECRET_ID}",

@@ -10,4 +10,5 @@ sealed class Screen(val route: String) {
     object HomeScreen : Screen("home_screen")
     object ComposePostScreen : Screen("compose_post_screen")
     object ViewSecretScreen : Screen("view_secret_screen")
+    object ProfileScreen : Screen("profile_screen")
 }

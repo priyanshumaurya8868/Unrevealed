@@ -38,6 +38,7 @@ import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.core.Secr
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.Drawer
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.HomeScreenEvents
 import com.priyanshumaurya8868.unrevealed.core.composable.CustomDialog
+import com.priyanshumaurya8868.unrevealed.core.utils.Constants
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.LogOutDialog
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.PostItem
 import kotlinx.coroutines.flow.collectLatest
@@ -50,7 +51,7 @@ val fabHeight = 72.dp //FabSize+Padding
 @Composable
 fun HomeScreen(
     navController: NavController,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel:  HomeViewModel = hiltViewModel()
 ) {
     val openDialog = remember{ mutableStateOf(false)}
     val scaffoldState = rememberScaffoldState()
@@ -221,9 +222,10 @@ fun HomeScreen(
                                 .fillMaxWidth()
                                 .padding(horizontal = localSpacing)
                                 .clickable {
-                                    navController.navigate(Screen.ViewSecretScreen.route + "?$ARG_SECRET_ID=${item._id}")
+                                    navController.navigate(Screen.ViewSecretScreen.route + "?${Constants.ARG_SECRET_ID}=${item._id}")
                                 },
-                            item = item
+                            item = item,
+                            navController = navController
                         )
 
                     }

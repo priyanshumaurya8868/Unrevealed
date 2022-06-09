@@ -10,7 +10,7 @@ interface Repository {
 
     fun getUserById(id: String): Flow<Resource<UserProfile>>
 
-    suspend fun getFeeds(tag: String?, page: Int, pageSize: Int): Flow<Resource<List<FeedSecret>>>
+    suspend fun getFeeds(author_id : String?,tag: String?, page: Int, pageSize: Int): Flow<Resource<List<FeedSecret>>>
 
     fun getSecretById(id: String): Flow<Resource<FeedSecret>>
 

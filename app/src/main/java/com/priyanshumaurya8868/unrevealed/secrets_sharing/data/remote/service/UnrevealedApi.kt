@@ -5,7 +5,7 @@ import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.remote.dto.*
 interface UnrevealedApi {
     suspend fun getMyProfile(): UserProfileDto
     suspend fun getUserById(id: String): UserProfileDto
-    suspend fun getFeeds(tag : String?,limit: Int, skip: Int): FeedDto
+    suspend fun getFeeds(author_id : String?,tag : String?,limit: Int, skip: Int): FeedDto
     suspend fun getComments(secretId: String, limit: Int, skip: Int): CommentsDto
     suspend fun getSecretById(id: String): SecretDto
     suspend fun revealSecret(secretBody: PostSecretRequestBodyDto): SecretDto
@@ -21,4 +21,5 @@ interface UnrevealedApi {
     suspend fun deleteCommentOrReply(id: String)
     suspend fun updateComment(bodyDto : UpdateComplimentRequestBodyDto) :CommentDto
     suspend fun updateReply(bodyDto: UpdateComplimentRequestBodyDto):ReplyDto
+
 }
