@@ -2,6 +2,16 @@
 <resources>
 
     <style name="Theme.Unrevealed" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">@color/purple_700</item>
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:background">@color/white</item>
     </style>
+
+
+    -<style  parent="android:Theme.Material.Light.NoActionBar" name="splash">
+
+    <item name="android:windowBackground">@drawable/splash_scrn</item>
+
+    <item name="android:windowFullscreen">true</item>
+
+</style>
 </resources>

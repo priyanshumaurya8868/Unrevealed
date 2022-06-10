@@ -5,18 +5,17 @@
     <application
         android:name=".Unrevealed"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_letter_u"
         android:usesCleartextTraffic="true"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/ic_letter_u"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Unrevealed">
+        android:theme="@style/splash">
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.Unrevealed">
+            android:theme="@style/splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

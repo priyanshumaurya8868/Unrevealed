@@ -81,7 +81,6 @@ fun UserBriefDetail(
                     .size(14.dp),
                 tint = MaterialTheme.colors.onSurface
             )
-
         }
     }
 }

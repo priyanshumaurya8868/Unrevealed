@@ -60,6 +60,7 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(R.style.Theme_Unrevealed)
         setContent {
             ProvideWindowInsets {
                 MaterialTheme(colors = if(themeSwitcher.IS_DARK_THEME) DarkColorPalette else LightColorPalette) {
