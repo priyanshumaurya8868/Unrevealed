@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
+import com.priyanshumaurya8868.unrevealed.R
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.fontSize_1
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localSpacing
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localVerticalSpacing
@@ -31,7 +31,10 @@ import com.priyanshumaurya8868.unrevealed.core.Screen
 import com.priyanshumaurya8868.unrevealed.core.composable.CircleImage
 import com.priyanshumaurya8868.unrevealed.core.composable.UserBriefDetail
 import com.priyanshumaurya8868.unrevealed.core.noRippleClickable
-import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.core.SecretSharingConstants.menuList
+import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_USER
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.UserProfile
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 
 @Composable
@@ -42,8 +45,31 @@ fun Drawer(
     navController: NavController,
     openDialog: MutableState<Boolean>
 ) {
-
     val user = state.myCurrentProfile
+    val menuList = listOf(
+//        MenuItem(R.drawable.ic_edit, "Edit Profile"),
+        MenuItem(R.drawable.ic_incognito, "My Secrets") {
+            navController.navigate(
+                Screen.ProfileScreen.route +
+                        "?$ARG_USER=${
+                            Json.encodeToString(
+                                UserProfile(
+                                    avatar = user.avatar,
+                                    gender = user.gender,
+                                    _id = user.user_id,
+                                    username = user.username
+                                )
+                            )
+                        }"
+            )
+        },
+        MenuItem(R.drawable.ic_instagram, "Instagram"),
+        MenuItem(R.drawable.ic_share, "Share the app"),
+        MenuItem(R.drawable.ic_mail, "Your Feedback"),
+        MenuItem(R.drawable.ic_star, "Send Love"),
+    )
+
+
     Column(
         modifier = modifier
             .fillMaxWidth(0.6f)
@@ -73,7 +99,7 @@ fun Drawer(
             item {
                 CircleImage(
                     modifier = Modifier.padding(start = localSpacing),
-                    image =user.avatar,
+                    image = user.avatar,
                     size = 80.dp
                 )
             }
@@ -144,7 +170,7 @@ fun Drawer(
             items(menuList.size) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(horizontal = localSpacing)
+                    modifier = Modifier.padding(horizontal = localSpacing).noRippleClickable { menuList[it].onClickListener?.let { it1 -> it1() } }
                 ) {
                     Card(elevation = 5.dp, shape = RoundedCornerShape(5.dp)) {
                         Icon(

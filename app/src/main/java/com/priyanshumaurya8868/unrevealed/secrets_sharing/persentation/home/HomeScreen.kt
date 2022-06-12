@@ -39,6 +39,7 @@ import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.comp
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.HomeScreenEvents
 import com.priyanshumaurya8868.unrevealed.core.composable.CustomDialog
 import com.priyanshumaurya8868.unrevealed.core.utils.Constants
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.core.NothingToShow
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.LogOutDialog
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.PostItem
 import kotlinx.coroutines.flow.collectLatest
@@ -228,6 +229,14 @@ fun HomeScreen(
                             navController = navController
                         )
 
+                    }
+
+                    if (state.items.isEmpty()){
+                        item{
+                            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                                NothingToShow()
+                            }
+                        }
                     }
 
                     item {

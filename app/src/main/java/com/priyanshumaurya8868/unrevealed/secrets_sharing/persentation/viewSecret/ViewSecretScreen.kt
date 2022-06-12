@@ -21,6 +21,7 @@ import com.priyanshumaurya8868.unrevealed.core.Screen
 import com.priyanshumaurya8868.unrevealed.core.composable.CustomDialog
 import com.priyanshumaurya8868.unrevealed.core.utils.Constants
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.FeedSecret
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.core.NothingToShow
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.PostItem
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.viewSecret.components.BottomLabel
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.viewSecret.components.CommentItem
@@ -161,6 +162,13 @@ fun ViewSecretScreen(
                            )
                        }
 
+                       if (state.commentsState.isEmpty()){
+                           item{
+                               Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
+                                   NothingToShow()
+                               }
+                           }
+                       }
 
 
                        item {

@@ -20,6 +20,7 @@ import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localV
 import com.priyanshumaurya8868.unrevealed.core.Screen
 import com.priyanshumaurya8868.unrevealed.core.composable.Profiler
 import com.priyanshumaurya8868.unrevealed.core.utils.Constants
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.core.NothingToShow
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.PostItem
 
 @Composable
@@ -73,6 +74,14 @@ fun ProfileScreen(
                     item = item,
                     navController = navController
                 )
+            }
+
+            if (state.secrets.isEmpty()){
+                item{
+                    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
+                        NothingToShow()
+                    }
+                }
             }
 
             item {
