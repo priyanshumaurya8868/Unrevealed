@@ -147,7 +147,7 @@ object AppModule {
             getReplies = GetReplies(repo),
             reactOnReply = ReactOnReply(repo),
             replyComment = ReplyComment(repo),
-            logOut = LogOut(dataStore, authDataBase),
+            logOut = LogOut(repo,dataStore, authDataBase),
             getLoggedUser = com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.usecases.GetLoggedUser(repo),
             switchAccount = SwitchAccount(dataStore),
             deleteCommentOrReply = DeleteCommentOrReply(repo),

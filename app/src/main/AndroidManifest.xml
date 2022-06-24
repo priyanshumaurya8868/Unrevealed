@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.priyanshumaurya8868.unrevealed">
 <uses-permission android:name="android.permission.INTERNET"/>
+<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <application
         android:name=".Unrevealed"
         android:allowBackup="true"
@@ -11,6 +12,21 @@
         android:roundIcon="@drawable/ic_letter_u"
         android:supportsRtl="true"
         android:theme="@style/splash">
+        <service android:name=".core.MyFirebaseService"
+            android:permission="com.google.android.c2dm.permission.SEND"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+<!--        <service-->
+<!--            android:name=".core.MyFirebaseService"-->
+<!--            android:exported="false">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="com.google.firebase.MESSAGING_EVENT" />-->
+<!--            </intent-filter>-->
+<!--        </service>-->
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -1,5 +1,6 @@
 package com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.repo
 
+import androidx.work.ListenableWorker
 import com.priyanshumaurya8868.unrevealed.core.Resource
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.*
 import kotlinx.coroutines.flow.Flow
@@ -39,5 +40,7 @@ interface Repository {
     fun deleteSecret(id : String) : Flow<Resource<String>>
 
     fun updateSecret(body : UpdateSecretRequestBody) : Flow<Resource<FeedSecret>>
+
+    suspend fun sendDeviceToken(token : String, jwtToken : String?= null) :  Result<*>
 
 }

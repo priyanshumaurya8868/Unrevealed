@@ -9,14 +9,16 @@ class Signup(private val repo: UnrevealedAuthRepo) {
         username: String,
         password: String,
         avatar: String,
-        gender: String
+        gender: String,
+        dToken : String
     ) =
         repo.signup(
             SignupData(
                 username = username,
                 password = password,
                 avatar = avatar,
-                gender = gender
+                gender = gender,
+                dToken = dToken
             )
         )
 }

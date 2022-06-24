@@ -8,8 +8,9 @@ data class SignupData(
     val avatar: String,
     val gender: String,
     val password: String,
-    val username: String
+    val username: String,
+    val dToken : String
 ) {
     fun toSignupDto() =
-        SignupDto(avatar.substringAfterLast(HttpRoutes.BASE_URL), gender, password, username)
+        SignupDto(avatar.substringAfterLast(HttpRoutes.BASE_URL), gender, password, username,d_token = dToken)
 }

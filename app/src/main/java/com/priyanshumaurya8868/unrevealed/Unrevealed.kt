@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import com.google.firebase.FirebaseApp
 import com.priyanshumaurya8868.unrevealed.core.utils.PreferencesKeys
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.HiltAndroidApp
@@ -17,5 +18,6 @@ import javax.inject.Inject
 
 @HiltAndroidApp
 class Unrevealed : Application() {
+
 
 }

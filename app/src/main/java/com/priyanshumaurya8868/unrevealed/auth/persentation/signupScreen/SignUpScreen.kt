@@ -48,8 +48,8 @@ fun SignupScreen(
                 is AuthViewModel.UiEvent.Proceed -> {
                     navController.navigate(
                         Screen.GenderSelectionScreen.route +
-                                "?${Constants.ARG_USERNAME}=${viewModel.username.value.text}" +
-                                "&${Constants.ARG_PASSWORD}=${viewModel.password.value.text}"
+                                "?${Constants.ARG_USERNAME}=${viewModel.username.value.text.trim()}" +
+                                "&${Constants.ARG_PASSWORD}=${viewModel.password.value.text.trim()}"
                     )
                 }
             }

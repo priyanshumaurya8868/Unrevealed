@@ -233,5 +233,16 @@ class UnrevealedApiImpl(private val httpClient: HttpClient, val dataStore: DataS
         }
     }
 
+    override suspend fun sendDeviceToken(dToken: String, jwtToken : String?) {
+        val token: String =
+            "bearer " + (jwtToken ?: dataStore.data.first()[PreferencesKeys.JWT_TOKEN])
+        return httpClient.put {
+            url(HttpRoutes.DEVICE_TOKEN+"/$dToken")
+            headers {
+                append(HttpHeaders.Authorization, token)
+            }
+        }
+    }
+
 
 }

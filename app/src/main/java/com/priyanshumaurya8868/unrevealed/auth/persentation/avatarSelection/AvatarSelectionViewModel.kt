@@ -2,6 +2,8 @@ package com.priyanshumaurya8868.unrevealed.auth.persentation.avatarSelection
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,17 +15,16 @@ import com.priyanshumaurya8868.unrevealed.core.Resource
 import com.priyanshumaurya8868.unrevealed.core.utils.Constants
 import com.priyanshumaurya8868.unrevealed.core.utils.PreferencesKeys
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AvatarSelectionViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val useCases: AuthUseCases
+    private val useCases: AuthUseCases,
+    private val dataStore: DataStore<Preferences>
 ) :
     ViewModel() {
     private val _state = mutableStateOf(AvatarSelectionState())
@@ -53,77 +54,88 @@ class AvatarSelectionViewModel @Inject constructor(
 
     }
 
-    fun onEvenChange(event: AvatarSelectionEvents) = viewModelScope.launch {
+    fun onEvenChange(event: AvatarSelectionEvents)  {
+
         when (event) {
             is AvatarSelectionEvents.GetAvatarList -> {
-                val list = if (event.isMale) useCases.getAvatars(VAL_MALE)
-                else useCases.getAvatars(VAL_FEMALE)
-                list.onEach { res ->
-                    when (res) {
-                        is Resource.Loading -> {
-                            _state.value = _state.value.copy(isLoading = true)
-                        }
-                        is Resource.Error -> {
-                            _eventFlow.emit(
-                                UiEvent.ShowSnackbar(
-                                    res.message ?: "Something went wrong!"
-                                )
-                            )
-                            _state.value = _state.value.copy(isLoading = false)
-                        }
-                        is Resource.Success -> {
-                            _state.value =
-                                _state.value.copy(listOfAvatars = res.data ?: emptyList())
-                            _state.value = _state.value.copy(isLoading = false)
-                        }
-                    }
-                }.launchIn(this)
+               getAvatars(event.isMale)
             }
             is AvatarSelectionEvents.OnAvatarSelect -> {
                 _state.value = _state.value.copy(selectedAvatar = event.avatar)
                 _state.value = state.value.copy(isBtnEnabled = true)
             }
             is AvatarSelectionEvents.RegisterUser -> {
-                useCases.signup(
-                    username = state.value.username,
-                    password = state.value.password,
-                    avatar = state.value.selectedAvatar ?: "",
-                    gender = state.value.gender,
-                ).onEach { result ->
-                    when (result) {
-
-                        is Resource.Success -> {
-                            _state.value = _state.value.copy(isLoading = false)
-                            result.data?.let { user ->
-                                useCases.savePreferences(
-                                    PreferencesKeys.MY_PROFILE_ID,
-                                    user.user_id
-                                )
-                                useCases.savePreferences(PreferencesKeys.JWT_TOKEN, user.token)
-                                _eventFlow.emit(UiEvent.Proceed)
-                            } ?: _eventFlow.emit(
-                                UiEvent.ShowSnackbar(
-                                    result.message ?: "Something went wrong couldn't received token"
-                                )
-                            )
-                        }
-                        is Resource.Error -> {
-                            _state.value = _state.value.copy(isLoading = false)
-                            _eventFlow.emit(
-                                UiEvent.ShowSnackbar(
-                                    result.message ?: "Unknown error"
-                                )
-                            )
-                        }
-                        is Resource.Loading -> {
-                            _state.value = _state.value.copy(isLoading = true)
-                        }
-                    }
-                }.launchIn(this)
+              regUser()
             }
         }
     }
 
+    private fun getAvatars(isMale : Boolean) = viewModelScope.launch(Dispatchers.IO) {
+        val list = if (isMale) useCases.getAvatars(VAL_MALE)
+        else useCases.getAvatars(VAL_FEMALE)
+        list.onEach { res ->
+            when (res) {
+                is Resource.Loading -> {
+                    _state.value = _state.value.copy(isLoading = true)
+                }
+                is Resource.Error -> {
+                    _eventFlow.emit(
+                        UiEvent.ShowSnackbar(
+                            res.message ?: "Something went wrong!"
+                        )
+                    )
+                    _state.value = _state.value.copy(isLoading = false)
+                }
+                is Resource.Success -> {
+                    _state.value =
+                        _state.value.copy(listOfAvatars = res.data ?: emptyList())
+                    _state.value = _state.value.copy(isLoading = false)
+                }
+            }
+        }.launchIn(this)
+    }
+
+
+    private fun regUser()= viewModelScope.launch(Dispatchers.IO) {
+        val dToken = dataStore.data.first()[PreferencesKeys.DEVICE_TOKEN]?:""
+        useCases.signup(
+            username = state.value.username,
+            password = state.value.password,
+            avatar = state.value.selectedAvatar ?: "",
+            gender = state.value.gender,
+            dToken = dToken
+        ).onEach { result ->
+            when (result) {
+
+                is Resource.Success -> {
+                    _state.value = _state.value.copy(isLoading = false)
+                    result.data?.let { user ->
+                        useCases.savePreferences(
+                            PreferencesKeys.MY_PROFILE_ID,
+                            user.user_id
+                        )
+                        useCases.savePreferences(PreferencesKeys.JWT_TOKEN, user.token)
+                        _eventFlow.emit(UiEvent.Proceed)
+                    } ?: _eventFlow.emit(
+                        UiEvent.ShowSnackbar(
+                            result.message ?: "Something went wrong couldn't received token"
+                        )
+                    )
+                }
+                is Resource.Error -> {
+                    _state.value = _state.value.copy(isLoading = false)
+                    _eventFlow.emit(
+                        UiEvent.ShowSnackbar(
+                            result.message ?: "Unknown error"
+                        )
+                    )
+                }
+                is Resource.Loading -> {
+                    _state.value = _state.value.copy(isLoading = true)
+                }
+            }
+        }.launchIn(this)
+    }
 
     sealed class UiEvent {
         data class ShowSnackbar(val message: String) : UiEvent()

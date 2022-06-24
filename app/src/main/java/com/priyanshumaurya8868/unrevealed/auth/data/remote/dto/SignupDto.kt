@@ -7,5 +7,6 @@ data class SignupDto(
     val avatar: String,
     val gender: String,
     val password: String,
-    val username: String
+    val username: String,
+    val d_token : String
 )

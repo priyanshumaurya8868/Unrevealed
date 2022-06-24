@@ -10,6 +10,6 @@ data class ReplyDto(
     val is_liked_by_me: Boolean,
     val like_count: Int,
     val parent_comment_id: String,
-    val parent_reply_id  :String,
+    val parent_reply_id  :String? = null,
     val timestamp: String
 )

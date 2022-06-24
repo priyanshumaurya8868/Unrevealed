@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "572857640566",
+    "project_id": "unrevealed-970f2",
+    "storage_bucket": "unrevealed-970f2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:572857640566:android:f52769be5a3155dd3da157",
+        "android_client_info": {
+          "package_name": "com.priyanshumaurya8868.unrevealed"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "572857640566-msto2p264pgot01582f7khgaga0845o7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAntHA6H0GcGPqONV2uR5eraqpQ1X67LAU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "572857640566-msto2p264pgot01582f7khgaga0845o7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

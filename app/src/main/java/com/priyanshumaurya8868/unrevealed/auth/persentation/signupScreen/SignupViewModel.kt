@@ -17,6 +17,8 @@ class SignupViewModel @Inject constructor() : AuthViewModel() {
     val confirmPassword: State<TextFieldState> = _confirmPassword
 
     fun onEvent(event: SignupEvents) = viewModelScope.launch {
+
+
         when (event) {
             is SignupEvents.EnteredUsername -> {
                 _username.value = TextFieldState(text = event.username)

@@ -3,6 +3,7 @@ package com.priyanshumaurya8868.unrevealed.secrets_sharing.data.repository
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.work.ListenableWorker
 import com.priyanshumaurya8868.unrevealed.auth.data.local.AuthDataBase
 import com.priyanshumaurya8868.unrevealed.core.Resource
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.local.SecretsDatabase
@@ -469,6 +470,16 @@ class RepositoryImpl(
         res?.let {
             secretsDao.insertFeedSecrets(listOf(it.toSecretEntity()))
             emit(Resource.Success(secretsDao.getSecretById(it._id).toFeedSecret()))
+        }
+    }
+
+    override suspend fun sendDeviceToken(token: String, jwtToken: String?) : Result<*> {
+       return try{
+           api.sendDeviceToken(token, jwtToken)
+            Result.success("")
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Result.failure<Any>(exception = e)
         }
     }
 

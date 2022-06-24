@@ -17,6 +17,11 @@ object Constants {
     const val ARG_USER_ID = "user_id"
     const val ARG_USER = "user"
 
+
+    const val KEY_JWT_TOKEN= "user_id"
+    const val KEY_D_TOKEN= "deviceToken"
+    const val KEY_ROUTE = "route_"
+
     val DarkColorPalette = darkColors(
         primary = owl_pink_200,
         primaryVariant = darkSurface,

@@ -6,6 +6,7 @@ object HttpRoutes {
     const val LOGIN = "$BASE_URL/auth/login"
     const val AVATARS = "$BASE_URL/avatars"
     const val USERS = "$BASE_URL/users"
+    const val DEVICE_TOKEN = "$USERS/devicetoken"
     const val SECRETS = "$BASE_URL/secrets"
     const val COMMENTS = "$BASE_URL/comments"
     const val COMMENTS_BY_SECRET_ID = "$COMMENTS/secrets"

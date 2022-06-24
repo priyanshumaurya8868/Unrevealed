@@ -223,7 +223,7 @@ fun HomeScreen(
                                 .fillMaxWidth()
                                 .padding(horizontal = localSpacing)
                                 .clickable {
-                                    navController.navigate(Screen.ViewSecretScreen.route + "?${Constants.ARG_SECRET_ID}=${item._id}")
+                                    navController.navigate(Screen.ViewSecretScreen.route + "?$ARG_SECRET_ID=${item._id}")
                                 },
                             item = item,
                             navController = navController

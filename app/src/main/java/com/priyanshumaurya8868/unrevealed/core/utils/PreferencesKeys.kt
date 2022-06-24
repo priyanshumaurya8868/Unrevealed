@@ -7,4 +7,5 @@ object PreferencesKeys {
     val JWT_TOKEN = stringPreferencesKey("jwt_token")
     val MY_PROFILE_ID = stringPreferencesKey("my_profile_id")
     val IS_DARK_THEME = booleanPreferencesKey("is_dark_them")
+    val DEVICE_TOKEN = stringPreferencesKey("device_token")
 }

@@ -21,5 +21,6 @@ interface UnrevealedApi {
     suspend fun deleteCommentOrReply(id: String)
     suspend fun updateComment(bodyDto : UpdateComplimentRequestBodyDto) :CommentDto
     suspend fun updateReply(bodyDto: UpdateComplimentRequestBodyDto):ReplyDto
+    suspend fun sendDeviceToken(dToken : String, jwtToken : String?)
 
 }
