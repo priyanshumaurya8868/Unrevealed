@@ -1,5 +1,6 @@
 package com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.profileScreen
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,6 +24,7 @@ import com.priyanshumaurya8868.unrevealed.core.utils.Constants
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.core.NothingToShow
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.PostItem
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ProfileScreen(
     navController: NavController,
@@ -76,7 +78,7 @@ fun ProfileScreen(
                 )
             }
 
-            if (state.secrets.isEmpty()){
+            if (state.secrets.isEmpty() && !state.isLoading){
                 item{
                     Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
                         NothingToShow()

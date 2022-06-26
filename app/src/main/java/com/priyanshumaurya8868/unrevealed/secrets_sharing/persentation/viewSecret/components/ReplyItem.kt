@@ -20,7 +20,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberImagePainter
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localVerticalSpacing
 import com.priyanshumaurya8868.unrevealed.core.composable.CircleImage
 import com.priyanshumaurya8868.unrevealed.core.covertToCommentTimeText
@@ -29,6 +28,7 @@ import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.viewSecre
 
 @Composable
 fun ReplyItem(
+    modifier :Modifier = Modifier,
     dullColor: Color,
     eventListener: (ViewSecretEvents) -> Unit,
     commentPosition: Int,
@@ -38,7 +38,7 @@ fun ReplyItem(
 ) {
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
     ) {
         CircleImage(image = reply.commenter.avatar, size = 30.dp)
@@ -130,7 +130,8 @@ fun ReplyItem(
                                         usernameToMention = reply.commenter.username,
                                         parentContentString = reply.content,
                                         commentPosition = commentPosition,
-                                        parentReplyId = reply._id
+                                        parentReplyId = reply._id,
+                                        uIdTomentione = reply.commenter._id
                                     )
                                 )
                             )

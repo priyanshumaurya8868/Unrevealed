@@ -25,7 +25,8 @@ fun BottomLabel(
     modifier: Modifier = Modifier,
     dullColor: Color,
     eventListener: (ViewSecretEvents) -> Unit,
-    secret: FeedSecret
+    secret: FeedSecret,
+    isEditor:Boolean
 ) {
     Row(
         modifier = modifier, horizontalArrangement = Arrangement.SpaceBetween
@@ -49,41 +50,43 @@ fun BottomLabel(
 //                color = highLighted
 //            )
 //        }
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(localVerticalSpacing),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            item {
-                Icon(Icons.Default.EditNote, "edit",
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .clickable {
-                            eventListener(ViewSecretEvents.UpdateSecret(secret))
-                        }
-                )
-            }
-            item {
-                Icon(Icons.Default.DeleteOutline,
-                    contentDescription = "Delete",
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .clickable {
-                            eventListener(
-                                ViewSecretEvents.OpenDialog(
-                                    ViewSecretViewModel.DialogMetaData(
-                                        title = "Delete Secret?",
-                                        description = "Are you sure do you want to delete your secret?. You won't able to undo this if you delete it once",
-                                        confirmFun = {
-                                            eventListener(
-                                                ViewSecretEvents.DeleteSecret(
-                                                    secret._id
+        if(isEditor){
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(localVerticalSpacing),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                item {
+                    Icon(Icons.Default.EditNote, "edit",
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .clickable {
+                                eventListener(ViewSecretEvents.UpdateSecret(secret))
+                            }
+                    )
+                }
+                item {
+                    Icon(Icons.Default.DeleteOutline,
+                        contentDescription = "Delete",
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .clickable {
+                                eventListener(
+                                    ViewSecretEvents.OpenDialog(
+                                        ViewSecretViewModel.DialogMetaData(
+                                            title = "Delete Secret?",
+                                            description = "Are you sure do you want to delete your secret?. You won't able to undo this if you delete it once",
+                                            confirmFun = {
+                                                eventListener(
+                                                    ViewSecretEvents.DeleteSecret(
+                                                        secret._id
+                                                    )
                                                 )
-                                            )
-                                        }
-                                    )
-                                ))
-                        }
-                )
+                                            }
+                                        )
+                                    ))
+                            }
+                    )
+                }
             }
         }
 

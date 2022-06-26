@@ -5,5 +5,5 @@ data class PostReplyRequestBody(
     val parent_reply_id: String?=null,
     val reply: String,
     val secret_id: String,
-    val mention : String,
+    val mentionedUserId : String,
 )

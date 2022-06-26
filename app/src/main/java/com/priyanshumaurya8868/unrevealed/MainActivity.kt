@@ -5,7 +5,6 @@ import android.app.NotificationManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -67,15 +66,6 @@ class MainActivity : ComponentActivity() {
     lateinit var themeSwitcher: ThemeSwitcher
 
     private val dynamicRoute = mutableStateOf("")
-    override fun onStart() {
-        super.onStart()
-//        val route  =  intent.extras?.let {
-//            val route : String? = intent.extras?.getString(KEY_ROUTE)
-//            Log.d(TAG, "navigatingggg to  the route  $route")
-//            route
-//        }?:""
-//        dynamicRoute.value = route
-    }
 
     @OptIn(ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -106,7 +96,6 @@ class MainActivity : ComponentActivity() {
         // [START handle_data_extras]
 
 
-
         intent.extras?.let {
             for (key in it.keySet()) {
                 val value = intent.extras?.get(key)
@@ -125,14 +114,13 @@ class MainActivity : ComponentActivity() {
                     msg = getString(R.string.msg_subscribe_failed)
                 }
                 Log.d(TAG, msg)
-                Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
             }
         // [END subscribe_topics]
 
 
         // Get token
         // [START log_reg_token]
-        Firebase.messaging.getToken().addOnCompleteListener(OnCompleteListener { task ->
+        Firebase.messaging.token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
                 Log.w(TAG, "Fetching FCM registration token failed", task.exception)
                 return@OnCompleteListener
@@ -144,12 +132,9 @@ class MainActivity : ComponentActivity() {
             // Log and toast
             val msg = getString(R.string.msg_token_fmt, token)
             Log.d(TAG, msg)
-            Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
         })
         // [END log_reg_token]
 
-
-        Toast.makeText(this, "See README for setup instructions", Toast.LENGTH_SHORT).show()
 
         setContent {
             ProvideWindowInsets {
@@ -232,7 +217,10 @@ class MainActivity : ComponentActivity() {
                                 AvatarSelection(navController = navController)
                             }
                             composable(Screen.HomeScreen.route) {
-                                HomeScreen(navController = navController)
+                                HomeScreen(
+                                    navController = navController,
+                                    screen_route = intent.getStringExtra(KEY_ROUTE)
+                                )
                                 rememberSystemUiController().setSystemBarsColor(
                                     color = MaterialTheme.colors.background
                                 )
@@ -274,10 +262,6 @@ class MainActivity : ComponentActivity() {
                             }
 //
                         }
-//                       if( dynamicRoute.value.isNotBlank()){
-//                           navController.navigate(dynamicRoute.value)
-//                           dynamicRoute.value = ""
-//                       }
                     }
                 }
             }

@@ -13,6 +13,7 @@ object Constants {
     const val ARG_FEED_ITEM = "feeditem"
     const val ARG_SECRET_ID = "secret_id"
     const val ARG_SECRET_ITEM = "secret_item"
+    const val ARG_SCREEN_ROUTE = "arg_screen_route"
     const val ARG_COMMENT_ID = "comment_id"
     const val ARG_USER_ID = "user_id"
     const val ARG_USER = "user"

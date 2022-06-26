@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -15,14 +14,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberImagePainter
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localSpacing
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localVerticalSpacing
 import com.priyanshumaurya8868.unrevealed.core.composable.CircleImage
@@ -35,18 +32,15 @@ fun CommentItem(
     eventListener: (ViewSecretEvents) -> Unit,
     commentPosition: Int,
     commentState: ViewSecretViewModel.CommentState,
-    state: ViewSecretViewModel.ScreenState,
     ownerID: String,
 
-) {
+    ) {
     val isEditor = ownerID == commentState.comment.commenter._id
     val comment = commentState.comment
-    val replies = commentState.replies
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = localSpacing, start = localSpacing, end = localSpacing)
+            .padding( start = localSpacing, end = localSpacing)
     ) {
         CircleImage(image = comment.commenter.avatar, size = 40.dp)
         Spacer(modifier = Modifier.width(10.dp))
@@ -151,7 +145,8 @@ fun CommentItem(
                                     ViewSecretViewModel.ReplyMetaData(
                                         usernameToMention = comment.commenter.username,
                                         parentContentString = comment.content,
-                                        commentPosition = commentPosition
+                                        commentPosition = commentPosition,
+                                        uIdTomentione = comment.commenter._id
                                     )
                                 )
                             )
@@ -188,7 +183,11 @@ fun CommentItem(
                                         description = "Are you sure do you want to delete Comment? . You won't able to undo this if you delete it once",
                                         confirmFun = {
                                             eventListener(
-                                                ViewSecretEvents.DeleteCommentOrReply(comment._id, commentPos =  commentPosition, replyPos = null)
+                                                ViewSecretEvents.DeleteCommentOrReply(
+                                                    comment._id,
+                                                    commentPos = commentPosition,
+                                                    replyPos = null
+                                                )
                                             )
                                         })
                                 )
@@ -198,61 +197,6 @@ fun CommentItem(
                 }
             }
 
-            val shouldToggleButtonVisible: Boolean =
-                commentState.replies.isNotEmpty() || comment.reply_count > 0
-            if (shouldToggleButtonVisible)
-                Column {
-                    if (commentState.areRepliesVisible) {
-                        Column(modifier = Modifier.padding(top = localSpacing)) {
-                            replies.forEachIndexed { index, reply ->
-                                ReplyItem(
-                                    dullColor = dullColor,
-                                    eventListener = { eventListener(it) },
-                                    commentPosition = commentPosition,
-                                    replyPosition = index,
-                                    reply = state.RpMap.getOrDefault(reply._id, reply),
-                                    isEditor = ownerID == reply.commenter._id
-                                )
-                                Spacer(modifier = Modifier.height(localSpacing))
-                            }
-                        }
-                    }
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Divider(
-                            color = dullColor,
-                            modifier = Modifier
-                                .fillMaxWidth(.17f)
-                                .alpha(0.5f)
-                        )
-                        Spacer(modifier = Modifier.width(localVerticalSpacing))
-                        CommentMenuItems(
-                            text = if (commentState.isFetchingReplies) "Loading replies..." else buildAnnotatedString {
-                                if (commentState.areRepliesVisible)
-                                    append("Hide ${comment.reply_count} ")
-                                else
-                                    append("View ${comment.reply_count} ")
-                                if (comment.reply_count == 1)
-                                    append("reply")
-                                else append("replies")
-                            }.text,
-                            onClick = {
-                                eventListener(
-                                    ViewSecretEvents.ChangeVisibilitiesOfReplies(
-                                        commentStateIndex = commentPosition,
-                                        comment._id
-                                    )
-                                )
-                            },
-                            color = dullColor
-                        )
-                    }
-                }
         }
     }
 }

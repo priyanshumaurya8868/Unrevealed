@@ -63,7 +63,7 @@ fun PostItem(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 AuthorProfiler(
-                    Modifier.fillMaxWidth().clickable {
+                    Modifier.clickable {
                         navController.navigate(Screen.ProfileScreen.route + "?${Constants.ARG_USER}=${Json.encodeToString(item.author)}")
                     },
                     pfp = item.author.avatar,

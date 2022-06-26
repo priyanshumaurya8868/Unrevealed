@@ -5,7 +5,7 @@ import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.MyProfil
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.UserProfile
 
 data class HomeScreenState(
-    val isPaginating: Boolean = false,
+    val isPaginating: Boolean = true,
     val items: List<FeedSecret> = emptyList(),
     val error: String? = null,
     val selectedTag: String? = null,

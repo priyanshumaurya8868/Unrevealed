@@ -31,7 +31,6 @@ class HomeViewModel
 
     var state by mutableStateOf(HomeScreenState())
 
-
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
@@ -94,6 +93,8 @@ class HomeViewModel
 
     fun onEvents(event: HomeScreenEvents) = viewModelScope.launch {
         when (event) {
+
+
             is HomeScreenEvents.ChangeTag -> {
                 changeTag(event.newTag)
             }

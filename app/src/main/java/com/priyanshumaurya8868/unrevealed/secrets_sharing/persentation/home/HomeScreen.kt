@@ -1,5 +1,7 @@
 package com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -49,17 +51,24 @@ import kotlin.math.roundToInt
 val toolbarHeight = 48.dp
 val fabHeight = 72.dp //FabSize+Padding
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(
     navController: NavController,
-    viewModel:  HomeViewModel = hiltViewModel()
+    screen_route :String? = null,
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
     val openDialog = remember{ mutableStateOf(false)}
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
     val state = viewModel.state
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = state.isRefreshing)
+
     LaunchedEffect(key1 = true) {
+        screen_route?.let {
+            navController.navigate(it)
+        }
+
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is HomeViewModel.UiEvent.ShowSnackbar -> {
@@ -231,7 +240,7 @@ fun HomeScreen(
 
                     }
 
-                    if (state.items.isEmpty()){
+                    if (state.items.isEmpty() && !(state.isPaginating || state.isRefreshing)){
                         item{
                             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                                 NothingToShow()

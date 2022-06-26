@@ -24,7 +24,7 @@ fun PostReplyRequestBody.toPostReplyRequestBodyDto() =
         parent_reply_id = parent_reply_id,
         reply = reply,
         secret_id =secret_id,
-        mention = mention
+        mention_uid = mentionedUserId
 )
 
 fun UpdateComplimentRequestBody.toDto()=

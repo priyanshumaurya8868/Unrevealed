@@ -152,13 +152,14 @@ class MyFirebaseService : FirebaseMessagingService() {
         context: Context
     ) = scope.launch{
         var bitmap: Bitmap? = null
-        val bundle = bundleOf(KEY_ROUTE to data.getOrDefault("route", null))
+        val route = data.getOrDefault("screen_route", null)
         val intent = Intent(context, MainActivity::class.java)
+        intent.putExtra(KEY_ROUTE,route)
+
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendingIntent = PendingIntent.getActivity(
             context, 0 /* Request code */, intent,
-            PendingIntent.FLAG_ONE_SHOT,
-            bundle
+            PendingIntent.FLAG_ONE_SHOT
         )
         data.getOrDefault("dp", null)?.let{ avatar->
             Log.d("omegaRanger", "here is ur fpf : $avatar")

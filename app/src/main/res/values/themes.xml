@@ -3,7 +3,6 @@
 
     <style name="Theme.Unrevealed" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:statusBarColor">@color/white</item>
-        <item name="android:background">@color/white</item>
     </style>
 
 

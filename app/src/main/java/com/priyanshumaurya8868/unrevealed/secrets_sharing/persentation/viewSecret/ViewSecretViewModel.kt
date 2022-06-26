@@ -425,7 +425,7 @@ class ViewSecretViewModel @Inject constructor(
                 reply = if (state.replyMetaData != null) "@${state.replyMetaData!!.usernameToMention} " + state.textFieldState else state.textFieldState,
                 parent_comment_id = parentComment._id,
                 secret_id = parentComment.secret_id,
-                mention = state.replyMetaData!!.usernameToMention,
+                mentionedUserId = state.replyMetaData!!.uIdTomentione,
                 parent_reply_id = state.replyMetaData?.parentReplyId
             )
         ).onEach { res ->
@@ -599,6 +599,7 @@ class ViewSecretViewModel @Inject constructor(
     )
 
     data class ReplyMetaData(
+        val uIdTomentione : String,
         val usernameToMention: String,
         val parentContentString: String,
         val commentPosition: Int,

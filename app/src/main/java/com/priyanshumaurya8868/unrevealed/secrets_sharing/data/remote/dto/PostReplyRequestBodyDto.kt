@@ -8,5 +8,5 @@ data class PostReplyRequestBodyDto(
     val parent_reply_id: String?=null,
     val reply: String,
     val secret_id: String,
-    val mention : String,
+    val mention_uid : String,
 )

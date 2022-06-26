@@ -8,14 +8,14 @@ import androidx.compose.ui.text.TextStyle
 import com.priyanshumaurya8868.unrevealed.core.noRippleClickable
 
 @Composable
-fun CommentMenuItems(text: String, onClick: () -> Unit, color: Color) {
+fun CommentMenuItems(text: String, onClick: (() -> Unit)? = null, color: Color) {
     Text(
         text = text,
         style = TextStyle(
             color = color
         ),
-        modifier = Modifier.noRippleClickable {
+        modifier = if(onClick != null )Modifier.noRippleClickable {
             onClick()
-        }
+        }else Modifier
     )
 }
