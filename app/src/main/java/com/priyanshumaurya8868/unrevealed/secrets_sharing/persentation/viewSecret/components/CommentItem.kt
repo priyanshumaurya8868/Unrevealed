@@ -24,6 +24,7 @@ import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localS
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localVerticalSpacing
 import com.priyanshumaurya8868.unrevealed.core.composable.CircleImage
 import com.priyanshumaurya8868.unrevealed.core.covertToCommentTimeText
+import com.priyanshumaurya8868.unrevealed.core.noRippleClickable
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.viewSecret.ViewSecretViewModel
 
 @Composable
@@ -33,7 +34,7 @@ fun CommentItem(
     commentPosition: Int,
     commentState: ViewSecretViewModel.CommentState,
     ownerID: String,
-
+    pfpOnclick : ()->Unit
     ) {
     val isEditor = ownerID == commentState.comment.commenter._id
     val comment = commentState.comment
@@ -42,7 +43,7 @@ fun CommentItem(
             .fillMaxWidth()
             .padding( start = localSpacing, end = localSpacing)
     ) {
-        CircleImage(image = comment.commenter.avatar, size = 40.dp)
+        CircleImage(image = comment.commenter.avatar, size = 40.dp, modifier = Modifier.noRippleClickable { pfpOnclick() })
         Spacer(modifier = Modifier.width(10.dp))
         Column(
             modifier = Modifier

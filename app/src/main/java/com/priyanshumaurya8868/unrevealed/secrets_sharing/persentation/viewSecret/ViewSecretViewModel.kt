@@ -107,8 +107,10 @@ class ViewSecretViewModel @Inject constructor(
 
     fun onEvent(event: ViewSecretEvents) {
         when (event) {
-            is ViewSecretEvents.ReloadSecret -> {
+            is ViewSecretEvents.Retry->{
                 getSecret()
+                paginator.reset()
+                loadNextItems()
             }
             is ViewSecretEvents.LikeComment -> {
                 //for giving and instant (virtual) response to a user, because network call gonna take sometime

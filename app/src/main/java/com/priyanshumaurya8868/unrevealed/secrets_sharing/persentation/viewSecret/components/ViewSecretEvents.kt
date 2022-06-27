@@ -7,6 +7,8 @@ import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.viewSecre
 
 sealed class ViewSecretEvents {
 
+    object Retry : ViewSecretEvents()
+
     data class LikeComment(val id: String, val comment: Comment, val position: Int) :
         ViewSecretEvents()
 
@@ -25,7 +27,6 @@ sealed class ViewSecretEvents {
         val shouldLike: Boolean
     ) : ViewSecretEvents()
 
-    object ReloadSecret : ViewSecretEvents()
     object PostCompliment : ViewSecretEvents()
     object LoadNextCommentPage : ViewSecretEvents()
 

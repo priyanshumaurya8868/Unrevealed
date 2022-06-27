@@ -1,5 +1,6 @@
 package com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -21,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.priyanshumaurya8868.unrevealed.R
@@ -33,9 +35,11 @@ val localVerticalSpacing = 10.dp
 val fontSize_1 = 18.sp
 
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun WelcomeScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: WelcomeViewModel= hiltViewModel()
 ) {
 
     val systemUiController = rememberSystemUiController()
@@ -63,7 +67,7 @@ fun WelcomeScreen(
                 AppTitle()
                 Column {
                     Image(
-                        painter = if (isSystemInDarkTheme()) painterResource(id = R.drawable.cover_dark)
+                        painter = if (viewModel.themeSwitcher.IS_DARK_THEME) painterResource(id = R.drawable.cover_dark)
                         else painterResource(id = R.drawable.cover_ligth),
                         contentDescription = null,
                         modifier = Modifier

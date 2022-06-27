@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localVerticalSpacing
 import com.priyanshumaurya8868.unrevealed.core.composable.CircleImage
 import com.priyanshumaurya8868.unrevealed.core.covertToCommentTimeText
+import com.priyanshumaurya8868.unrevealed.core.noRippleClickable
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.Reply
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.viewSecret.ViewSecretViewModel
 
@@ -34,14 +35,15 @@ fun ReplyItem(
     commentPosition: Int,
     replyPosition: Int,
     reply: Reply,
-    isEditor: Boolean
+    isEditor: Boolean,
+    pfpOnClick :()-> Unit
 ) {
 
     Row(
         modifier = modifier
             .fillMaxWidth()
     ) {
-        CircleImage(image = reply.commenter.avatar, size = 30.dp)
+        CircleImage(image = reply.commenter.avatar, size = 30.dp, modifier = Modifier.noRippleClickable { pfpOnClick() })
         Spacer(modifier = Modifier.width(10.dp))
         Column(
             modifier = Modifier

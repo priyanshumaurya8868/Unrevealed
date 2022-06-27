@@ -15,10 +15,13 @@ import com.priyanshumaurya8868.unrevealed.core.Resource
 import com.priyanshumaurya8868.unrevealed.core.utils.Constants
 import com.priyanshumaurya8868.unrevealed.core.utils.PreferencesKeys
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
 class AvatarSelectionViewModel @Inject constructor(
@@ -54,23 +57,23 @@ class AvatarSelectionViewModel @Inject constructor(
 
     }
 
-    fun onEvenChange(event: AvatarSelectionEvents)  {
+    fun onEvenChange(event: AvatarSelectionEvents) = viewModelScope.launch {
 
         when (event) {
             is AvatarSelectionEvents.GetAvatarList -> {
-               getAvatars(event.isMale)
+               getAvatars(event.isMale, this)
             }
             is AvatarSelectionEvents.OnAvatarSelect -> {
                 _state.value = _state.value.copy(selectedAvatar = event.avatar)
                 _state.value = state.value.copy(isBtnEnabled = true)
             }
             is AvatarSelectionEvents.RegisterUser -> {
-              regUser()
+              regUser(this)
             }
         }
     }
 
-    private fun getAvatars(isMale : Boolean) = viewModelScope.launch(Dispatchers.IO) {
+    private suspend fun getAvatars(isMale : Boolean, scope : CoroutineScope)  {
         val list = if (isMale) useCases.getAvatars(VAL_MALE)
         else useCases.getAvatars(VAL_FEMALE)
         list.onEach { res ->
@@ -92,11 +95,11 @@ class AvatarSelectionViewModel @Inject constructor(
                     _state.value = _state.value.copy(isLoading = false)
                 }
             }
-        }.launchIn(this)
+        }.launchIn(scope)
     }
 
 
-    private fun regUser()= viewModelScope.launch(Dispatchers.IO) {
+    private suspend fun regUser(scope : CoroutineScope) {
         val dToken = dataStore.data.first()[PreferencesKeys.DEVICE_TOKEN]?:""
         useCases.signup(
             username = state.value.username,
@@ -134,7 +137,7 @@ class AvatarSelectionViewModel @Inject constructor(
                     _state.value = _state.value.copy(isLoading = true)
                 }
             }
-        }.launchIn(this)
+        }.launchIn(scope)
     }
 
     sealed class UiEvent {

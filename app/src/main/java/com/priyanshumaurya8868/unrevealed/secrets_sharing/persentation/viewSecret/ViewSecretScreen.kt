@@ -24,11 +24,14 @@ import com.priyanshumaurya8868.unrevealed.core.Screen
 import com.priyanshumaurya8868.unrevealed.core.composable.CustomDialog
 import com.priyanshumaurya8868.unrevealed.core.noRippleClickable
 import com.priyanshumaurya8868.unrevealed.core.utils.Constants
+import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_USER
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.FeedSecret
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.core.NothingToShow
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.PostItem
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.viewSecret.components.*
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 
 val topheadingSize = 20.sp
@@ -105,7 +108,7 @@ fun ViewSecretScreen(
                         ),
                         textAlign = TextAlign.Center,
                     )
-                    Button(onClick = { viewModel.onEvent(ViewSecretEvents.ReloadSecret) }) {
+                    Button(onClick = { viewModel.onEvent(ViewSecretEvents.Retry) }) {
                         Text("Retry", style = TextStyle(fontSize = 18.sp))
                     }
 
@@ -161,8 +164,10 @@ fun ViewSecretScreen(
                                     commentState = commentState,
                                     eventListener = viewModel::onEvent,
                                     commentPosition = commentPosition,
-                                    ownerID = viewModel.ownerId ?: ""
-                                )
+                                    ownerID = viewModel.ownerId ?: "",
+                                ){
+                                    navController.navigate(Screen.ProfileScreen.route+ "?$ARG_USER=${Json.encodeToString(commentState.comment.commenter)}")
+                                }
                             }
 
                             val shouldToggleButtonVisible: Boolean =
@@ -223,7 +228,9 @@ fun ViewSecretScreen(
                                             reply
                                         ),
                                         isEditor = viewModel.ownerId == reply.commenter._id
-                                    )
+                                    ){
+                                        navController.navigate(Screen.ProfileScreen.route+ "?$ARG_USER=${Json.encodeToString(commentState.comment.commenter)}")
+                                    }
                                 }
                             }
                         }

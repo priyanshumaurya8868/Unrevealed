@@ -1,5 +1,6 @@
 package com.priyanshumaurya8868.unrevealed.auth.persentation.core.composable
 
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontWeight
@@ -12,6 +13,6 @@ fun AppTitle() {
         text = "Unrevealed",
         fontWeight = FontWeight.Bold,
         fontSize = 40.sp,
-        textAlign = TextAlign.Center
+        textAlign = TextAlign.Center,
     )
 }
