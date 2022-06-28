@@ -6,6 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.priyanshumaurya8868.unrevealed.auth.persentation.core.AuthConstants.VAL_FEMALE
 import com.priyanshumaurya8868.unrevealed.auth.persentation.core.AuthConstants.VAL_MALE
+import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_PASSWORD
 import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_USERNAME
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -26,7 +27,7 @@ class GenderSelectionViewModel @Inject constructor(
     init {
         savedStateHandle.apply {
             username = get<String>(ARG_USERNAME).toString()
-            password = get<String>(ARG_USERNAME).toString()
+            password = get<String>(ARG_PASSWORD).toString()
         }
 
 //        Log.d("omegaRanger/gsV", "Got username : $username,password : $password")
