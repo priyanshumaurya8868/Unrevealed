@@ -1,19 +1,14 @@
 package com.priyanshumaurya8868.unrevealed.core.composable
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.font.FontWeight
@@ -31,7 +26,11 @@ fun CustomDialog(
     description: String,
     actionString: String,
     dismissalString: String,
-    onDismissRequest: (() -> Unit)? = null
+    onDismissRequest: (() -> Unit)? = null,
+    shouldShowCb: Boolean = false,
+    cbLabelString: String = "",
+    isChecked: Boolean = false,
+    onCheckedChangeListener: (Boolean) -> Unit = {}
 ) {
     Dialog(onDismissRequest = {
         if (onDismissRequest != null) {
@@ -45,7 +44,11 @@ fun CustomDialog(
             description,
             actionString,
             dismissalString,
-            onDismissRequest
+            onDismissRequest,
+            shouldShowCb,
+            cbLabelString,
+            isChecked,
+            onCheckedChangeListener
         )
     }
 }
@@ -58,7 +61,11 @@ fun DialogLayout(
     description: String,
     actionString: String,
     dismissalString: String,
-    onDismissRequest: (() -> Unit)? = null
+    onDismissRequest: (() -> Unit)? = null,
+    shouldShowCb: Boolean,
+    cbLabelString: String,
+    isChecked: Boolean = false,
+    onCheckedChangeListener: (Boolean) -> Unit
 ) {
     Card(
         modifier = Modifier,
@@ -71,7 +78,8 @@ fun DialogLayout(
             //textual stuff
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
                     text = title,
@@ -85,13 +93,18 @@ fun DialogLayout(
                 )
                 Text(
                     text = description,
-                    style = MaterialTheme.typography.caption,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = localSpacing.times(2))
-                        .padding(bottom = localSpacing)
+                        .padding(horizontal = localSpacing.times(2)),
+                    fontSize = 16.sp
                 )
+                if (shouldShowCb)
+                    LabelledCheckbox(
+                        labelString = cbLabelString,
+                        isChecked = isChecked,
+                        onCheckedChangeListener = { onCheckedChangeListener(it) }
+                    )
             }
             //action buttons
             Column(modifier = Modifier.fillMaxWidth()) {
@@ -129,5 +142,25 @@ fun DialogLayout(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun LabelledCheckbox(
+    labelString: String,
+    isChecked: Boolean,
+    onCheckedChangeListener: (Boolean) -> Unit
+) {
+    Row(modifier = Modifier.padding(8.dp) , verticalAlignment = Alignment.CenterVertically) {
+        Checkbox(
+            checked = isChecked,
+            onCheckedChange = { onCheckedChangeListener(it) },
+            enabled = true,
+            colors = CheckboxDefaults.colors(MaterialTheme.colors.secondary)
+        )
+        Text(
+            text = labelString,
+            fontSize = 16.sp
+        )
     }
 }

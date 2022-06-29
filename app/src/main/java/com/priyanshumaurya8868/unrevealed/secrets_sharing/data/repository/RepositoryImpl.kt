@@ -477,26 +477,28 @@ class RepositoryImpl(
        return try{
            api.sendDeviceToken(token, jwtToken)
             Result.success("")
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Result.failure<Any>(exception = e)
-        }
+        }catch (e: RedirectResponseException) {// 3xx res
+           e.printStackTrace()
+           Result.failure<Any>(exception = e)
+        } catch (e: ClientRequestException) {//4xx res
+           e.printStackTrace()
+           Result.failure<Any>(exception = e)
+        } catch (e: ServerResponseException) {//5xx
+           e.printStackTrace()
+           Result.failure<Any>(exception = e)
+       } catch (e: Exception) {
+           e.printStackTrace()
+           Result.failure<Any>(exception = e)
+       }
     }
 
-    override fun getTags(shouldFetchFromServer : Boolean)= flow<Resource<List<Tag>>> {
+    override fun getTags()= flow<Resource<List<Tag>>> {
         val cache = secretsDao.getTags().map { it.toTagModel() }
-
-        val shouldImakeNetworkCall = shouldFetchFromServer || cache.isEmpty()
-
-        if(!shouldImakeNetworkCall){
-            emit(Resource.Success(cache))
-            return@flow
-        }
-
         emit(Resource.Loading(cache))
         try{
             val dto = api.getTags()
             val dbEntities = dto.extractTagList()
+            if (dbEntities.isNotEmpty()) secretsDao.clearTagList()
             secretsDao.addTags(dbEntities)
             val res = secretsDao.getTags().map { it.toTagModel() }
             emit(Resource.Success(res))

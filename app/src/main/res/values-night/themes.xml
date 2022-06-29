@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.Unrevealed" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/dark_bg</item>
+    </style>
+
+
+    -<style  parent="android:Theme.Material.Light.NoActionBar" name="splash">
+
+    <item name="android:windowBackground">@drawable/splash_scrn</item>
+
+    <item name="android:windowFullscreen">true</item>
+
+</style>
+</resources>

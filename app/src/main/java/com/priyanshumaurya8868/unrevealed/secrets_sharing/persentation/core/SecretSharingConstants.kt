@@ -1,13 +1,9 @@
 package com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.core
 
-import com.priyanshumaurya8868.unrevealed.R
-import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.MenuItem
-
 object SecretSharingConstants {
     const val ARG_SECRET_ID = "secret_id_to_open"
 
     val defaultTags = listOf(
-        "Stay Home",
         "Life",
         "Food",
         "Stimulants",

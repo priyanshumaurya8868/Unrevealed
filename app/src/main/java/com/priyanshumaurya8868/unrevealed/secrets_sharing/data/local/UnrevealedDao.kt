@@ -46,4 +46,6 @@ interface UnrevealedDao {
     @Query("SELECT * FROM TagEntity")
     suspend fun getTags() :List<TagEntity>
 
+    @Query("DELETE FROM TagEntity ")
+    suspend fun clearTagList()
 }

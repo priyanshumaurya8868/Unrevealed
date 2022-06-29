@@ -1,5 +1,8 @@
 package com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,11 +20,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
 import com.priyanshumaurya8868.unrevealed.R
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.fontSize_1
@@ -45,6 +50,7 @@ fun Drawer(
     navController: NavController,
     openDialog: MutableState<Boolean>
 ) {
+    val context = LocalContext.current
     val user = state.myCurrentProfile
     val menuList = listOf(
 //        MenuItem(R.drawable.ic_edit, "Edit Profile"),
@@ -63,9 +69,52 @@ fun Drawer(
                         }"
             )
         },
-        MenuItem(R.drawable.ic_instagram, "Instagram"),
-        MenuItem(R.drawable.ic_share, "Share the app"),
-        MenuItem(R.drawable.ic_mail, "Your Feedback"),
+        MenuItem(R.drawable.ic_instagram, "Instagram"){
+            context.apply{
+                val uri = Uri.parse("http://instagram.com/_u/")
+                val likeIng = Intent(Intent.ACTION_VIEW, uri)
+
+                likeIng.setPackage("com.instagram.android")
+
+                try {
+                    startActivity(likeIng)
+                } catch (e: ActivityNotFoundException) {
+                    startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("http://instagram.com/")
+                        )
+                    )
+                }
+            }
+        },
+        MenuItem(R.drawable.ic_share, "Share the app") {
+            context.apply {
+                val sendIntent = Intent()
+                sendIntent.action = Intent.ACTION_SEND
+                sendIntent.putExtra(
+                    Intent.EXTRA_TEXT,
+                    "Hey check out my app at: https://drive.google.com/drive/folders/14lotaZfSm9go09-tWa5u7C5NJNNTrfg7?usp=sharing"
+                )
+                sendIntent.type = "text/plain"
+                startActivity(sendIntent)
+            }
+        },
+        MenuItem(R.drawable.ic_mail, "Your Feedback") {
+            context.apply {
+                try {
+                    val intent = Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("mailto:" + "priyanshumaurya8868@gmail.com")
+                    )
+//                    intent.putExtra(Intent.EXTRA_SUBJECT, "")
+//                    intent.putExtra(Intent.EXTRA_TEXT, "")
+                    startActivity(intent)
+                } catch (e: ActivityNotFoundException) {
+                    e.printStackTrace()
+                }
+            }
+        },
         MenuItem(R.drawable.ic_star, "Send Love"),
     )
 
@@ -170,7 +219,9 @@ fun Drawer(
             items(menuList.size) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(horizontal = localSpacing).noRippleClickable { menuList[it].onClickListener?.let { it1 -> it1() } }
+                    modifier = Modifier
+                        .padding(horizontal = localSpacing)
+                        .noRippleClickable { menuList[it].onClickListener?.let { it1 -> it1() } }
                 ) {
                     Card(elevation = 5.dp, shape = RoundedCornerShape(5.dp)) {
                         Icon(

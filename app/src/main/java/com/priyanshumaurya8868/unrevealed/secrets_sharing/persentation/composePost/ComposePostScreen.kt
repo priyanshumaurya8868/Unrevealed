@@ -5,6 +5,7 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -14,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -67,20 +69,20 @@ fun ComposePostScreen(
         modifier = Modifier.fillMaxSize(),
         scaffoldState = scaffoldState
     ) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
 
             BackHandler {
-                if(viewModel.state.content.isNotBlank())
-                openDialog.value = true
+                if (viewModel.state.content.isNotBlank())
+                    openDialog.value = true
                 else navController.popBackStack()
             }
 
             val dispatcher = LocalOnBackPressedDispatcherOwner.current!!.onBackPressedDispatcher
 
-            if (openDialog.value){
+            if (openDialog.value) {
                 CustomDialog(
                     openDialog = openDialog,
-                    onActionClickListener = { navController.popBackStack() ;},
+                    onActionClickListener = { navController.popBackStack(); },
                     title = "Are You Sure?",
                     description = "Do You Really Want To Discard it, it'll be removed permanently.",
                     actionString = "Yes, I'm",
@@ -136,12 +138,15 @@ fun ComposePostScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(vertical = localSpacing),
                 ) {
-
                     TextCard(text = "English")
                     Spacer(Modifier.width(localSpacing))
                     TextCard(
                         state.tag,
-                        modifier = Modifier.clickable { scope.launch { modalBottomSheetState.show() } }
+                        modifier = Modifier
+                            .clip(shape = RoundedCornerShape(30.dp))
+                            .clickable{
+                                scope.launch { modalBottomSheetState.show() }
+                            }
                     )
                 }
 

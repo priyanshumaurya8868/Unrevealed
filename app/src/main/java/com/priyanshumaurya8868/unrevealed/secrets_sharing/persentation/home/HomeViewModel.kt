@@ -120,19 +120,11 @@ class HomeViewModel
     fun onEvents(event: HomeScreenEvents) = viewModelScope.launch {
         when (event) {
 
-
             is HomeScreenEvents.ChangeTag -> {
                 changeTag(event.newTag)
             }
             is HomeScreenEvents.LogOutUser -> {
-                try {
-                    val job = logOut()
-                    job.join()
-                    _eventFlow.emit(UiEvent.BackToWelcomeScreen)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    e.localizedMessage?.let { _eventFlow.emit(UiEvent.ShowSnackbar(it)) }
-                }
+                logOut(event.shouldKeepCred)
             }
             is HomeScreenEvents.SwitchAccount -> {
                 switchAccount(event.selectedProfile)
@@ -181,8 +173,20 @@ class HomeViewModel
         refreshFeeds()
     }
 
-    private fun logOut() = viewModelScope.launch {
-        useCases.logOut()
+    private fun logOut(shouldKeepCred: Boolean) = viewModelScope.launch {
+       val res =  useCases.logOut(rememberCredentials = shouldKeepCred)
+          val exp = res.exceptionOrNull()
+        if(res.isSuccess){
+            _eventFlow.emit(UiEvent.BackToWelcomeScreen)
+        }
+        exp?.let {
+            val msg = it.message ?: it.localizedMessage
+            val text = try{ msg?.let { msg.substringAfter("\"message\":\"").substringBefore("\"}\"") }}catch (e:Exception){
+                e.printStackTrace()
+            null
+            }
+            _eventFlow.emit(UiEvent.ShowSnackbar(text?:"Couldn't logged out!! "))
+        }
     }
 
     sealed class UiEvent {

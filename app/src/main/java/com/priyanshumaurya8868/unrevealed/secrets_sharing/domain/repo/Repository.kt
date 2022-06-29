@@ -43,6 +43,6 @@ interface Repository {
 
     suspend fun sendDeviceToken(token : String, jwtToken : String?= null) :  Result<*>
 
-    fun getTags(shouldFetchFromServer : Boolean):Flow<Resource<List<Tag>>>
+    fun getTags():Flow<Resource<List<Tag>>>
 
 }

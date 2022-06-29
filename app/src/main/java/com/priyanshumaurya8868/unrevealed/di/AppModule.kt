@@ -132,7 +132,8 @@ object AppModule {
     fun provideSecretsSharingUseCases(
         repo: Repository,
         dataStore: DataStore<Preferences>,
-        authDataBase: AuthDataBase
+        authDataBase: AuthDataBase,
+        secretsDatabase: SecretsDatabase,
     ) =
         SecretSharingUseCases(
             getFeeds = GetFeeds(repo),
@@ -155,7 +156,7 @@ object AppModule {
             updateComment = UpdateComment(repo),
             updateReply = UpdateReply(repo),
             updateSecret = UpdateSecret(repo),
-            getTags = GetTags(repo)
+            getTags = GetTags(repo,secretsDatabase)
         )
 
 

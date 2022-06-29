@@ -26,7 +26,10 @@ import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 @HiltViewModel
-class ComposePostViewModel @Inject constructor(savedStateHandle: SavedStateHandle,  private val useCases: SecretSharingUseCases) :
+class ComposePostViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
+    private val useCases: SecretSharingUseCases
+) :
     ViewModel() {
 
     var state by mutableStateOf(ScreenState())
@@ -35,32 +38,33 @@ class ComposePostViewModel @Inject constructor(savedStateHandle: SavedStateHandl
 
     init {
         savedStateHandle.get<String>(ARG_SECRET_ITEM)?.let {
-         initSecretToUpdate(it)
+            initSecretToUpdate(it)
         }
         getTags()
     }
 
     private fun getTags() = viewModelScope.launch {
-       val tags = useCases.getTags(false)
-        tags.onEach { res->
+        val tags = useCases.getTags(false)
+        tags.onEach { res ->
             res.data?.let { state = state.copy(tags = it) }
         }.launchIn(this)
+
     }
 
-    private fun initSecretToUpdate(str:String)= viewModelScope.launch{
-        Log.d("omegaRanger","got something : $str")
+    private fun initSecretToUpdate(str: String) = viewModelScope.launch {
+        Log.d("omegaRanger", "got something : $str")
         val secret = Json.decodeFromString<FeedSecret>(str)
-        state = state.copy(secretToUpdate = secret, content =  secret.content, tag = secret.tag)
+        state = state.copy(secretToUpdate = secret, content = secret.content, tag = secret.tag)
 
     }
 
-    fun onEvent(event: ComposePostScreenEvents)  {
+    fun onEvent(event: ComposePostScreenEvents) {
         when (event) {
             is ComposePostScreenEvents.OnContentChange -> {
                 state = state.copy(content = event.newText)
             }
             is ComposePostScreenEvents.Reveal -> {
-              revealSecret()
+                revealSecret()
             }
             is ComposePostScreenEvents.ChooseTag -> {
                 state = state.copy(tag = event.selectedTag)
@@ -68,13 +72,18 @@ class ComposePostViewModel @Inject constructor(savedStateHandle: SavedStateHandl
         }
     }
 
-    private fun revealSecret() =viewModelScope.launch{
+    private fun revealSecret() = viewModelScope.launch {
 
-      val resFlow =  if(state.secretToUpdate != null){
-            useCases.updateSecret(UpdateSecretRequestBody(secret_id = state.secretToUpdate!!._id, content = state.content, state.tag))
-        }
-        else
-        useCases.revealSecret(PostSecretRequestBody(content = state.content, state.tag))
+        val resFlow = if (state.secretToUpdate != null) {
+            useCases.updateSecret(
+                UpdateSecretRequestBody(
+                    secret_id = state.secretToUpdate!!._id,
+                    content = state.content,
+                    state.tag
+                )
+            )
+        } else
+            useCases.revealSecret(PostSecretRequestBody(content = state.content, state.tag))
 
         resFlow.onEach { res ->
             state = when (res) {
@@ -101,10 +110,10 @@ class ComposePostViewModel @Inject constructor(savedStateHandle: SavedStateHandl
 
 
     data class ScreenState(
-        val tags : List<Tag> = emptyList(),
-        val tag: String = if(tags.isNotEmpty())tags[0].name else "",
+        val tags: List<Tag> = emptyList(),
+        val tag: String =  SecretSharingConstants.defaultTags[0], //default tag
         val content: String = "",
         val isUploading: Boolean = false,
-        val secretToUpdate : FeedSecret? = null
+        val secretToUpdate: FeedSecret? = null
     )
 }

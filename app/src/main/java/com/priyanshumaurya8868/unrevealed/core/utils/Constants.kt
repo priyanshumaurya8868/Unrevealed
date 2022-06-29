@@ -2,6 +2,10 @@ package com.priyanshumaurya8868.unrevealed.core.utils
 
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import com.priyanshumaurya8868.unrevealed.R
 import com.priyanshumaurya8868.unrevealed.ui.theme.*
 
 object Constants {
@@ -47,5 +51,8 @@ object Constants {
         onBackground = lightOnBg,
         onSurface = lightOnSurface,
     )
+
+
+    val billaBongFontFamily = FontFamily(listOf(Font(resId = R.font.billabong,)))
 
 }

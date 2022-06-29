@@ -70,8 +70,8 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setTheme(R.style.Theme_Unrevealed)
         FirebaseApp.initializeApp(this)
+        setTheme(R.style.Theme_Unrevealed)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create channel to show notifications.
             val channelId = getString(R.string.default_notification_channel_id)
@@ -94,7 +94,6 @@ class MainActivity : ComponentActivity() {
         //
         // Handle possible data accompanying notification message.
         // [START handle_data_extras]
-
 
         intent.extras?.let {
             for (key in it.keySet()) {

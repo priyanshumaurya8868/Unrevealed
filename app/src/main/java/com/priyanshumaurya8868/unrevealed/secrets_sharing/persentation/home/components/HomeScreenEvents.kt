@@ -4,7 +4,7 @@ import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.MyProfil
 
 sealed class HomeScreenEvents {
     data class ChangeTag(val newTag: String?) : HomeScreenEvents()
-    object LogOutUser : HomeScreenEvents()
+    data class LogOutUser(val shouldKeepCred : Boolean) : HomeScreenEvents()
     object ToggleTheme: HomeScreenEvents()
     object ToggleListOfLoggedUSer : HomeScreenEvents()
     data class SwitchAccount(val selectedProfile: MyProfile) : HomeScreenEvents()

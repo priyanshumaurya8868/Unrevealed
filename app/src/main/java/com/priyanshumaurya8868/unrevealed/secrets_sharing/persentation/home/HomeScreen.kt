@@ -1,7 +1,6 @@
 package com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -34,14 +33,12 @@ import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localS
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localVerticalSpacing
 import com.priyanshumaurya8868.unrevealed.core.Screen
 import com.priyanshumaurya8868.unrevealed.core.noRippleClickable
+import com.priyanshumaurya8868.unrevealed.core.utils.Constants
 import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_SECRET_ID
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.composePost.component.TextCard
-import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.core.SecretSharingConstants
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.core.NothingToShow
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.Drawer
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.HomeScreenEvents
-import com.priyanshumaurya8868.unrevealed.core.composable.CustomDialog
-import com.priyanshumaurya8868.unrevealed.core.utils.Constants
-import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.core.NothingToShow
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.LogOutDialog
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.PostItem
 import kotlinx.coroutines.flow.collectLatest
@@ -55,10 +52,11 @@ val fabHeight = 72.dp //FabSize+Padding
 @Composable
 fun HomeScreen(
     navController: NavController,
-    screen_route :String? = null,
+    screen_route: String? = null,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val openDialog = remember{ mutableStateOf(false)}
+    val openDialog = remember { mutableStateOf(false) }
+    var shouldKeepCredentials by remember { mutableStateOf(true) }
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
     val state = viewModel.state
@@ -148,10 +146,17 @@ fun HomeScreen(
                 contentAlignment = Alignment.Center
             ) {
 
-                if (openDialog.value){
-                    LogOutDialog(openDialog = openDialog) {
-                        viewModel.onEvents(HomeScreenEvents.LogOutUser)
-                    }
+                if (openDialog.value) {
+                    LogOutDialog(
+                        openDialog = openDialog,
+                        isChecked = shouldKeepCredentials,
+                        onCheckedChangeListener = {
+                            shouldKeepCredentials = it
+                        },
+                        onActionClickListener = {
+                            viewModel.onEvents(HomeScreenEvents.LogOutUser(shouldKeepCredentials))
+                        }
+                    )
                 }
 
                 LazyColumn(
@@ -240,9 +245,12 @@ fun HomeScreen(
 
                     }
 
-                    if (state.items.isEmpty() && !(state.isPaginating || state.isRefreshing)){
-                        item{
-                            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                    if (state.items.isEmpty() && !(state.isPaginating || state.isRefreshing)) {
+                        item {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.fillMaxSize()
+                            ) {
                                 NothingToShow()
                             }
                         }
@@ -269,7 +277,14 @@ fun HomeScreen(
                         .offset { IntOffset(x = 0, y = toolbarOffsetHeightPx.roundToInt()) },
                     backgroundColor = MaterialTheme.colors.background,
                     contentColor = MaterialTheme.colors.onSurface,
-                    title = { Text("Secrets") },
+                    title = {
+                        Text(
+                            "Unrevealed",
+                            fontSize = 35.sp,
+                            fontFamily = Constants.billaBongFontFamily,
+                            modifier = Modifier.padding(top = 10.dp)
+                        )
+                    },
                     navigationIcon = {
                         Icon(
                             Icons.Default.Menu,
