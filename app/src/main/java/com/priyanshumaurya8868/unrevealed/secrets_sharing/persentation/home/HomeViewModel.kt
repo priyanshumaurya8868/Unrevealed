@@ -8,6 +8,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.priyanshumaurya8868.unrevealed.core.Resource
 import com.priyanshumaurya8868.unrevealed.core.ThemeSwitcher
 import com.priyanshumaurya8868.unrevealed.core.utils.PreferencesKeys
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.MyProfile
@@ -18,6 +19,8 @@ import com.priyanshumaurya8868.unrevealed.secrets_sharing.utils.DefaultPaginator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -76,8 +79,31 @@ class HomeViewModel
 
     init {
         state = state.copy(isDarkTheme =  themeSwitcher.IS_DARK_THEME)
+        getTags()
         loadNextItems()
         getPresentUserProfile()
+    }
+
+    private fun getTags() = viewModelScope.launch {
+      useCases.getTags(true).onEach { res->
+        state =   when(res){
+              is Resource.Loading->{
+                  if (!res.data.isNullOrEmpty())
+                   state.copy(tags =res.data)
+                  else state
+              }
+              is Resource.Success->{
+                  if (!res.data.isNullOrEmpty())
+                      state.copy(tags =res.data)
+                  else state
+              }
+              is Resource.Error->{
+                  if (!res.data.isNullOrEmpty())
+                      state.copy(tags =res.data)
+                  else state
+              }
+          }
+      }.launchIn(this)
     }
 
     private fun getPresentUserProfile() =

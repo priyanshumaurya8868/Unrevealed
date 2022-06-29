@@ -11,6 +11,7 @@ import com.priyanshumaurya8868.unrevealed.core.Resource
 import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_SECRET_ITEM
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.FeedSecret
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.PostSecretRequestBody
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.Tag
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.UpdateSecretRequestBody
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.usecases.SecretSharingUseCases
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.composePost.component.ComposePostScreenEvents
@@ -30,14 +31,20 @@ class ComposePostViewModel @Inject constructor(savedStateHandle: SavedStateHandl
 
     var state by mutableStateOf(ScreenState())
 
-    val tagList = SecretSharingConstants.defaultTags
-
     val eventFlow = MutableSharedFlow<UiEvents>()
 
     init {
         savedStateHandle.get<String>(ARG_SECRET_ITEM)?.let {
          initSecretToUpdate(it)
         }
+        getTags()
+    }
+
+    private fun getTags() = viewModelScope.launch {
+       val tags = useCases.getTags(false)
+        tags.onEach { res->
+            res.data?.let { state = state.copy(tags = it) }
+        }.launchIn(this)
     }
 
     private fun initSecretToUpdate(str:String)= viewModelScope.launch{
@@ -94,7 +101,8 @@ class ComposePostViewModel @Inject constructor(savedStateHandle: SavedStateHandl
 
 
     data class ScreenState(
-        val tag: String = SecretSharingConstants.defaultTags[1],
+        val tags : List<Tag> = emptyList(),
+        val tag: String = if(tags.isNotEmpty())tags[0].name else "",
         val content: String = "",
         val isUploading: Boolean = false,
         val secretToUpdate : FeedSecret? = null

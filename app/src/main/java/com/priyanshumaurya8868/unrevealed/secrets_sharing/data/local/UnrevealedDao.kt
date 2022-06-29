@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.local.entity.SecretEntity
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.local.entity.TagEntity
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.local.entity.UserProfileEntity
 
 @Dao
@@ -39,5 +40,10 @@ interface UnrevealedDao {
     @Query("DELETE FROM SecretEntity WHERE _id LIKE :id")
     suspend fun deleteById(id :String)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addTags(list : List<TagEntity>)
+
+    @Query("SELECT * FROM TagEntity")
+    suspend fun getTags() :List<TagEntity>
 
 }

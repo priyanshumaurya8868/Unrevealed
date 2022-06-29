@@ -244,5 +244,11 @@ class UnrevealedApiImpl(private val httpClient: HttpClient, val dataStore: DataS
         }
     }
 
+    override suspend fun getTags(): TagDto {
+     return httpClient.get{
+         url(HttpRoutes.TAGS)
+     }
+    }
+
 
 }

@@ -22,5 +22,5 @@ interface UnrevealedApi {
     suspend fun updateComment(bodyDto : UpdateComplimentRequestBodyDto) :CommentDto
     suspend fun updateReply(bodyDto: UpdateComplimentRequestBodyDto):ReplyDto
     suspend fun sendDeviceToken(dToken : String, jwtToken : String?)
-
+    suspend fun getTags():TagDto
 }

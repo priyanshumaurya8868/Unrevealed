@@ -200,19 +200,19 @@ fun HomeScreen(
                                 }
                             }
 
-                            items(SecretSharingConstants.defaultTags.size) { index ->
-                                val item = SecretSharingConstants.defaultTags[index]
+                            items(state.tags.size) { index ->
+                                val item = state.tags[index]
                                 Row(modifier = Modifier.noRippleClickable {
-                                    viewModel.onEvents(HomeScreenEvents.ChangeTag(item))
+                                    viewModel.onEvents(HomeScreenEvents.ChangeTag(item.name))
                                 }) {
-                                    if (state.selectedTag == item) {
+                                    if (state.selectedTag == item.name) {
                                         TextCard(
-                                            text = item,
+                                            text = item.name,
                                             backgroundColor = MaterialTheme.colors.primary,
                                             textColor = Color.White.copy(alpha = 0.8f)
                                         )
                                     } else {
-                                        TextCard(text = item)
+                                        TextCard(text = item.name)
                                     }
                                 }
                                 Spacer(modifier = Modifier.width(10.dp))

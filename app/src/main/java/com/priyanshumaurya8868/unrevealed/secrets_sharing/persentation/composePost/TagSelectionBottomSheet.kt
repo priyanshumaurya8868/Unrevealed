@@ -20,6 +20,7 @@ import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localS
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localVerticalSpacing
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.composePost.component.ComposePostScreenEvents
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.composePost.component.TextCard
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.core.NothingToShow
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -54,16 +55,20 @@ fun TagSelectionBottomSheet(
                     Icon(Icons.Default.Close,"hide sheet",
                         tint = MaterialTheme.colors.onSurface.copy(alpha = .7f),
                         modifier = Modifier
-                        .clip(CircleShape)
-                        .clickable { scope.launch{ modalBottomSheetState.hide() } })
+                            .clip(CircleShape)
+                            .clickable { scope.launch { modalBottomSheetState.hide() } })
                 }
                 Spacer(modifier = Modifier.height(localVerticalSpacing))
+                if(state.tags.isEmpty()){
+                    NothingToShow()
+                }else
                 FlowRow(
                     modifier = Modifier.fillMaxSize(),
                     mainAxisSpacing = 10.dp,
                     crossAxisSpacing = 10.dp
                 ) {
-                    viewModel.tagList.forEach { item ->
+                    state.tags.forEach { tag ->
+                        val item =tag.name
                         Row(modifier = Modifier.clickable {
                             viewModel.onEvent(
                                 ComposePostScreenEvents.ChooseTag(item)

@@ -154,7 +154,8 @@ object AppModule {
             deleteSecret = DeleteSecret(repo),
             updateComment = UpdateComment(repo),
             updateReply = UpdateReply(repo),
-            updateSecret = UpdateSecret(repo)
+            updateSecret = UpdateSecret(repo),
+            getTags = GetTags(repo)
         )
 
 

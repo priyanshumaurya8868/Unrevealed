@@ -30,7 +30,7 @@ open class AuthViewModel @Inject constructor() : ViewModel() {
             _eventFlow.emit(UiEvent.ShowSnackbar("Username can't be empty!"))
             return false
         }
-        if(!isSatisfiedRegex(_username.value.text)){
+        if(!isSatisfiedRegex(_username.value.text.trim())){
             _username.value = username.value.copy(isError = true)
             _eventFlow.emit(UiEvent.ShowSnackbar("Invalid username! try something else"))
             return false

@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localSpacing
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localVerticalSpacing
 import com.priyanshumaurya8868.unrevealed.core.composable.CircleImage
-import com.priyanshumaurya8868.unrevealed.core.covertToCommentTimeText
+import com.priyanshumaurya8868.unrevealed.core.extentions.covertToCommentTimeText
 import com.priyanshumaurya8868.unrevealed.core.noRippleClickable
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.viewSecret.ViewSecretViewModel
 

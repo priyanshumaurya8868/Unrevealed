@@ -26,8 +26,7 @@ import com.priyanshumaurya8868.unrevealed.core.composable.CircleImage
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localSpacing
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localVerticalSpacing
 import com.priyanshumaurya8868.unrevealed.core.Screen
-import com.priyanshumaurya8868.unrevealed.core.covertToPostTimeText
-import com.priyanshumaurya8868.unrevealed.core.noRippleClickable
+import com.priyanshumaurya8868.unrevealed.core.extentions.covertToPostTimeText
 import com.priyanshumaurya8868.unrevealed.core.utils.Constants
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.domain.models.FeedSecret
 import kotlinx.serialization.encodeToString

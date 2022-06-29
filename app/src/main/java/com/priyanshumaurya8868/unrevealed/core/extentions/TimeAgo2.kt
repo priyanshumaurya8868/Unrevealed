@@ -1,4 +1,4 @@
-package com.priyanshumaurya8868.unrevealed.core
+package com.priyanshumaurya8868.unrevealed.core.extentions
 
 import android.util.Log
 import java.text.SimpleDateFormat
@@ -11,8 +11,9 @@ fun String.covertToPostTimeText(): String? {
     val prefix = ""
     val suffix = "Ago"
     try {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
-        val pasTime: Date = dateFormat.parse(this)
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+        dateFormat.timeZone = TimeZone.getTimeZone("UTC");
+        val pasTime = dateFormat.parse(this) as Date
         val nowTime = Date()
         val dateDiff: Long = nowTime.time - pasTime.time
         val second: Long = TimeUnit.MILLISECONDS.toSeconds(dateDiff)
@@ -57,7 +58,8 @@ fun String.covertToPostTimeText(): String? {
 fun String.covertToCommentTimeText(): String? {
     var convTime: String? = null
     try {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+        dateFormat.timeZone = TimeZone.getTimeZone("UTC");
         val pasTime: Date = dateFormat.parse(this)
         val nowTime = Date()
         val dateDiff: Long = nowTime.time - pasTime.time

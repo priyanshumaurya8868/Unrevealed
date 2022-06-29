@@ -20,5 +20,6 @@ data class SecretSharingUseCases(
     val deleteSecret: DeleteSecret,
     val updateComment: UpdateComment,
     val updateReply: UpdateReply,
-    val updateSecret: UpdateSecret
+    val updateSecret: UpdateSecret,
+    val getTags : GetTags
     )

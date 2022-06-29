@@ -483,6 +483,39 @@ class RepositoryImpl(
         }
     }
 
+    override fun getTags(shouldFetchFromServer : Boolean)= flow<Resource<List<Tag>>> {
+        val cache = secretsDao.getTags().map { it.toTagModel() }
+
+        val shouldImakeNetworkCall = shouldFetchFromServer || cache.isEmpty()
+
+        if(!shouldImakeNetworkCall){
+            emit(Resource.Success(cache))
+            return@flow
+        }
+
+        emit(Resource.Loading(cache))
+        try{
+            val dto = api.getTags()
+            val dbEntities = dto.extractTagList()
+            secretsDao.addTags(dbEntities)
+            val res = secretsDao.getTags().map { it.toTagModel() }
+            emit(Resource.Success(res))
+        }catch (e: RedirectResponseException) {// 3xx res
+            e.printStackTrace()
+            emit(Resource.Error( data = cache, message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_3xx))
+        } catch (e: ClientRequestException) {//4xx res
+            e.printStackTrace()
+            emit(Resource.Error(data = cache, message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_4xx))
+        } catch (e: ServerResponseException) {//5xx
+            e.printStackTrace()
+            emit(Resource.Error(data = cache, message = extractErrorMsg(e.localizedMessage) ?: ERROR_MSG_5xx))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            val msg = ERROR_MSG
+            emit(Resource.Error(data = cache, message = msg))
+        }
+    }
+
     private fun extractErrorMsg(msg: String?) =
         try {
             msg?.let { msg.substringAfter("\"message\":\"").substringBefore("\"}\"") }

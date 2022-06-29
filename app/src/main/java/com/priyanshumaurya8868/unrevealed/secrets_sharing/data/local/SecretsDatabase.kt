@@ -5,10 +5,11 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.local.converters.UserProfileTypeConverter
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.local.entity.SecretEntity
+import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.local.entity.TagEntity
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.local.entity.UserProfileEntity
 
 @Database(
-    entities = [SecretEntity::class, UserProfileEntity::class],
+    entities = [SecretEntity::class, UserProfileEntity::class, TagEntity::class],
     version = 1
 )
 @TypeConverters(UserProfileTypeConverter::class)
