@@ -119,14 +119,14 @@ fun Drawer(
     )
 
 
-    Column(
+    Box(
         modifier = modifier
             .fillMaxWidth(0.6f)
             .fillMaxHeight()
             .background(MaterialTheme.colors.background),
-        verticalArrangement = Arrangement.SpaceBetween
+        contentAlignment = Alignment.TopStart
     ) {
-        LazyColumn {
+        LazyColumn(modifier = Modifier.fillMaxWidth(), contentPadding = PaddingValues(bottom = 120.dp)) {
 
             item {
                 Row(
@@ -248,9 +248,11 @@ fun Drawer(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(60.dp)
+                .align(Alignment.BottomStart)
                 .clickable {
                     openDialog.value = true
-                },
+                }
+                .background(MaterialTheme.colors.background),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Divider(
