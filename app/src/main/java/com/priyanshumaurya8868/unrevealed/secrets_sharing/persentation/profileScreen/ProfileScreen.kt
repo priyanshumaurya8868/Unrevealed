@@ -87,7 +87,7 @@ fun ProfileScreen(
             }
 
             item {
-                Row(modifier = Modifier.padding(localSpacing)) {
+                Row(modifier = Modifier.fillMaxWidth().padding(localSpacing), horizontalArrangement = Arrangement.Center) {
                     if (state.isLoading) {
                         CircularProgressIndicator()
                     }

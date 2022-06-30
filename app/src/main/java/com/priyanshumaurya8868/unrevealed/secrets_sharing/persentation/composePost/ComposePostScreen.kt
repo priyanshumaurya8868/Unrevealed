@@ -72,9 +72,15 @@ fun ComposePostScreen(
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
 
             BackHandler {
-                if (viewModel.state.content.isNotBlank())
+                if (viewModel.state.content.isNotBlank()) {
                     openDialog.value = true
-                else navController.popBackStack()
+                    return@BackHandler
+                }
+                if(modalBottomSheetState.isVisible){
+                    scope.launch{ modalBottomSheetState.hide() }
+                    return@BackHandler
+                }
+                navController.popBackStack()
             }
 
             val dispatcher = LocalOnBackPressedDispatcherOwner.current!!.onBackPressedDispatcher
@@ -144,7 +150,7 @@ fun ComposePostScreen(
                         state.tag,
                         modifier = Modifier
                             .clip(shape = RoundedCornerShape(30.dp))
-                            .clickable{
+                            .clickable {
                                 scope.launch { modalBottomSheetState.show() }
                             }
                     )

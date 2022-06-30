@@ -11,6 +11,7 @@ object SecretSharingConstants {
         "Fitness",
         "Travel",
         "Work",
+        "Second-thoughts",
         "Investments",
         "Politics",
         "Startups",
@@ -30,6 +31,8 @@ object SecretSharingConstants {
         "Fashion",
         "Feminism",
         "Depression",
+        "Guilt",
+        "Dreams",
         "Social Cause",
         "Marriage"
     )
