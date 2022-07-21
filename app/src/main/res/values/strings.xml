@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Unrevealed</string>
-    <string name="default_notification_channel_id">default_notification_channel_id</string>
-    <string name="default_notification_channel_name">default_channel_name</string>
+    <string name="comments_notification_channel_id">comments_notification_channel_id</string>
+    <string name="comments_notification_channel_name">Comments</string>
     <string name="msg_token_fmt">msg_token_fmt</string>
     <string name="msg_subscribed">msg_subscribed</string>
     <string name="msg_subscribe_failed">msg_subscribe_failed</string>

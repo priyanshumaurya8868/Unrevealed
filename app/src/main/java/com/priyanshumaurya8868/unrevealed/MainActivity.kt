@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
@@ -64,6 +65,7 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var themeSwitcher: ThemeSwitcher
 
+    val viewModel : MainViewModel by viewModels()
 
     @OptIn(ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,8 +74,8 @@ class MainActivity : ComponentActivity() {
         setTheme(R.style.Theme_Unrevealed)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create channel to show notifications.
-            val channelId = getString(R.string.default_notification_channel_id)
-            val channelName = getString(R.string.default_notification_channel_name)
+            val channelId = getString(R.string.comments_notification_channel_id)
+            val channelName =getString(R.string.comments_notification_channel_name)
             val notificationManager = getSystemService(NotificationManager::class.java)
             notificationManager?.createNotificationChannel(
                 NotificationChannel(
@@ -101,8 +103,6 @@ class MainActivity : ComponentActivity() {
         }
         // [END handle_data_extras]
 
-
-        Log.d(TAG, "Subscribing to weather topic")
         // [START subscribe_topics]
         Firebase.messaging.subscribeToTopic("comment")
             .addOnCompleteListener { task ->
@@ -141,9 +141,8 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colors.background,
                     ) {
-                        val shouldAuth: Boolean = remember {
-                            runBlocking { dataStore.data.first()[PreferencesKeys.JWT_TOKEN] }.isNullOrEmpty()
-                        }
+                        val shouldAuth: Boolean =  viewModel.shouldAuthenticated
+
                         val navController = rememberNavController()
                         NavHost(
                             navController = navController,

@@ -14,5 +14,4 @@ object HttpRoutes {
     const val REPLIES = "$COMMENTS/replies"
     const val LIKE_COMMENT = "$COMMENTS/like"
     const val DISLIKE_COMMENT = "$COMMENTS/dislike"
-
 }

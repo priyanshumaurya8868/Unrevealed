@@ -9,11 +9,9 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.media.RingtoneManager
 import android.os.Build
-import android.os.Bundle
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.core.app.NotificationCompat
-import androidx.core.os.bundleOf
 import androidx.work.*
 import coil.ImageLoader
 import coil.request.ImageRequest
@@ -174,7 +172,7 @@ class MyFirebaseService : FirebaseMessagingService() {
                 bitmap = (result as BitmapDrawable).bitmap
         }
 
-        val channelId = getString(R.string.default_notification_channel_id)
+        val channelId = getString(R.string.comments_notification_channel_id)
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_letter_u)
