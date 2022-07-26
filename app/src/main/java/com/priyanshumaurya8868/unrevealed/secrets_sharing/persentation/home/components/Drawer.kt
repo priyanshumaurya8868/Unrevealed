@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.ManageAccounts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -115,6 +116,7 @@ fun Drawer(
                 }
             }
         },
+
         MenuItem(R.drawable.ic_star, "Send Love"),
     )
 
@@ -241,6 +243,29 @@ fun Drawer(
                     )
                 }
                 Spacer(modifier = Modifier.height(if (it == 1) localSpacing else localVerticalSpacing))
+            }
+
+            item {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .padding(horizontal = localSpacing)
+                        .noRippleClickable { navController.navigate(Screen.AccountsSettings.route) }
+                ) {
+                    Card(elevation = 5.dp, shape = RoundedCornerShape(5.dp)) {
+                      Icon(imageVector = Icons.Default.ManageAccounts, contentDescription = "Manage Account",
+                          modifier = Modifier
+                          .padding(5.dp)
+                          .size(20.dp),
+                          tint = MaterialTheme.colors.secondary.copy(alpha = .6f))
+                    }
+                    Spacer(modifier = Modifier.width(localSpacing))
+                    Text(
+                        text = "Account Settings",
+                        fontWeight = FontWeight.W400,
+                        fontSize = fontSize_1,
+                    )
+                }
             }
         }
 

@@ -47,14 +47,7 @@ fun AccountsItem(
             ) {
                 Text("Login", color = MaterialTheme.colors.onBackground, fontSize = 12.sp)
             }
-            Spacer(modifier = Modifier.width(localVerticalSpacing.div(2)))
-            Icon(
-                Icons.Default.Close,
-                null,
-                modifier = Modifier
-                    .padding(5.dp)
-                    .alpha(.5f)
-                    .clickable { eventListener(AuthOptionScreenEvents.RemoveAccount(account)) })
+            
         }
 
     }

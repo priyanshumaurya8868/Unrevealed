@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -28,6 +27,8 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseApp
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
+import com.priyanshumaurya8868.unrevealed.auth.persentation.accountSettings.AccountSettingsScreen
+import com.priyanshumaurya8868.unrevealed.auth.persentation.accountSettings.ChangePasswordBottomSheet
 import com.priyanshumaurya8868.unrevealed.auth.persentation.authOptionsScreen.AuthOptionsScreen
 import com.priyanshumaurya8868.unrevealed.auth.persentation.avatarSelection.AvatarSelection
 import com.priyanshumaurya8868.unrevealed.auth.persentation.genderSelection.GenderSelectionScreen
@@ -45,14 +46,11 @@ import com.priyanshumaurya8868.unrevealed.core.utils.Constants.ARG_USERNAME
 import com.priyanshumaurya8868.unrevealed.core.utils.Constants.DarkColorPalette
 import com.priyanshumaurya8868.unrevealed.core.utils.Constants.KEY_ROUTE
 import com.priyanshumaurya8868.unrevealed.core.utils.Constants.LightColorPalette
-import com.priyanshumaurya8868.unrevealed.core.utils.PreferencesKeys
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.composePost.TagSelectionBottomSheet
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.HomeScreen
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.profileScreen.ProfileScreen
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.viewSecret.ViewSecretScreen
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @ExperimentalFoundationApi
@@ -65,17 +63,20 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var themeSwitcher: ThemeSwitcher
 
-    val viewModel : MainViewModel by viewModels()
+    val viewModel: MainViewModel by viewModels()
 
     @OptIn(ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Log.d("omegaRanger", "Got Route in ma ${intent.getStringExtra(KEY_ROUTE)}")
+
         FirebaseApp.initializeApp(this)
         setTheme(R.style.Theme_Unrevealed)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create channel to show notifications.
             val channelId = getString(R.string.comments_notification_channel_id)
-            val channelName =getString(R.string.comments_notification_channel_name)
+            val channelName = getString(R.string.comments_notification_channel_name)
             val notificationManager = getSystemService(NotificationManager::class.java)
             notificationManager?.createNotificationChannel(
                 NotificationChannel(
@@ -141,7 +142,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colors.background,
                     ) {
-                        val shouldAuth: Boolean =  viewModel.shouldAuthenticated
+                        val shouldAuth: Boolean = viewModel.shouldAuthenticated
 
                         val navController = rememberNavController()
                         NavHost(
@@ -152,17 +153,29 @@ class MainActivity : ComponentActivity() {
                         ) {
 
                             composable(Screen.WelcomeScreen.route) {
+                                rememberSystemUiController().setSystemBarsColor(
+                                    color = MaterialTheme.colors.background
+                                )
                                 WelcomeScreen(navController = navController)
                             }
 
                             composable(Screen.AuthOptionsScreen.route) {
+                                rememberSystemUiController().setSystemBarsColor(
+                                    color = MaterialTheme.colors.background
+                                )
                                 AuthOptionsScreen(navController = navController)
                             }
 
                             composable(Screen.SignupScreen.route) {
+                                rememberSystemUiController().setSystemBarsColor(
+                                    color = MaterialTheme.colors.background
+                                )
                                 SignupScreen(navController = navController)
                             }
                             composable(Screen.LoginScreen.route) {
+                                rememberSystemUiController().setSystemBarsColor(
+                                    color = MaterialTheme.colors.background
+                                )
                                 LoginScreen(navController = navController)
                             }
 
@@ -183,6 +196,9 @@ class MainActivity : ComponentActivity() {
                                     }
                                 )
                             ) {
+                                rememberSystemUiController().setSystemBarsColor(
+                                    color = MaterialTheme.colors.background
+                                )
                                 GenderSelectionScreen(navController = navController)
                             }
 
@@ -229,6 +245,9 @@ class MainActivity : ComponentActivity() {
                                         defaultValue = null
                                     }
                                 )) {
+                                rememberSystemUiController().setSystemBarsColor(
+                                    color = MaterialTheme.colors.background
+                                )
                                 TagSelectionBottomSheet(navController)
                             }
                             composable(Screen.ProfileScreen.route + "?$ARG_USER={$ARG_USER}",
@@ -239,6 +258,9 @@ class MainActivity : ComponentActivity() {
                                         defaultValue = null
                                     }
                                 )) {
+                                rememberSystemUiController().setSystemBarsColor(
+                                    color = MaterialTheme.colors.background
+                                )
                                 ProfileScreen(navController)
                             }
 
@@ -256,7 +278,12 @@ class MainActivity : ComponentActivity() {
                                 )
                                 ViewSecretScreen(navController = navController)
                             }
-//
+                            composable(Screen.AccountsSettings.route) {
+                                rememberSystemUiController().setSystemBarsColor(
+                                    color = MaterialTheme.colors.background
+                                )
+                                ChangePasswordBottomSheet(navController)
+                            }
                         }
                     }
                 }

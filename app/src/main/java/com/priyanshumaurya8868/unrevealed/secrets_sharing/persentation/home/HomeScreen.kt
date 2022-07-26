@@ -63,6 +63,7 @@ fun HomeScreen(
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = state.isRefreshing)
 
     LaunchedEffect(key1 = true) {
+        viewModel.initialSetup()
         screen_route?.let {
             navController.navigate(it)
         }

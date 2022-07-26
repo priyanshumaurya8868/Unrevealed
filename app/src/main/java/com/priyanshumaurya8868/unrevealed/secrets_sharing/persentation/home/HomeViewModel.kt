@@ -17,6 +17,7 @@ import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.comp
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.home.components.HomeScreenState
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.utils.DefaultPaginator
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
@@ -79,6 +80,9 @@ class HomeViewModel
 
     init {
         state = state.copy(isDarkTheme =  themeSwitcher.IS_DARK_THEME)
+    }
+
+     fun initialSetup(){
         getTags()
         loadNextItems()
         getPresentUserProfile()
@@ -107,7 +111,7 @@ class HomeViewModel
     }
 
     private fun getPresentUserProfile() =
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             dataStore.data.collect { pref ->
                 val currentUserId = pref[PreferencesKeys.MY_PROFILE_ID]
                 Log.d("omega/h", "cureent uid : $currentUserId")
@@ -140,7 +144,7 @@ class HomeViewModel
         }
     }
 
-    private fun switchAccount(newSelectedProfile: MyProfile) = viewModelScope.launch {
+    private fun switchAccount(newSelectedProfile: MyProfile) = viewModelScope.launch(Dispatchers.IO) {
         state = state.copy(myCurrentProfile = newSelectedProfile)
         useCases.switchAccount(
             selectedUserId = newSelectedProfile.user_id,
@@ -148,7 +152,7 @@ class HomeViewModel
         )
     }
 
-    private fun getLoggedUsersList() = viewModelScope.launch {
+    private fun getLoggedUsersList() = viewModelScope.launch(Dispatchers.IO) {
         val list = useCases.getLoggedUser()
         Log.d("omega/hvm", " users List $list")
         state = state.copy(loggerUsers = list)
@@ -156,7 +160,7 @@ class HomeViewModel
 
 
     fun loadNextItems() =
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             paginator.loadNextItem()
         }
 

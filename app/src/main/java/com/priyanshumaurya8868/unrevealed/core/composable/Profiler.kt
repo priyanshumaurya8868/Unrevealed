@@ -34,11 +34,12 @@ fun Profiler(
     imageSize: Dp = 100.dp,
     username: String,
     gender: String,
-    textAlign: TextAlign = TextAlign.Start
+    textAlign: TextAlign = TextAlign.Start,
+    spacerHeight : Dp = localSpacing
 ) {
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         CircleImage(image = image, size = imageSize)
-        Spacer(modifier = Modifier.height(localSpacing))
+        Spacer(modifier = Modifier.height(spacerHeight))
         UserBriefDetail(username = username, gender = gender, textAlign = textAlign)
     }
 }

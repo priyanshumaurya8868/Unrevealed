@@ -6,5 +6,9 @@ data class AuthUseCases(
     val getAvatars: GetAvatars,
     val savePreferences: SavePreferences,
     val getLoggedUser: GetLoggedUser,
-    val removeAccount: RemoveAccount
+    val removeAccountByID: RemoveAccountByID,
+    val deactivateAccount: DeactivateAccount,
+    val changeAvatar: ChangeAvatar,
+    val changePassword: ChangePassword,
+    val getMyProfileByID: GetMyProfileByID
 )

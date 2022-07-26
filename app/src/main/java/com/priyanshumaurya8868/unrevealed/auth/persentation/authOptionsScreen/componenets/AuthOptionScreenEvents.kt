@@ -4,5 +4,4 @@ import com.priyanshumaurya8868.unrevealed.auth.domain.model.Profile
 
 sealed class AuthOptionScreenEvents{
     data class LoginWith(val profile : Profile) : AuthOptionScreenEvents()
-    data class RemoveAccount(val profile: Profile) :AuthOptionScreenEvents()
 }

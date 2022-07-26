@@ -1,34 +1,44 @@
 package com.priyanshumaurya8868.unrevealed.auth.data.repo
 
 import android.util.Log
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import com.priyanshumaurya8868.unrevealed.auth.data.local.AuthDataBase
-import com.priyanshumaurya8868.unrevealed.auth.data.mappers.toProfile
 import com.priyanshumaurya8868.unrevealed.auth.data.mappers.toMyProfileEntity
+import com.priyanshumaurya8868.unrevealed.auth.data.mappers.toProfile
+import com.priyanshumaurya8868.unrevealed.auth.data.remote.dto.ChangePasswordDto
 import com.priyanshumaurya8868.unrevealed.auth.data.remote.services.AuthService
-import com.priyanshumaurya8868.unrevealed.auth.domain.model.Profile
 import com.priyanshumaurya8868.unrevealed.auth.domain.model.LoginData
+import com.priyanshumaurya8868.unrevealed.auth.domain.model.Profile
 import com.priyanshumaurya8868.unrevealed.auth.domain.model.SignupData
 import com.priyanshumaurya8868.unrevealed.auth.domain.repo.UnrevealedAuthRepo
-import com.priyanshumaurya8868.unrevealed.core.utils.HttpRoutes
 import com.priyanshumaurya8868.unrevealed.core.Resource
+import com.priyanshumaurya8868.unrevealed.core.utils.HttpRoutes
+import com.priyanshumaurya8868.unrevealed.core.utils.PreferencesKeys
 import io.ktor.client.features.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class UnrevealedAuthRepoImpl(
     private val service: AuthService,
-    private val db : AuthDataBase
+    private val db: AuthDataBase,
+    private val dataStore: DataStore<Preferences>
 ) : UnrevealedAuthRepo {
-     private val dao = db.dao
+    private val dao = db.dao
     override fun signup(data: SignupData): Flow<Resource<Profile>> = flow {
         emit(Resource.Loading())
 
         val response = try {
-          service.signUp(data.toSignupDto())
+            service.signUp(data.toSignupDto())
         } catch (e: RedirectResponseException) {
             // 3xx res
             e.printStackTrace()
-            emit(Resource.Error(extractErrorMsg(e.message) ?: "Something went wrong please try again!"))
+            emit(
+                Resource.Error(
+                    extractErrorMsg(e.message) ?: "Something went wrong please try again!"
+                )
+            )
             null
         } catch (e: ClientRequestException) {
             //4xx res
@@ -38,12 +48,19 @@ class UnrevealedAuthRepoImpl(
         } catch (e: ServerResponseException) {
             //5xx
             e.printStackTrace()
-            emit(Resource.Error(extractErrorMsg(e.message) ?: "Server is drown please try again later"))
+            emit(
+                Resource.Error(
+                    extractErrorMsg(e.message) ?: "Server is drown please try again later"
+                )
+            )
             null
         } catch (e: Exception) {
             e.printStackTrace()
             emit(
-                Resource.Error(message = extractErrorMsg(e.message)?: "Can't reached to the server!. Please check your internet connection.")
+                Resource.Error(
+                    message = extractErrorMsg(e.message)
+                        ?: "Can't reached to the server!. Please check your internet connection."
+                )
             )
             null
         }
@@ -60,7 +77,7 @@ class UnrevealedAuthRepoImpl(
 
         emit(Resource.Loading())
 
-        val response =  try {
+        val response = try {
             service.login(data.toLoginDto())
         } catch (e: RedirectResponseException) {
             // 3xx res
@@ -129,7 +146,9 @@ class UnrevealedAuthRepoImpl(
                 //5xx
                 e.printStackTrace()
                 emit(
-                    Resource.Error(extractErrorMsg(e.message) ?: "Server is drown please try again later")
+                    Resource.Error(
+                        extractErrorMsg(e.message) ?: "Server is drown please try again later"
+                    )
                 )
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -145,15 +164,156 @@ class UnrevealedAuthRepoImpl(
     }
 
     override suspend fun getListOfLoggedUsers(): List<Profile> {
-     return dao.getMyProfiles().map { it.toProfile() }
+        return dao.getMyProfiles().map { it.toProfile() }
     }
 
     override suspend fun removeProfile(profileId: String) {
         dao.removeProfile(profileId)
     }
 
-    private fun extractErrorMsg(msg: String?) =
-        msg?.let { msg.substringAfter("\"message\":\"").substringBefore("\"}\"") } ?: null
+    override suspend fun deactivateAccount() = flow<Resource<Unit>> {
+        emit(Resource.Loading())
+        try {
+            service.deactivateAccount()
+            dataStore.edit {
+                //remove token
+                if (it.contains(PreferencesKeys.JWT_TOKEN)) {
+                    it.remove(PreferencesKeys.JWT_TOKEN)
+
+                }
+                //remove uid
+                if (it.contains(PreferencesKeys.MY_PROFILE_ID)) {
+                    val uid = it[PreferencesKeys.MY_PROFILE_ID]
+                    it.remove(PreferencesKeys.MY_PROFILE_ID)
+                    dao.removeProfile(uid!!)
+                }
+            }
+            emit(Resource.Success(Unit))
+        } catch (e: RedirectResponseException) {
+            // 3xx res
+            e.printStackTrace()
+            emit(
+                Resource.Error(
+                    extractErrorMsg(e.message) ?: "Something went wrong please try again!"
+                )
+            )
+        } catch (e: ClientRequestException) {
+            //4xx res
+            e.printStackTrace()
+            emit(Resource.Error(message = extractErrorMsg(e.message) ?: "bad request!"))
+        } catch (e: ServerResponseException) {
+            //5xx
+            e.printStackTrace()
+            emit(
+                Resource.Error(
+                    extractErrorMsg(e.message) ?: "Server is drown please try again later"
+                )
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emit(
+                Resource.Error(
+                    message = extractErrorMsg(e.message)
+                        ?: "Can't reached to the server!. Please check your internet connection."
+                )
+            )
+        }
+
+    }
+
+    override suspend fun changePassword(
+        oldPassword: String,
+        newPassword: String
+    ) = flow<Resource<Unit>> {
+        emit(Resource.Loading())
+        try {
+            service.changePassword(
+                ChangePasswordDto(
+                    new_password = newPassword,
+                    old_password = oldPassword
+                )
+            )
+            emit(Resource.Success(Unit))
+        } catch (e: RedirectResponseException) {
+            // 3xx res
+            e.printStackTrace()
+            emit(
+                Resource.Error(
+                    extractErrorMsg(e.message) ?: "Something went wrong please try again!"
+                )
+            )
+        } catch (e: ClientRequestException) {
+            //4xx res
+            e.printStackTrace()
+            emit(Resource.Error(message = extractErrorMsg(e.message) ?: "bad request!"))
+        } catch (e: ServerResponseException) {
+            //5xx
+            e.printStackTrace()
+            emit(
+                Resource.Error(
+                    extractErrorMsg(e.message) ?: "Server is drown please try again later"
+                )
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emit(
+                Resource.Error(
+                    message = extractErrorMsg(e.message)
+                        ?: "Can't reached to the server!. Please check your internet connection."
+                )
+            )
+        }
+    }
+
+    override suspend fun changeAvatar(newAvatar: String): Flow<Resource<Profile>> = flow {
+        emit(Resource.Loading())
+        val response = try {
+            service.changeAvatar(newAvatar)
+        } catch (e: RedirectResponseException) {
+            // 3xx res
+            e.printStackTrace()
+            emit(
+                Resource.Error(
+                    extractErrorMsg(e.message) ?: "Something went wrong please try again!"
+                )
+            )
+            null
+        } catch (e: ClientRequestException) {
+            //4xx res
+            e.printStackTrace()
+            emit(Resource.Error(message = extractErrorMsg(e.message) ?: "bad request!"))
+            null
+        } catch (e: ServerResponseException) {
+            //5xx
+            e.printStackTrace()
+            emit(
+                Resource.Error(
+                    extractErrorMsg(e.message) ?: "Server is drown please try again later"
+                )
+            )
+            null
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emit(
+                Resource.Error(
+                    message = extractErrorMsg(e.message)
+                        ?: "Can't reached to the server!. Please check your internet connection."
+                )
+            )
+            null
+        }
+        response?.let {
+            dao.saveProfile(it.toMyProfileEntity())
+            val res = dao.getProfileById(it.user_id)
+            emit(Resource.Success(data = res.toProfile()))
+        }
+    }
+
+    private fun extractErrorMsg(msg: String?) = try {
+        msg?.let { msg.substringAfter("\"message\":\"").substringBefore("\"}\"") }
+    } catch (e: Exception) {
+        null
+    }
 
 
 }

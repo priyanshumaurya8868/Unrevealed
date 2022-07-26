@@ -18,7 +18,6 @@ class SignupViewModel @Inject constructor() : AuthViewModel() {
 
     fun onEvent(event: SignupEvents) = viewModelScope.launch {
 
-
         when (event) {
             is SignupEvents.EnteredUsername -> {
                 _username.value = TextFieldState(text = event.username)

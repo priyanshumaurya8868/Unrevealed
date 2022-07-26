@@ -40,9 +40,6 @@ class AuthOptionViewModel @Inject constructor(private val useCases: AuthUseCases
                 login(event.profile)
                 _eventFlow.emit(UiEvent.Proceed)
             }
-            is AuthOptionScreenEvents.RemoveAccount->{
-                removeAccount(event.profile)
-            }
 
         }
     }
@@ -52,10 +49,7 @@ class AuthOptionViewModel @Inject constructor(private val useCases: AuthUseCases
         useCases.savePreferences(PreferencesKeys.MY_PROFILE_ID, profile.user_id)
     }
 
-    private suspend fun removeAccount(profile: Profile) {
-        useCases.removeAccount(profile.user_id)
-        getLoggedUsersList()
-    }
+
 
     sealed class UiEvent {
         object Proceed : UiEvent()

@@ -61,14 +61,14 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAuthService(client: HttpClient): AuthService {
-        return AuthServiceImpl(client)
+    fun provideAuthService(client: HttpClient, dataStore: DataStore<Preferences>): AuthService {
+        return AuthServiceImpl(client,dataStore)
     }
 
     @Provides
     @Singleton
-    fun provideUnrevealedAuthRepo(service: AuthService, db : AuthDataBase): UnrevealedAuthRepo {
-        return UnrevealedAuthRepoImpl(service,db)
+    fun provideUnrevealedAuthRepo(service: AuthService, db : AuthDataBase,dataStore: DataStore<Preferences>): UnrevealedAuthRepo {
+        return UnrevealedAuthRepoImpl(service,db,dataStore)
     }
 
     @Singleton
@@ -86,14 +86,18 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAuthUseCase(repo: UnrevealedAuthRepo, dataStore: DataStore<Preferences>) =
+    fun provideAuthUseCase(repo: UnrevealedAuthRepo, dataStore: DataStore<Preferences>, authDataBase: AuthDataBase) =
         AuthUseCases(
             login = Login(repo),
             signup = Signup(repo),
             getAvatars = GetAvatars(repo),
             savePreferences = SavePreferences(dataStore),
             getLoggedUser = GetLoggedUser(repo),
-            removeAccount = RemoveAccount(repo)
+            removeAccountByID = RemoveAccountByID(repo),
+            changeAvatar = ChangeAvatar(repo),
+            changePassword = ChangePassword(repo),
+            deactivateAccount = DeactivateAccount(repo),
+            getMyProfileByID = GetMyProfileByID(authDataBase)
         )
 
     @Provides

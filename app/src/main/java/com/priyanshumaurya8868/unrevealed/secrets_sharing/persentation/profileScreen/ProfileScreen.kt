@@ -4,13 +4,14 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ManageAccounts
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,19 +44,21 @@ fun ProfileScreen(
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.SpaceEvenly
                 ) {
+
                     Profiler(
                         modifier = Modifier.fillMaxWidth(),
                         image = state.userProfile.avatar,
                         username = state.userProfile.username,
                         gender = state.userProfile.gender,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        spacerHeight = localVerticalSpacing
                     )
                     Text(
                         "Secrets",
                         fontSize = 24.sp,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 30.dp),
+                            .padding(top = 20.dp),
                     )
                 }
             }
@@ -78,8 +81,8 @@ fun ProfileScreen(
                 )
             }
 
-            if (state.secrets.isEmpty() && !state.isLoading){
-                item{
+            if (state.secrets.isEmpty() && !state.isLoading) {
+                item {
                     Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
                         NothingToShow()
                     }
@@ -87,7 +90,11 @@ fun ProfileScreen(
             }
 
             item {
-                Row(modifier = Modifier.fillMaxWidth().padding(localSpacing), horizontalArrangement = Arrangement.Center) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(localSpacing), horizontalArrangement = Arrangement.Center
+                ) {
                     if (state.isLoading) {
                         CircularProgressIndicator()
                     }

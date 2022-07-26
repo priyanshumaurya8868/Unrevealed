@@ -2,6 +2,7 @@ package com.priyanshumaurya8868.unrevealed.secrets_sharing.data.remote.service
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import com.priyanshumaurya8868.unrevealed.auth.data.remote.dto.MyProfileDto
 import com.priyanshumaurya8868.unrevealed.core.utils.HttpRoutes
 import com.priyanshumaurya8868.unrevealed.core.utils.PreferencesKeys
 import com.priyanshumaurya8868.unrevealed.secrets_sharing.data.remote.dto.*
@@ -238,6 +239,7 @@ class UnrevealedApiImpl(private val httpClient: HttpClient, val dataStore: DataS
             "bearer " + (jwtToken ?: dataStore.data.first()[PreferencesKeys.JWT_TOKEN])
         return httpClient.put {
             url(HttpRoutes.DEVICE_TOKEN+"/$dToken")
+            parameter("d_token", dToken)
             headers {
                 append(HttpHeaders.Authorization, token)
             }
@@ -249,6 +251,5 @@ class UnrevealedApiImpl(private val httpClient: HttpClient, val dataStore: DataS
          url(HttpRoutes.TAGS)
      }
     }
-
 
 }

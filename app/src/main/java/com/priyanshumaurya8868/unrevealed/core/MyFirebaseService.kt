@@ -151,6 +151,7 @@ class MyFirebaseService : FirebaseMessagingService() {
     ) = scope.launch{
         var bitmap: Bitmap? = null
         val route = data.getOrDefault("screen_route", null)
+        Log.d("omegaRanger", "GotRout To  display $route")
         val intent = Intent(context, MainActivity::class.java)
         intent.putExtra(KEY_ROUTE,route)
 
