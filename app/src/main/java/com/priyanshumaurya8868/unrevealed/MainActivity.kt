@@ -70,7 +70,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         Log.d("omegaRanger", "Got Route in ma ${intent.getStringExtra(KEY_ROUTE)}")
-
+        viewModel.setDirectNavRoute(intent.getStringExtra(KEY_ROUTE))
         FirebaseApp.initializeApp(this)
         setTheme(R.style.Theme_Unrevealed)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -85,7 +85,6 @@ class MainActivity : ComponentActivity() {
                 )
             )
         }
-
         // If a notification message is tapped, any data accompanying the notification
         // message is available in the intent extras. In this sample the launcher
         // intent is fired when the notification is tapped, so any accompanying data would
@@ -142,8 +141,8 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colors.background,
                     ) {
-                        val shouldAuth: Boolean = viewModel.shouldAuthenticated
 
+                        val shouldAuth: Boolean = viewModel.shouldAuthenticated
                         val navController = rememberNavController()
                         NavHost(
                             navController = navController,
@@ -231,7 +230,7 @@ class MainActivity : ComponentActivity() {
                             composable(Screen.HomeScreen.route) {
                                 HomeScreen(
                                     navController = navController,
-                                    screen_route = intent.getStringExtra(KEY_ROUTE)
+                                    screen_route = viewModel.getDirectNavRoute()
                                 )
                                 rememberSystemUiController().setSystemBarsColor(
                                     color = MaterialTheme.colors.background
@@ -290,6 +289,8 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    data class NavRoute(val route : String? = null,val isVisited : Boolean = false)
 
     companion object {
 

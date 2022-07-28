@@ -120,7 +120,8 @@ fun HomeScreen(
                     state = state,
                     eventListener = viewModel::onEvents,
                     navController = navController,
-                    openDialog = openDialog
+                    openDialog = openDialog,
+                    themeSwitcher = viewModel.themeSwitcher
                 )
             },
             drawerBackgroundColor = Color.Transparent,

@@ -17,6 +17,5 @@ data class HomeScreenState(
     val isRefreshing: Boolean = false,
     val loggerUsers: List<MyProfile> = emptyList(),
     val isLoggedUsersListExpanded: Boolean = false,
-    val isDarkTheme : Boolean = false
 )
 

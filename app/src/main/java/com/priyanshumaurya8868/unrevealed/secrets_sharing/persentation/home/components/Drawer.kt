@@ -34,6 +34,7 @@ import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.fontSi
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localSpacing
 import com.priyanshumaurya8868.unrevealed.auth.persentation.welcomeScreen.localVerticalSpacing
 import com.priyanshumaurya8868.unrevealed.core.Screen
+import com.priyanshumaurya8868.unrevealed.core.ThemeSwitcher
 import com.priyanshumaurya8868.unrevealed.core.composable.CircleImage
 import com.priyanshumaurya8868.unrevealed.core.composable.UserBriefDetail
 import com.priyanshumaurya8868.unrevealed.core.noRippleClickable
@@ -49,7 +50,8 @@ fun Drawer(
     eventListener: (HomeScreenEvents) -> Unit,
     state: HomeScreenState,
     navController: NavController,
-    openDialog: MutableState<Boolean>
+    openDialog: MutableState<Boolean>,
+    themeSwitcher: ThemeSwitcher
 ) {
     val context = LocalContext.current
     val user = state.myCurrentProfile
@@ -138,10 +140,10 @@ fun Drawer(
                     horizontalArrangement = Arrangement.End
                 ) {
                     val themeIcon =
-                        if (state.isDarkTheme) Icons.Default.DarkMode else Icons.Default.LightMode
+                        if (themeSwitcher.IS_DARK_THEME) Icons.Default.DarkMode else Icons.Default.LightMode
                     Icon(
                         themeIcon,
-                        contentDescription = "switch to ${if (state.isDarkTheme) "Light Theme" else "Dark theme"}",
+                        contentDescription = "switch to ${if (themeSwitcher.IS_DARK_THEME) "Light Theme" else "Dark theme"}",
                         modifier = Modifier.noRippleClickable { eventListener(HomeScreenEvents.ToggleTheme) }
                     )
                 }

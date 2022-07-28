@@ -30,7 +30,7 @@ class HomeViewModel
 @Inject constructor(
     private val useCases: SecretSharingUseCases,
     private val dataStore: DataStore<Preferences>,
-    private val themeSwitcher: ThemeSwitcher
+    val themeSwitcher: ThemeSwitcher
 ) : ViewModel() {
 
     var state by mutableStateOf(HomeScreenState())
@@ -78,17 +78,14 @@ class HomeViewModel
         }
     )
 
-    init {
-        state = state.copy(isDarkTheme =  themeSwitcher.IS_DARK_THEME)
-    }
 
      fun initialSetup(){
         getTags()
         loadNextItems()
-        getPresentUserProfile()
+         getPresentUserProfile()
     }
 
-    private fun getTags() = viewModelScope.launch {
+    private fun getTags() = viewModelScope.launch(Dispatchers.IO) {
       useCases.getTags(true).onEach { res->
         state =   when(res){
               is Resource.Loading->{
@@ -134,7 +131,7 @@ class HomeViewModel
                 switchAccount(event.selectedProfile)
             }
             is HomeScreenEvents.ToggleTheme -> {
-                state = state.copy(isDarkTheme =  themeSwitcher.toggleTheme())
+                themeSwitcher.toggleTheme()
             }
             is HomeScreenEvents.ToggleListOfLoggedUSer -> {
                 Log.d("omega/home", "tl")
