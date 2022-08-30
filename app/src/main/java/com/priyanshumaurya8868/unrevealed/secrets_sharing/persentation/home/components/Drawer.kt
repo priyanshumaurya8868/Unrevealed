@@ -125,7 +125,7 @@ fun Drawer(
 
     Box(
         modifier = modifier
-            .fillMaxWidth(0.6f)
+            .fillMaxWidth(0.67f)
             .fillMaxHeight()
             .background(MaterialTheme.colors.background),
         contentAlignment = Alignment.TopStart

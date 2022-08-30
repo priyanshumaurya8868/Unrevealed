@@ -99,7 +99,8 @@ fun AccountSettingsScreen(
                     UserBriefDetail(
                         modifier = Modifier.padding(localVerticalSpacing).clickable { openDialogCA.value = true },
                         username = myProfile.username,
-                        gender = myProfile.gender
+                        gender = myProfile.gender,
+                        textAlign = TextAlign.Center
                     )
                 }
                 item {

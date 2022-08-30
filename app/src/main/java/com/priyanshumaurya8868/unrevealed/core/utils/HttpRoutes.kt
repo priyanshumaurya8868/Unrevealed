@@ -1,7 +1,8 @@
 package com.priyanshumaurya8868.unrevealed.core.utils
 
 object HttpRoutes {
-    const val BASE_URL = "http://192.168.43.6:2022"
+    const val BASE_URL ="https://unrevealed-secrets.herokuapp.com"
+//        "http://192.168.43.6:2022"
     const val SIGNUP = "$BASE_URL/auth/signup"
     const val LOGIN = "$BASE_URL/auth/login"
     const val AVATARS = "$BASE_URL/avatars"

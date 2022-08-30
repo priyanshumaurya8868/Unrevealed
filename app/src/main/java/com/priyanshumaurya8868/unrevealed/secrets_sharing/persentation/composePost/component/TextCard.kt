@@ -19,18 +19,17 @@ fun TextCard(
     modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colors.surface,
     textColor: Color = MaterialTheme.colors.primary,
-    elevation : Dp = 0.dp
+    elevation: Dp = 0.dp
 ) {
     Card(
         elevation = elevation,
         backgroundColor = backgroundColor,
         shape = RoundedCornerShape(30.dp),
-        modifier = modifier
-            .border(
-                width = 1.dp.div(2),
-                MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
-                shape = RoundedCornerShape(30.dp)
-            )
+        modifier = modifier.border(
+            width = 1.dp.div(2),
+            MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
+            shape = RoundedCornerShape(30.dp)
+        )
     ) {
         Text(
             text,

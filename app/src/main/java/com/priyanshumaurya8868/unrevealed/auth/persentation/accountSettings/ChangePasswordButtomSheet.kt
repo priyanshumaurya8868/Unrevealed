@@ -3,11 +3,11 @@ package com.priyanshumaurya8868.unrevealed.auth.persentation.accountSettings
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
@@ -45,20 +45,30 @@ fun ChangePasswordBottomSheet(
     val scope = rememberCoroutineScope()
     ModalBottomSheetLayout(
         sheetState = modalBottomSheetState,
+        sheetShape = RoundedCornerShape(
+            bottomStart = 0.dp,
+            bottomEnd = 0.dp,
+            topStart = 12.dp,
+            topEnd = 12.dp
+        ),
+        sheetBackgroundColor = MaterialTheme.colors.background,
+        scrimColor = MaterialTheme.colors.surface.copy(alpha = 0.55f),
         sheetContent = {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(localVerticalSpacing)
+                    .padding(horizontal = localSpacing)
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = localVerticalSpacing),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "Select a Topic",
+                        text = "Change Password!",
                         style = MaterialTheme.typography.h5,
+                        modifier = Modifier.padding(vertical = localVerticalSpacing)
                     )
                     Icon(
                         Icons.Default.Close, "hide sheet",
@@ -67,7 +77,6 @@ fun ChangePasswordBottomSheet(
                             .clip(CircleShape)
                             .clickable { scope.launch { modalBottomSheetState.hide() } })
                 }
-                Spacer(modifier = Modifier.height(localSpacing))
 
                 PasswordTextField(
                     modifier = Modifier.fillMaxWidth(),

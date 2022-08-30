@@ -3,6 +3,7 @@ package com.priyanshumaurya8868.unrevealed.secrets_sharing.persentation.composeP
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -76,8 +77,8 @@ fun ComposePostScreen(
                     openDialog.value = true
                     return@BackHandler
                 }
-                if(modalBottomSheetState.isVisible){
-                    scope.launch{ modalBottomSheetState.hide() }
+                if (modalBottomSheetState.isVisible) {
+                    scope.launch { modalBottomSheetState.hide() }
                     return@BackHandler
                 }
                 navController.popBackStack()
@@ -144,7 +145,9 @@ fun ComposePostScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(vertical = localSpacing),
                 ) {
-                    TextCard(text = "English")
+                    TextCard(
+                        text = "English", modifier = Modifier
+                    )
                     Spacer(Modifier.width(localSpacing))
                     TextCard(
                         state.tag,
